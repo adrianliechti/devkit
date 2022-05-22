@@ -6,7 +6,6 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/adrianliechti/devkit/app/cluster"
 	"github.com/adrianliechti/devkit/app/database/elasticsearch"
 	"github.com/adrianliechti/devkit/app/database/etcd"
 	"github.com/adrianliechti/devkit/app/database/influxdb"
@@ -19,6 +18,7 @@ import (
 	"github.com/adrianliechti/devkit/app/messaging/nats"
 	"github.com/adrianliechti/devkit/app/storage/minio"
 	"github.com/adrianliechti/devkit/app/storage/vault"
+	"github.com/adrianliechti/devkit/app/template"
 	"github.com/adrianliechti/devkit/app/utility/cloc"
 	"github.com/adrianliechti/devkit/app/utility/git"
 	"github.com/adrianliechti/devkit/app/utility/image"
@@ -53,8 +53,6 @@ func initApp() cli.App {
 		// },
 
 		Commands: []*cli.Command{
-			cluster.Command,
-
 			mariadb.Command,
 			postgres.Command,
 			mongodb.Command,
@@ -81,6 +79,8 @@ func initApp() cli.App {
 
 			git.Command,
 			image.Command,
+
+			template.Command,
 
 			cloc.Command,
 			proxy.Command,
