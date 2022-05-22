@@ -42,9 +42,7 @@ func main() {
 
 func initApp() cli.App {
 	return cli.App{
-		// Name:    "loop",
 		Version: version,
-		// Usage:   "DevOps Loop",
 
 		HideHelpCommand: true,
 

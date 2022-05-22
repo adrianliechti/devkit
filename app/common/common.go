@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	KindKey = "common.loop.kind"
+	KindKey = "local.devkit.kind"
 )
 
 func SelectContainer(ctx context.Context, kind string) (string, error) {
