@@ -4,20 +4,20 @@ import (
 	"context"
 	"errors"
 
-	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/kind"
 )
 
 const (
 	Kubernetes = "cluster"
+	Category   = "CLUSTER"
 )
 
 var Command = &cli.Command{
 	Name:  Kubernetes,
 	Usage: "local Kubernetes cluster",
 
-	Category: app.CategoryCluster,
+	Category: Category,
 
 	HideHelpCommand: true,
 
