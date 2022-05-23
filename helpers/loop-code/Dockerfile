@@ -1,8 +1,9 @@
 FROM ubuntu:21.04
 
-ARG VERSION=v1.61.0
+ARG VERSION=v1.67.2
 
 ARG USERNAME=code
+
 ARG USER_UID=1000
 ARG USER_GID=1000
 
@@ -40,4 +41,4 @@ ENV GIT_EDITOR="code --wait"
 EXPOSE 3000
 
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
-CMD [ "/opt/code/server.sh" ]
+CMD [ "/opt/code/bin/openvscode-server", "--host", "0.0.0.0", "--without-connection-token" ]

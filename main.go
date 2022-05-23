@@ -20,6 +20,7 @@ import (
 	"github.com/adrianliechti/devkit/app/storage/vault"
 	"github.com/adrianliechti/devkit/app/template"
 	"github.com/adrianliechti/devkit/app/utility/cloc"
+	"github.com/adrianliechti/devkit/app/utility/code"
 	"github.com/adrianliechti/devkit/app/utility/git"
 	"github.com/adrianliechti/devkit/app/utility/image"
 	"github.com/adrianliechti/devkit/app/utility/proxy"
@@ -80,6 +81,7 @@ func initApp() cli.App {
 
 			template.Command,
 
+			code.Command,
 			cloc.Command,
 			proxy.Command,
 			webserver.Command,
