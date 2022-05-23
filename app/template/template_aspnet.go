@@ -10,15 +10,14 @@ var aspnetCommand = &cli.Command{
 
 	Flags: []cli.Flag{
 		&cli.StringFlag{
-			Name:     "name",
-			Usage:    "application name",
-			Required: true,
+			Name:  "name",
+			Usage: "application name",
 		},
 	},
 
 	Action: func(c *cli.Context) error {
 		options := templateOptions{
-			Name: c.String("name"),
+			Name: MustName(c, "demo"),
 		}
 
 		return runTemplate(c.Context, "", TemplateASPNET, options)

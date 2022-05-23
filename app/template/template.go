@@ -2,6 +2,7 @@ package template
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -48,6 +49,46 @@ var Command = &cli.Command{
 	},
 }
 
+func Name(c *cli.Context, placeholder string) string {
+	name := c.String("name")
+
+	if name == "" {
+		name, _ = cli.Prompt("App Name", placeholder)
+	}
+
+	return name
+}
+
+func MustName(c *cli.Context, placeholder string) string {
+	name := Name(c, placeholder)
+
+	if name == "" {
+		cli.Fatal(errors.New("missing name"))
+	}
+
+	return name
+}
+
+func Group(c *cli.Context, placeholder string) string {
+	group := c.String("group")
+
+	if group == "" {
+		group, _ = cli.Prompt("App Group", placeholder)
+	}
+
+	return group
+}
+
+func MustGroup(c *cli.Context, placeholder string) string {
+	group := Group(c, placeholder)
+
+	if group == "" {
+		cli.Fatal(errors.New("missing group"))
+	}
+
+	return group
+}
+
 func runTemplate(ctx context.Context, path string, template template, options templateOptions) error {
 	if options.Name == "" {
 		options.Name = "demo"
@@ -67,6 +108,9 @@ func runTemplate(ctx context.Context, path string, template template, options te
 
 	runOptions := docker.RunOptions{
 		Env: options.env(),
+
+		Platform: "linux/amd64",
+
 		Volumes: map[string]string{
 			path: "/src",
 		},

@@ -10,15 +10,14 @@ var pythonCommand = &cli.Command{
 
 	Flags: []cli.Flag{
 		&cli.StringFlag{
-			Name:     "name",
-			Usage:    "app name",
-			Required: true,
+			Name:  "name",
+			Usage: "app name",
 		},
 	},
 
 	Action: func(c *cli.Context) error {
 		options := templateOptions{
-			Name: c.String("name"),
+			Name: MustName(c, "demo"),
 		}
 
 		return runTemplate(c.Context, "", TemplatePython, options)

@@ -10,15 +10,14 @@ var golangCommand = &cli.Command{
 
 	Flags: []cli.Flag{
 		&cli.StringFlag{
-			Name:     "name",
-			Usage:    "module name",
-			Required: true,
+			Name:  "name",
+			Usage: "module name",
 		},
 	},
 
 	Action: func(c *cli.Context) error {
 		options := templateOptions{
-			Name: c.String("name"),
+			Name: MustName(c, "demo"),
 		}
 
 		return runTemplate(c.Context, "", TemplateGolang, options)

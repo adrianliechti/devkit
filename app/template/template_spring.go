@@ -10,21 +10,19 @@ var springCommand = &cli.Command{
 
 	Flags: []cli.Flag{
 		&cli.StringFlag{
-			Name:     "group",
-			Usage:    "application group",
-			Required: true,
+			Name:  "group",
+			Usage: "application group",
 		},
 		&cli.StringFlag{
-			Name:     "name",
-			Usage:    "application name",
-			Required: true,
+			Name:  "name",
+			Usage: "application name",
 		},
 	},
 
 	Action: func(c *cli.Context) error {
 		options := templateOptions{
-			Group: c.String("group"),
-			Name:  c.String("name"),
+			Group: MustGroup(c, "org.example"),
+			Name:  MustName(c, "demo"),
 		}
 
 		return runTemplate(c.Context, "", TemplateSpring, options)
