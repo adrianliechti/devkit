@@ -1,5 +1,5 @@
 package utility
 
 const (
-	Category = "UTILITIY"
+	Category = "UTILITIES"
 )

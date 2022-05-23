@@ -24,7 +24,7 @@ import (
 	"github.com/adrianliechti/devkit/app/utility/git"
 	"github.com/adrianliechti/devkit/app/utility/image"
 	"github.com/adrianliechti/devkit/app/utility/proxy"
-	"github.com/adrianliechti/devkit/app/utility/webserver"
+	"github.com/adrianliechti/devkit/app/utility/server"
 	"github.com/adrianliechti/devkit/pkg/cli"
 )
 
@@ -46,10 +46,6 @@ func initApp() cli.App {
 		Version: version,
 
 		HideHelpCommand: true,
-
-		// Flags: []cli.Flag{
-		// 	app.KubeconfigFlag,
-		// },
 
 		Commands: []*cli.Command{
 			mariadb.Command,
@@ -81,41 +77,11 @@ func initApp() cli.App {
 
 			template.Command,
 
-			code.Command,
 			cloc.Command,
+
+			code.Command,
+			server.Command,
 			proxy.Command,
-			webserver.Command,
 		},
-		// 	// Cluster
-		// 	cluster.Command,
-
-		// 	application.Command,
-		// 	config.Command,
-		// 	connect.Command,
-		// 	catapult.Command,
-		// 	dashboard.Command,
-
-		// 	// Development
-		// 	{
-		// 		Name:  "local",
-		// 		Usage: "local development instances",
-
-		// 		Category: app.CategoryDevelopment,
-
-		// 		HideHelpCommand: true,
-
-		// 		Subcommands: []*cli.Command{
-		//
-		// 		},
-		// 	},
-		// 	remote.Command,
-		// 	expose.Command,
-
-		// 	// Utilities
-		// 	git.Command,
-		// 	tool.Command,
-		// 	image.Command,
-		// 	template.Command,
-		// },
 	}
 }

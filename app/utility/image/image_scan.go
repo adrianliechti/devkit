@@ -9,7 +9,7 @@ import (
 
 var scanCommand = &cli.Command{
 	Name:  "scan",
-	Usage: "scan image using trivy",
+	Usage: "scan image vulnerabilies using trivy",
 
 	Flags: []cli.Flag{
 		ImageFlag,

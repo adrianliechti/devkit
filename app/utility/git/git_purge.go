@@ -15,7 +15,7 @@ import (
 
 var purgeCommand = &cli.Command{
 	Name:  "purge",
-	Usage: "delete (hidden) blobs in repository",
+	Usage: "purge blobs in repository",
 
 	Action: func(c *cli.Context) error {
 		files := c.Args().Slice()

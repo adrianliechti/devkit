@@ -9,7 +9,7 @@ import (
 
 var lintCommand = &cli.Command{
 	Name:  "lint",
-	Usage: "lint image using dockle",
+	Usage: "lint Dockerfile using dockle",
 
 	Flags: []cli.Flag{
 		ImageFlag,

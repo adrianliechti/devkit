@@ -10,7 +10,7 @@ import (
 
 var packCommand = &cli.Command{
 	Name:  "pack",
-	Usage: "create Docker image",
+	Usage: "create image using buildpacks",
 
 	Flags: []cli.Flag{
 		ImageFlag,

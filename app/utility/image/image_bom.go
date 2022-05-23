@@ -9,7 +9,7 @@ import (
 
 var bomCommand = &cli.Command{
 	Name:  "bom",
-	Usage: "bill of material using syft",
+	Usage: "show image bill of material using syft",
 
 	Flags: []cli.Flag{
 		ImageFlag,

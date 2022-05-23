@@ -7,9 +7,9 @@ import (
 	"github.com/adrianliechti/devkit/pkg/docker"
 )
 
-var analyzeCommand = &cli.Command{
-	Name:  "analyze",
-	Usage: "analyze image using whaler",
+var inspectCommand = &cli.Command{
+	Name:  "inspect",
+	Usage: "inspect image using whaler",
 
 	Flags: []cli.Flag{
 		ImageFlag,

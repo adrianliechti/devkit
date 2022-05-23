@@ -9,19 +9,22 @@ import (
 
 var Command = &cli.Command{
 	Name:  "image",
-	Usage: "image utilities & analyzers",
+	Usage: "docker/oci image tools",
 
 	HideHelpCommand: true,
 
 	Category: utility.Category,
 
 	Subcommands: []*cli.Command{
-		packCommand,
-		browseCommand,
-		bomCommand,
-		scanCommand,
 		lintCommand,
-		analyzeCommand,
+		packCommand,
+
+		scanCommand,
+		inspectCommand,
+
+		bomCommand,
+
+		browseCommand,
 	},
 }
 

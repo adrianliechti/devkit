@@ -9,7 +9,7 @@ import (
 
 var browseCommand = &cli.Command{
 	Name:  "browse",
-	Usage: "browse image using dive",
+	Usage: "browse image using dive (interactive)",
 
 	Flags: []cli.Flag{
 		ImageFlag,

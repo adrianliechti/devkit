@@ -10,7 +10,7 @@ import (
 
 var leaksCommand = &cli.Command{
 	Name:  "leaks",
-	Usage: "find data leaks in repository",
+	Usage: "find leaks in repository",
 
 	Action: func(c *cli.Context) error {
 		return leaks(c.Context)
@@ -41,6 +41,10 @@ func leaks(ctx context.Context) error {
 	// }
 
 	options := docker.RunOptions{
+		Platform: "linux/amd64",
+
+		User: "root",
+
 		Volumes: map[string]string{
 			path: "/src",
 			//config.Name(): "/config",
@@ -49,12 +53,11 @@ func leaks(ctx context.Context) error {
 
 	args := []string{
 		"detect",
-		"-v",
 		"--source=/src",
 		//"--config=/config",
 	}
 
-	return docker.RunInteractive(ctx, "zricethezav/gitleaks:v8.6.1", options, args...)
+	return docker.RunInteractive(ctx, "zricethezav/gitleaks:v8.8.4", options, args...)
 }
 
 // const gitleaksConfig = `

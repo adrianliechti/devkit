@@ -1,4 +1,4 @@
-package webserver
+package server
 
 import (
 	"context"
@@ -14,8 +14,8 @@ import (
 )
 
 var Command = &cli.Command{
-	Name:  "webserver",
-	Usage: "start simple Web server",
+	Name:  "server",
+	Usage: "start temporary Web server",
 
 	Category: utility.Category,
 
@@ -25,24 +25,33 @@ var Command = &cli.Command{
 			Name:  "spa",
 			Usage: "enable SPA redirect",
 		},
+		&cli.StringFlag{
+			Name:  "index",
+			Usage: "index file name",
+			Value: "index.html",
+		},
 	},
 
 	Action: func(c *cli.Context) error {
 		port := app.MustPortOrRandom(c, 3000)
-		spa := c.Bool("spa")
 
-		return startWebServer(c.Context, port, spa)
+		spa := c.Bool("spa")
+		index := c.String("index")
+
+		if index == "" {
+			index = "index.html"
+		}
+
+		return startWebServer(c.Context, port, index, spa)
 	},
 }
 
-func startWebServer(ctx context.Context, port int, spa bool) error {
+func startWebServer(ctx context.Context, port int, index string, spa bool) error {
 	root, err := os.Getwd()
 
 	if err != nil {
 		return err
 	}
-
-	index := "index.html"
 
 	if port == 0 {
 		port = 3000

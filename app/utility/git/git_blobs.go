@@ -17,10 +17,9 @@ import (
 
 var blobsCommand = &cli.Command{
 	Name:  "blobs",
-	Usage: "list (hidden) blobs in repository",
+	Usage: "list blobs by size",
 
 	Action: func(c *cli.Context) error {
-
 		return blobs(c.Context)
 	},
 }
