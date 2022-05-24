@@ -17,6 +17,7 @@ import (
 	"github.com/adrianliechti/devkit/app/messaging/kafka"
 	"github.com/adrianliechti/devkit/app/messaging/nats"
 	"github.com/adrianliechti/devkit/app/platform/jenkins"
+	"github.com/adrianliechti/devkit/app/platform/sonarqube"
 	"github.com/adrianliechti/devkit/app/storage/minio"
 	"github.com/adrianliechti/devkit/app/storage/vault"
 	"github.com/adrianliechti/devkit/app/template"
@@ -74,6 +75,7 @@ func initApp() cli.App {
 			// jupyterCommand,
 
 			jenkins.Command,
+      sonarqube.Command,
 
 			git.Command,
 			image.Command,

@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"strconv"
 )
 
 type RunOptions struct {
@@ -16,6 +17,9 @@ type RunOptions struct {
 
 	Temporary  bool
 	Privileged bool
+
+	MaxNoProcs int
+	MaxNoFiles int
 
 	Stdin  io.Reader
 	Stdout io.Writer
@@ -60,6 +64,14 @@ func runArgs(image string, options RunOptions, arg ...string) []string {
 
 	if options.Privileged {
 		args = append(args, "--privileged")
+	}
+
+	if options.MaxNoProcs > 0 {
+		args = append(args, "--ulimit", "nproc="+strconv.Itoa(options.MaxNoProcs))
+	}
+
+	if options.MaxNoFiles > 0 {
+		args = append(args, "--ulimit", "nofile="+strconv.Itoa(options.MaxNoFiles))
 	}
 
 	if !options.Attach {

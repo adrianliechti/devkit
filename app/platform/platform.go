@@ -1,4 +1,4 @@
-package messaging
+package platform
 
 const (
 	Category = "PLATFORM"
