@@ -16,6 +16,7 @@ import (
 	"github.com/adrianliechti/devkit/app/database/redis"
 	"github.com/adrianliechti/devkit/app/messaging/kafka"
 	"github.com/adrianliechti/devkit/app/messaging/nats"
+	"github.com/adrianliechti/devkit/app/platform/jenkins"
 	"github.com/adrianliechti/devkit/app/platform/sonarqube"
 	"github.com/adrianliechti/devkit/app/storage/minio"
 	"github.com/adrianliechti/devkit/app/storage/vault"
@@ -73,6 +74,7 @@ func initApp() cli.App {
 			// grafanaCommand,
 			// jupyterCommand,
 
+			jenkins.Command,
 			sonarqube.Command,
 
 			git.Command,

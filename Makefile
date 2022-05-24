@@ -11,11 +11,15 @@ build:
 install:
 	go build -ldflags "-X main.version=$(version)" -o /usr/local/bin/loop .
 
-images: image-code image-mailtrap image-template
+images: image-code image-jenkins image-mailtrap image-template
 
 image-code:
 	docker build helpers/loop-code --tag adrianliechti/loop-code --platform linux/amd64 && \
 	docker push adrianliechti/loop-code
+
+image-jenkins:
+	docker build helpers/loop-jenkins --tag adrianliechti/loop-jenkins --platform linux/amd64 && \
+	docker push adrianliechti/loop-jenkins
 
 image-mailtrap:
 	docker build helpers/loop-mailtrap --tag adrianliechti/loop-mailtrap --platform linux/amd64 && \
