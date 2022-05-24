@@ -75,7 +75,7 @@ func initApp() cli.App {
 			// jupyterCommand,
 
 			jenkins.Command,
-      sonarqube.Command,
+			sonarqube.Command,
 
 			git.Command,
 			image.Command,

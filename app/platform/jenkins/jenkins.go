@@ -2,7 +2,7 @@ package jenkins
 
 import (
 	"github.com/adrianliechti/devkit/app/common"
-	"github.com/adrianliechti/devkit/app/messaging"
+	"github.com/adrianliechti/devkit/app/platform"
 	"github.com/adrianliechti/devkit/pkg/cli"
 )
 
@@ -14,7 +14,7 @@ var Command = &cli.Command{
 	Name:  Jenkins,
 	Usage: "local Jenkins broker",
 
-	Category: messaging.Category,
+	Category: platform.Category,
 
 	HideHelpCommand: true,
 
