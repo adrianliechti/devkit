@@ -1,0 +1,12 @@
+jenkins:
+  noUsageStatistics: true
+  slaveAgentPort: 50000
+
+  disabledAdministrativeMonitors:
+    - "jenkins.diagnostics.ControllerExecutorsNoAgents"
+    - "jenkins.diagnostics.RootUrlNotSetMonitor"
+
+unclassified:
+  themeManager:
+    disableUserThemes: true
+    theme: "darkSystem"
