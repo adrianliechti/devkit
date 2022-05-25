@@ -21,6 +21,9 @@ image-jenkins:
 	docker build helpers/loop-jenkins --tag adrianliechti/loop-jenkins --platform linux/amd64 && \
 	docker push adrianliechti/loop-jenkins
 
+	docker build helpers/loop-jenkins -f Dockerfile.dind --tag adrianliechti/loop-jenkins:dind --platform linux/amd64 && \
+	docker push adrianliechti/loop-jenkins:dind
+
 image-mailtrap:
 	docker build helpers/loop-mailtrap --tag adrianliechti/loop-mailtrap --platform linux/amd64 && \
 	docker push adrianliechti/loop-mailtrap

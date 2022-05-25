@@ -21,7 +21,7 @@ func CreateCommand() *cli.Command {
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
-			image := "adrianliechti/loop-jenkins"
+			image := "adrianliechti/loop-jenkins:dind"
 
 			target := 8080
 			port := app.MustPortOrRandom(c, target)
@@ -44,10 +44,6 @@ func CreateCommand() *cli.Command {
 
 				Ports: map[int]int{
 					port: target,
-				},
-
-				Volumes: map[string]string{
-					"/var/run/docker.sock": "/var/run/docker.sock",
 				},
 			}
 

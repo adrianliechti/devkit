@@ -1,7 +1,7 @@
-FROM openjdk:11-buster
+FROM openjdk:11-bullseye
 
 RUN apt-get update -qq && apt-get install -qq -y --no-install-recommends \
-    rsync vim nano \
+    rsync vim \
     && rm -rf /var/lib/apt/lists/*
 
 ENV LANG C.UTF-8

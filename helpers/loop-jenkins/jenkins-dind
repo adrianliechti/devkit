@@ -1,0 +1,4 @@
+#!/bin/bash
+
+dind dockerd --group jenkins --iptables=false &
+exec runuser -u jenkins -g jenkins -- /usr/local/bin/jenkins
