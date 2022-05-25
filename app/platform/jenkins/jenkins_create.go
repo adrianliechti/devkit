@@ -34,7 +34,8 @@ func CreateCommand() *cli.Command {
 					common.KindKey: Jenkins,
 				},
 
-				Platform: "linux/amd64",
+				Platform:   "linux/amd64",
+				Privileged: true,
 
 				Env: map[string]string{
 					"BASE_URL":       fmt.Sprintf("http://localhost:%d", port),
