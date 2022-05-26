@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/adrianliechti/devkit/app/database/db2"
 	"github.com/adrianliechti/devkit/app/database/elasticsearch"
 	"github.com/adrianliechti/devkit/app/database/etcd"
 	"github.com/adrianliechti/devkit/app/database/influxdb"
@@ -54,6 +55,7 @@ func initApp() cli.App {
 			postgres.Command,
 			mongodb.Command,
 			mssql.Command,
+			db2.Command,
 
 			etcd.Command,
 			redis.Command,
