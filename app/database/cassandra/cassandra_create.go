@@ -1,4 +1,4 @@
-package db2
+package cassandra
 
 import (
 	"fmt"
@@ -7,7 +7,6 @@ import (
 	"github.com/adrianliechti/devkit/app/common"
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/docker"
-	"github.com/sethvargo/go-password/password"
 )
 
 func CreateCommand() *cli.Command {
@@ -21,37 +20,24 @@ func CreateCommand() *cli.Command {
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
-			image := "ibmcom/db2:11.5.7.0a"
+			image := "cassandra:4"
 
-			target := 50000
+			target := 9042
 			port := app.MustPortOrRandom(c, target)
-
-			db := "db"
-			instance := "db2inst1"
-			password := password.MustGenerate(10, 4, 0, false, false)
 
 			options := docker.RunOptions{
 				Labels: map[string]string{
-					common.KindKey: DB2,
+					common.KindKey: Cassandra,
 				},
 
-				Privileged: true,
-				Platform:   "linux/amd64",
-
-				Env: map[string]string{
-					"LICENSE": "accept",
-
-					"DBNAME": db,
-
-					"DB2INST1_PASSWORD": password,
-				},
+				Env: map[string]string{},
 
 				Ports: map[int]int{
 					port: target,
 				},
 
 				// Volumes: map[string]string{
-				// 	name: /database",
+				// 	name: /var/lib/cassandra",
 				// },
 			}
 
@@ -61,9 +47,6 @@ func CreateCommand() *cli.Command {
 
 			cli.Table([]string{"Name", "Value"}, [][]string{
 				{"Host", fmt.Sprintf("localhost:%d", port)},
-				{"Instance", instance},
-				{"Database", db},
-				{"Password", password},
 			})
 
 			return nil

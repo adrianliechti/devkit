@@ -1,4 +1,4 @@
-package minio
+package immudb
 
 import (
 	"fmt"
@@ -7,7 +7,6 @@ import (
 	"github.com/adrianliechti/devkit/app/common"
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/docker"
-
 	"github.com/sethvargo/go-password/password"
 )
 
@@ -22,43 +21,44 @@ func CreateCommand() *cli.Command {
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
-			image := "minio/minio"
+			image := "codenotary/immudb"
 
-			apiPort := app.MustPortOrRandom(c, 9000)
-			consolePort := app.MustRandomPort(c, apiPort+1)
+			port := app.MustPortOrRandom(c, 3322)
+			consolePort := app.MustRandomPort(c, port+1)
 
-			username := "root"
+			username := "immudb"
 			password := password.MustGenerate(10, 4, 0, false, false)
 
 			options := docker.RunOptions{
 				Labels: map[string]string{
-					common.KindKey: MinIO,
+					common.KindKey: ImmuDB,
 				},
 
 				Env: map[string]string{
-					"MINIO_ROOT_USER":     username,
-					"MINIO_ROOT_PASSWORD": password,
+					"IMMUDB_ADDRESS": "0.0.0.0",
+
+					"IMMUDB_ADMIN_PASSWORD": password,
 				},
 
 				Ports: map[int]int{
-					apiPort:     9000,
-					consolePort: 9001,
+					port:        3322,
+					consolePort: 8080,
 				},
 
 				// Volumes: map[string]string{
-				// 	path: "/data",
+				// 	name: "/var/lib/immudb",
 				// },
 			}
 
-			if err := docker.Run(ctx, image, options, "server", "/data", "--console-address", ":9001"); err != nil {
+			if err := docker.Run(ctx, image, options); err != nil {
 				return err
 			}
 
 			cli.Table([]string{"Name", "Value"}, [][]string{
-				{"Host", fmt.Sprintf("localhost:%d", apiPort)},
+				{"Host", fmt.Sprintf("localhost:%d", port)},
 				{"Username", username},
 				{"Password", password},
-				{"URL", fmt.Sprintf("http://localhost:%d", apiPort)},
+				{"URL", fmt.Sprintf("http://localhost:%d", port)},
 				{"Console", fmt.Sprintf("http://localhost:%d", consolePort)},
 			})
 
