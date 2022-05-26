@@ -15,6 +15,7 @@ import (
 	"github.com/adrianliechti/devkit/app/database/mariadb"
 	"github.com/adrianliechti/devkit/app/database/mongodb"
 	"github.com/adrianliechti/devkit/app/database/mssql"
+	"github.com/adrianliechti/devkit/app/database/mysql"
 	"github.com/adrianliechti/devkit/app/database/postgres"
 	"github.com/adrianliechti/devkit/app/database/redis"
 	"github.com/adrianliechti/devkit/app/messaging/kafka"
@@ -53,6 +54,7 @@ func initApp() cli.App {
 		HideHelpCommand: true,
 
 		Commands: []*cli.Command{
+			mysql.Command,
 			mariadb.Command,
 			postgres.Command,
 			mongodb.Command,
