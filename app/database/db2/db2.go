@@ -12,7 +12,7 @@ const (
 
 var Command = &cli.Command{
 	Name:  DB2,
-	Usage: "local db2 server",
+	Usage: "local DB2 server",
 
 	Category: database.Category,
 
