@@ -1,6 +1,9 @@
 package minio
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/app/common"
 	"github.com/adrianliechti/devkit/pkg/cli"
@@ -22,6 +25,10 @@ func ConsoleCommand() *cli.Command {
 
 			port := app.MustPortOrRandom(c, 9090)
 			target := 9001
+
+			time.AfterFunc(1*time.Second, func() {
+				cli.OpenURL(fmt.Sprintf("http://localhost:%d", port))
+			})
 
 			return docker.PortForward(c.Context, container, port, target)
 		},

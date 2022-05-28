@@ -3,7 +3,6 @@ package docker
 import (
 	"context"
 	"io"
-	"os"
 	"os/exec"
 )
 
@@ -17,14 +16,6 @@ func Pull(ctx context.Context, image string, options PullOptions) error {
 
 	if err != nil {
 		return err
-	}
-
-	if options.Stdout == nil {
-		options.Stdout = os.Stdout
-	}
-
-	if options.Stderr == nil {
-		options.Stderr = os.Stderr
 	}
 
 	cmd := exec.CommandContext(ctx, tool, "pull", image)
