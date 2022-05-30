@@ -1,4 +1,4 @@
-package mariadb
+package mailtrap
 
 import (
 	"fmt"
@@ -7,7 +7,6 @@ import (
 	"github.com/adrianliechti/devkit/app/common"
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/docker"
-
 	"github.com/sethvargo/go-password/password"
 )
 
@@ -22,31 +21,28 @@ func CreateCommand() *cli.Command {
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
-			image := "mariadb:10-focal"
+			image := "adrianliechti/loop-mailtrap"
 
-			port := app.MustPortOrRandom(c, "", 3306)
+			port := app.MustPortOrRandom(c, "", 2525)
 
-			database := "db"
-			username := "root"
+			username := "admin"
 			password := password.MustGenerate(10, 4, 0, false, false)
 
 			options := docker.RunOptions{
 				Labels: map[string]string{
-					common.KindKey: MariaDB,
+					common.KindKey: MailTrap,
 				},
 
+				Platform: "linux/amd64",
+
 				Env: map[string]string{
-					"MARIADB_DATABASE":      database,
-					"MARIADB_ROOT_PASSWORD": password,
+					"USERNAME": username,
+					"PASSWORD": password,
 				},
 
 				Ports: map[int]int{
-					port: 3306,
+					port: 25,
 				},
-
-				// Volumes: map[string]string{
-				// 	name: "/var/lib/mysql",
-				// },
 			}
 
 			if err := docker.Run(ctx, image, options); err != nil {
@@ -55,7 +51,6 @@ func CreateCommand() *cli.Command {
 
 			cli.Table([]string{"Name", "Value"}, [][]string{
 				{"Host", fmt.Sprintf("localhost:%d", port)},
-				{"database", database},
 				{"Username", username},
 				{"Password", password},
 			})

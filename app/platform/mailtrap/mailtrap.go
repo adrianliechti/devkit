@@ -1,4 +1,4 @@
-package jenkins
+package mailtrap
 
 import (
 	"github.com/adrianliechti/devkit/app/common"
@@ -7,24 +7,25 @@ import (
 )
 
 const (
-	Jenkins = "jenkins"
+	MailTrap = "mailtrap"
 )
 
 var Command = &cli.Command{
-	Name:  Jenkins,
-	Usage: "local Jenkins server",
+	Name:  MailTrap,
+	Usage: "local MailTrap server",
 
 	Category: platform.Category,
 
 	HideHelpCommand: true,
 
 	Subcommands: []*cli.Command{
-		common.ListCommand(Jenkins),
+		common.ListCommand(MailTrap),
 
 		CreateCommand(),
-		common.DeleteCommand(Jenkins),
+		common.DeleteCommand(MailTrap),
 
-		common.LogsCommand(Jenkins),
-		common.ShellCommand(Jenkins, "/bin/bash"),
+		common.LogsCommand(MailTrap),
+		common.ShellCommand(MailTrap, "/bin/bash"),
+		ConsoleCommand(),
 	},
 }

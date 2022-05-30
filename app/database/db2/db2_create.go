@@ -16,15 +16,14 @@ func CreateCommand() *cli.Command {
 		Usage: "create instance",
 
 		Flags: []cli.Flag{
-			app.PortFlag,
+			app.PortFlag(""),
 		},
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
 			image := "ibmcom/db2:11.5.7.0a"
 
-			target := 50000
-			port := app.MustPortOrRandom(c, target)
+			port := app.MustPortOrRandom(c, "", 50000)
 
 			db := "db"
 			instance := "db2inst1"
@@ -47,7 +46,7 @@ func CreateCommand() *cli.Command {
 				},
 
 				Ports: map[int]int{
-					port: target,
+					port: 50000,
 				},
 
 				// Volumes: map[string]string{

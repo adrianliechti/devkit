@@ -1,4 +1,4 @@
-package minio
+package immudb
 
 import (
 	"fmt"
@@ -21,15 +21,15 @@ func ConsoleCommand() *cli.Command {
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
-			container := common.MustContainer(ctx, MinIO)
+			container := common.MustContainer(ctx, ImmuDB)
 
-			port := app.MustPortOrRandom(c, "", 9001)
+			port := app.MustPortOrRandom(c, "", 8080)
 
 			time.AfterFunc(1*time.Second, func() {
 				cli.OpenURL(fmt.Sprintf("http://localhost:%d", port))
 			})
 
-			return docker.PortForward(c.Context, container, port, 9001)
+			return docker.PortForward(c.Context, container, port, 8080)
 		},
 	}
 }

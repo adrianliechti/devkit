@@ -16,15 +16,14 @@ func CreateCommand() *cli.Command {
 		Usage: "create instance",
 
 		Flags: []cli.Flag{
-			app.PortFlag,
+			app.PortFlag(""),
 		},
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
 			image := "adrianliechti/loop-jenkins:dind"
 
-			target := 8080
-			port := app.MustPortOrRandom(c, target)
+			port := app.MustPortOrRandom(c, "", 8080)
 
 			username := "admin"
 			password := password.MustGenerate(10, 4, 0, false, false)
@@ -44,7 +43,7 @@ func CreateCommand() *cli.Command {
 				},
 
 				Ports: map[int]int{
-					port: target,
+					port: 8080,
 				},
 			}
 
@@ -53,10 +52,9 @@ func CreateCommand() *cli.Command {
 			}
 
 			cli.Table([]string{"Name", "Value"}, [][]string{
-				{"Host", fmt.Sprintf("localhost:%d", port)},
+				{"URL", fmt.Sprintf("http://localhost:%d", port)},
 				{"Username", username},
 				{"Password", password},
-				{"URL", fmt.Sprintf("http://localhost:%d", port)},
 			})
 
 			return nil

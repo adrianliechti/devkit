@@ -1,4 +1,4 @@
-package mariadb
+package jupyter
 
 import (
 	"fmt"
@@ -7,7 +7,6 @@ import (
 	"github.com/adrianliechti/devkit/app/common"
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/docker"
-
 	"github.com/sethvargo/go-password/password"
 )
 
@@ -22,30 +21,29 @@ func CreateCommand() *cli.Command {
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
-			image := "mariadb:10-focal"
+			image := "jupyter/datascience-notebook"
 
-			port := app.MustPortOrRandom(c, "", 3306)
+			port := app.MustPortOrRandom(c, "", 8888)
 
-			database := "db"
-			username := "root"
-			password := password.MustGenerate(10, 4, 0, false, false)
+			token := password.MustGenerate(10, 4, 0, false, false)
 
 			options := docker.RunOptions{
 				Labels: map[string]string{
-					common.KindKey: MariaDB,
+					common.KindKey: Jupyter,
 				},
 
 				Env: map[string]string{
-					"MARIADB_DATABASE":      database,
-					"MARIADB_ROOT_PASSWORD": password,
+					"JUPYTER_TOKEN":      token,
+					"JUPYTER_ENABLE_LAB": "yes",
+					"RESTARTABLE":        "yes",
 				},
 
 				Ports: map[int]int{
-					port: 3306,
+					port: 8888,
 				},
 
 				// Volumes: map[string]string{
-				// 	name: "/var/lib/mysql",
+				// 	name: "/home/jovyan/work",
 				// },
 			}
 
@@ -54,10 +52,8 @@ func CreateCommand() *cli.Command {
 			}
 
 			cli.Table([]string{"Name", "Value"}, [][]string{
-				{"Host", fmt.Sprintf("localhost:%d", port)},
-				{"database", database},
-				{"Username", username},
-				{"Password", password},
+				{"URL", fmt.Sprintf("http://localhost:%d", port)},
+				{"Token", token},
 			})
 
 			return nil

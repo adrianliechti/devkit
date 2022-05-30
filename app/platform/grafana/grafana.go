@@ -1,4 +1,4 @@
-package jenkins
+package grafana
 
 import (
 	"github.com/adrianliechti/devkit/app/common"
@@ -7,24 +7,24 @@ import (
 )
 
 const (
-	Jenkins = "jenkins"
+	Grafana = "grafana"
 )
 
 var Command = &cli.Command{
-	Name:  Jenkins,
-	Usage: "local Jenkins server",
+	Name:  Grafana,
+	Usage: "local Grafana server",
 
 	Category: platform.Category,
 
 	HideHelpCommand: true,
 
 	Subcommands: []*cli.Command{
-		common.ListCommand(Jenkins),
+		common.ListCommand(Grafana),
 
 		CreateCommand(),
-		common.DeleteCommand(Jenkins),
+		common.DeleteCommand(Grafana),
 
-		common.LogsCommand(Jenkins),
-		common.ShellCommand(Jenkins, "/bin/bash"),
+		common.LogsCommand(Grafana),
+		common.ShellCommand(Grafana, "/bin/bash"),
 	},
 }

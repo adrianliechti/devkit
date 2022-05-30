@@ -26,5 +26,6 @@ var Command = &cli.Command{
 
 		common.LogsCommand(MinIO),
 		common.ShellCommand(MinIO, "/bin/ash"),
+		ConsoleCommand(),
 	},
 }

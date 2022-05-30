@@ -17,15 +17,14 @@ func CreateCommand() *cli.Command {
 		Usage: "create instance",
 
 		Flags: []cli.Flag{
-			app.PortFlag,
+			app.PortFlag(""),
 		},
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
 			image := "nats:2-linux"
 
-			target := 4222
-			port := app.MustPortOrRandom(c, target)
+			port := app.MustPortOrRandom(c, "", 4222)
 
 			username := "admin"
 			password := password.MustGenerate(10, 4, 0, false, false)
@@ -41,7 +40,7 @@ func CreateCommand() *cli.Command {
 				},
 
 				Ports: map[int]int{
-					port: target,
+					port: 4222,
 				},
 			}
 
@@ -61,7 +60,6 @@ func CreateCommand() *cli.Command {
 				{"Host", fmt.Sprintf("localhost:%d", port)},
 				{"Username", username},
 				{"Password", password},
-				{"URL", fmt.Sprintf("nats://%s:%s@localhost:%d", username, password, port)},
 			})
 
 			return nil

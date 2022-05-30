@@ -16,15 +16,14 @@ func CreateCommand() *cli.Command {
 		Usage: "create instance",
 
 		Flags: []cli.Flag{
-			app.PortFlag,
+			app.PortFlag(""),
 		},
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
 			image := "codenotary/immudb"
 
-			port := app.MustPortOrRandom(c, 3322)
-			consolePort := app.MustRandomPort(c, port+1)
+			port := app.MustPortOrRandom(c, "", 3322)
 
 			username := "immudb"
 			password := password.MustGenerate(10, 4, 0, false, false)
@@ -41,8 +40,7 @@ func CreateCommand() *cli.Command {
 				},
 
 				Ports: map[int]int{
-					port:        3322,
-					consolePort: 8080,
+					port: 3322,
 				},
 
 				// Volumes: map[string]string{
@@ -58,8 +56,6 @@ func CreateCommand() *cli.Command {
 				{"Host", fmt.Sprintf("localhost:%d", port)},
 				{"Username", username},
 				{"Password", password},
-				{"URL", fmt.Sprintf("http://localhost:%d", port)},
-				{"Console", fmt.Sprintf("http://localhost:%d", consolePort)},
 			})
 
 			return nil

@@ -17,15 +17,14 @@ func CreateCommand() *cli.Command {
 		Usage: "create instance",
 
 		Flags: []cli.Flag{
-			app.PortFlag,
+			app.PortFlag(""),
 		},
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
 			image := "mysql:8-oracle"
 
-			target := 3306
-			port := app.MustPortOrRandom(c, target)
+			port := app.MustPortOrRandom(c, "", 3306)
 
 			database := "db"
 			username := "root"
@@ -42,7 +41,7 @@ func CreateCommand() *cli.Command {
 				},
 
 				Ports: map[int]int{
-					port: target,
+					port: 3306,
 				},
 
 				// Volumes: map[string]string{
@@ -60,7 +59,6 @@ func CreateCommand() *cli.Command {
 				{"database", database},
 				{"Username", username},
 				{"Password", password},
-				{"URL", fmt.Sprintf("mysql://%s:%s@localhost:%d/%s", username, password, port, database)},
 			})
 
 			return nil

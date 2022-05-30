@@ -20,7 +20,7 @@ var Command = &cli.Command{
 	Category: utility.Category,
 
 	Flags: []cli.Flag{
-		app.PortFlag,
+		app.PortFlag(""),
 		&cli.BoolFlag{
 			Name:  "spa",
 			Usage: "enable SPA redirect",
@@ -33,7 +33,7 @@ var Command = &cli.Command{
 	},
 
 	Action: func(c *cli.Context) error {
-		port := app.MustPortOrRandom(c, 3000)
+		port := app.MustPortOrRandom(c, "", 3000)
 
 		spa := c.Bool("spa")
 		index := c.String("index")

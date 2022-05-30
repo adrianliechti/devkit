@@ -20,7 +20,11 @@ import (
 	"github.com/adrianliechti/devkit/app/database/redis"
 	"github.com/adrianliechti/devkit/app/messaging/kafka"
 	"github.com/adrianliechti/devkit/app/messaging/nats"
+	"github.com/adrianliechti/devkit/app/messaging/rabbitmq"
+	"github.com/adrianliechti/devkit/app/platform/grafana"
 	"github.com/adrianliechti/devkit/app/platform/jenkins"
+	"github.com/adrianliechti/devkit/app/platform/jupyter"
+	"github.com/adrianliechti/devkit/app/platform/mailtrap"
 	"github.com/adrianliechti/devkit/app/platform/sonarqube"
 	"github.com/adrianliechti/devkit/app/storage/minio"
 	"github.com/adrianliechti/devkit/app/storage/vault"
@@ -73,7 +77,7 @@ func initApp() cli.App {
 
 			nats.Command,
 			kafka.Command,
-			// rabbitmqCommand,
+			rabbitmq.Command,
 
 			// registryCommand,
 			// mailtrapCommand,
@@ -84,6 +88,9 @@ func initApp() cli.App {
 
 			jenkins.Command,
 			sonarqube.Command,
+			grafana.Command,
+			jupyter.Command,
+			mailtrap.Command,
 
 			git.Command,
 			image.Command,

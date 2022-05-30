@@ -15,15 +15,14 @@ func CreateCommand() *cli.Command {
 		Usage: "create instance",
 
 		Flags: []cli.Flag{
-			app.PortFlag,
+			app.PortFlag(""),
 		},
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
 			image := "gcr.io/etcd-development/etcd:v3.3.8"
 
-			target := 2379
-			port := app.MustPortOrRandom(c, target)
+			port := app.MustPortOrRandom(c, "", 2379)
 
 			peerPort := 2380
 
@@ -49,7 +48,7 @@ func CreateCommand() *cli.Command {
 				},
 
 				Ports: map[int]int{
-					port: target,
+					port: 2379,
 				},
 
 				// Volumes: map[string]string{
@@ -62,7 +61,6 @@ func CreateCommand() *cli.Command {
 			}
 
 			cli.Table([]string{"Name", "Value"}, [][]string{
-				{"Host", fmt.Sprintf("localhost:%d", port)},
 				{"URL", fmt.Sprintf("http://localhost:%d", port)},
 			})
 

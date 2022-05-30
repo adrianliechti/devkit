@@ -2,6 +2,7 @@ package mssql
 
 import (
 	"fmt"
+	"runtime"
 
 	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/app/common"
@@ -17,16 +18,18 @@ func CreateCommand() *cli.Command {
 		Usage: "create instance",
 
 		Flags: []cli.Flag{
-			app.PortFlag,
+			app.PortFlag(""),
 		},
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
 			image := "mcr.microsoft.com/mssql/server:2019-latest"
-			//image := "mcr.microsoft.com/azure-sql-edge"
 
-			target := 1433
-			port := app.MustPortOrRandom(c, target)
+			if runtime.GOARCH == "arm64" {
+				image = "mcr.microsoft.com/azure-sql-edge"
+			}
+
+			port := app.MustPortOrRandom(c, "", 1433)
 
 			username := "sa"
 			password := password.MustGenerate(10, 4, 0, false, false)
@@ -49,7 +52,7 @@ func CreateCommand() *cli.Command {
 				// },
 
 				Ports: map[int]int{
-					port: target,
+					port: 1433,
 				},
 
 				// Volumes: map[string]string{
@@ -65,7 +68,6 @@ func CreateCommand() *cli.Command {
 				{"Host", fmt.Sprintf("localhost:%d", port)},
 				{"Username", username},
 				{"Password", password},
-				{"URL", fmt.Sprintf("mssql://%s:%s@localhost:%d", username, password, port)},
 			})
 
 			return nil

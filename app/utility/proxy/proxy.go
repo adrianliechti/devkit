@@ -19,7 +19,7 @@ var Command = &cli.Command{
 	Category: utility.Category,
 
 	Flags: []cli.Flag{
-		app.PortFlag,
+		app.PortFlag(""),
 		&cli.StringFlag{
 			Name:  "username",
 			Usage: "proxy username",
@@ -31,7 +31,7 @@ var Command = &cli.Command{
 	},
 
 	Action: func(c *cli.Context) error {
-		port := app.MustPortOrRandom(c, 3128)
+		port := app.MustPortOrRandom(c, "", 3128)
 
 		username := c.String("username")
 		password := c.String("password")

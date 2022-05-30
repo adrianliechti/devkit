@@ -15,15 +15,14 @@ func CreateCommand() *cli.Command {
 		Usage: "create instance",
 
 		Flags: []cli.Flag{
-			app.PortFlag,
+			app.PortFlag(""),
 		},
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
 			image := "cassandra:4"
 
-			target := 9042
-			port := app.MustPortOrRandom(c, target)
+			port := app.MustPortOrRandom(c, "", 9042)
 
 			options := docker.RunOptions{
 				Labels: map[string]string{
@@ -33,7 +32,7 @@ func CreateCommand() *cli.Command {
 				Env: map[string]string{},
 
 				Ports: map[int]int{
-					port: target,
+					port: 9042,
 				},
 
 				// Volumes: map[string]string{

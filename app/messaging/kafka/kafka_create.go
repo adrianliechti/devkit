@@ -15,15 +15,14 @@ func CreateCommand() *cli.Command {
 		Usage: "create instance",
 
 		Flags: []cli.Flag{
-			app.PortFlag,
+			app.PortFlag(""),
 		},
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
 			image := "confluentinc/cp-kafka:7.1.0"
 
-			target := 9092
-			port := app.MustPortOrRandom(c, target)
+			port := app.MustPortOrRandom(c, "", 9092)
 
 			options := docker.RunOptions{
 				Labels: map[string]string{
@@ -55,7 +54,7 @@ func CreateCommand() *cli.Command {
 				},
 
 				Ports: map[int]int{
-					port: target,
+					port: 9092,
 				},
 			}
 
@@ -70,7 +69,6 @@ func CreateCommand() *cli.Command {
 
 			cli.Table([]string{"Name", "Value"}, [][]string{
 				{"Host", fmt.Sprintf("localhost:%d", port)},
-				{"URL", fmt.Sprintf("plaintext://localhost:%d", port)},
 			})
 
 			return nil

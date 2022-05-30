@@ -19,11 +19,11 @@ var Command = &cli.Command{
 	Category: utility.Category,
 
 	Flags: []cli.Flag{
-		app.PortFlag,
+		app.PortFlag(""),
 	},
 
 	Action: func(c *cli.Context) error {
-		port := app.MustPortOrRandom(c, 3000)
+		port := app.MustPortOrRandom(c, "", 3000)
 		return startCode(c.Context, port)
 	},
 }
@@ -37,14 +37,7 @@ func startCode(ctx context.Context, port int) error {
 		return err
 	}
 
-	target := 3000
-
-	if port == 0 {
-		port = target
-	}
-
 	cli.Table([]string{"Name", "Value"}, [][]string{
-		{"Host", fmt.Sprintf("localhost:%d", port)},
 		{"URL", fmt.Sprintf("http://localhost:%d", port)},
 	})
 
@@ -56,7 +49,7 @@ func startCode(ctx context.Context, port int) error {
 		Platform: "linux/amd64",
 
 		Ports: map[int]int{
-			port: target,
+			port: 3000,
 		},
 
 		Volumes: map[string]string{

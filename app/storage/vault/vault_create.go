@@ -17,15 +17,14 @@ func createCommand() *cli.Command {
 		Usage: "create instance",
 
 		Flags: []cli.Flag{
-			app.PortFlag,
+			app.PortFlag(""),
 		},
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
 			image := "vault:latest"
 
-			target := 8200
-			port := app.MustPortOrRandom(c, target)
+			port := app.MustPortOrRandom(c, "", 8200)
 
 			token := password.MustGenerate(10, 4, 0, false, false)
 
@@ -39,7 +38,7 @@ func createCommand() *cli.Command {
 				},
 
 				Ports: map[int]int{
-					port: target,
+					port: 8200,
 				},
 			}
 
@@ -48,9 +47,8 @@ func createCommand() *cli.Command {
 			}
 
 			cli.Table([]string{"Name", "Value"}, [][]string{
-				{"Host", fmt.Sprintf("localhost:%d", port)},
-				{"Token", token},
 				{"URL", fmt.Sprintf("http://localhost:%d", port)},
+				{"Token", token},
 			})
 
 			return nil

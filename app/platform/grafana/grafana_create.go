@@ -1,4 +1,4 @@
-package mariadb
+package grafana
 
 import (
 	"fmt"
@@ -7,7 +7,6 @@ import (
 	"github.com/adrianliechti/devkit/app/common"
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/docker"
-
 	"github.com/sethvargo/go-password/password"
 )
 
@@ -22,30 +21,29 @@ func CreateCommand() *cli.Command {
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
-			image := "mariadb:10-focal"
+			image := "grafana/grafana"
 
-			port := app.MustPortOrRandom(c, "", 3306)
+			port := app.MustPortOrRandom(c, "", 3000)
 
-			database := "db"
-			username := "root"
+			username := "admin"
 			password := password.MustGenerate(10, 4, 0, false, false)
 
 			options := docker.RunOptions{
 				Labels: map[string]string{
-					common.KindKey: MariaDB,
+					common.KindKey: Grafana,
 				},
 
 				Env: map[string]string{
-					"MARIADB_DATABASE":      database,
-					"MARIADB_ROOT_PASSWORD": password,
+					"GF_SECURITY_ADMIN_USER":     username,
+					"GF_SECURITY_ADMIN_PASSWORD": password,
 				},
 
 				Ports: map[int]int{
-					port: 3306,
+					port: 3000,
 				},
 
 				// Volumes: map[string]string{
-				// 	name: "/var/lib/mysql",
+				// 	name: "/var/lib/grafana",
 				// },
 			}
 
@@ -54,8 +52,7 @@ func CreateCommand() *cli.Command {
 			}
 
 			cli.Table([]string{"Name", "Value"}, [][]string{
-				{"Host", fmt.Sprintf("localhost:%d", port)},
-				{"database", database},
+				{"URL", fmt.Sprintf("http://localhost:%d", port)},
 				{"Username", username},
 				{"Password", password},
 			})

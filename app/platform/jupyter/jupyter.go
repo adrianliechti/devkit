@@ -1,4 +1,4 @@
-package jenkins
+package jupyter
 
 import (
 	"github.com/adrianliechti/devkit/app/common"
@@ -7,24 +7,24 @@ import (
 )
 
 const (
-	Jenkins = "jenkins"
+	Jupyter = "jupyter"
 )
 
 var Command = &cli.Command{
-	Name:  Jenkins,
-	Usage: "local Jenkins server",
+	Name:  Jupyter,
+	Usage: "local Jupyter notebook",
 
 	Category: platform.Category,
 
 	HideHelpCommand: true,
 
 	Subcommands: []*cli.Command{
-		common.ListCommand(Jenkins),
+		common.ListCommand(Jupyter),
 
 		CreateCommand(),
-		common.DeleteCommand(Jenkins),
+		common.DeleteCommand(Jupyter),
 
-		common.LogsCommand(Jenkins),
-		common.ShellCommand(Jenkins, "/bin/bash"),
+		common.LogsCommand(Jupyter),
+		common.ShellCommand(Jupyter, "/bin/bash"),
 	},
 }

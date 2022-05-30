@@ -17,15 +17,14 @@ func CreateCommand() *cli.Command {
 		Usage: "create instance",
 
 		Flags: []cli.Flag{
-			app.PortFlag,
+			app.PortFlag(""),
 		},
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
 			image := "influxdb:2.2"
 
-			target := 8086
-			port := app.MustPortOrRandom(c, target)
+			port := app.MustPortOrRandom(c, "", 8086)
 
 			organization := "default"
 			bucket := "default"
@@ -52,7 +51,7 @@ func CreateCommand() *cli.Command {
 				},
 
 				Ports: map[int]int{
-					port: target,
+					port: 8086,
 				},
 
 				// Volumes: map[string]string{
@@ -65,13 +64,12 @@ func CreateCommand() *cli.Command {
 			}
 
 			cli.Table([]string{"Name", "Value"}, [][]string{
-				{"Host", fmt.Sprintf("localhost:%d", port)},
+				{"URL", fmt.Sprintf("http://localhost:%d", port)},
 				{"organization", organization},
 				{"bucket", bucket},
 				{"Username", username},
 				{"Password", password},
 				{"Token", token},
-				{"URL", fmt.Sprintf("http://localhost:%d", port)},
 			})
 
 			return nil

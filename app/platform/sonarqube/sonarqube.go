@@ -12,7 +12,7 @@ const (
 
 var Command = &cli.Command{
 	Name:  SonarQube,
-	Usage: "local SonarQube broker",
+	Usage: "local SonarQube server",
 
 	Category: platform.Category,
 

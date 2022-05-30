@@ -16,7 +16,7 @@ func CreateCommand() *cli.Command {
 		Usage: "create instance",
 
 		Flags: []cli.Flag{
-			app.PortFlag,
+			app.PortFlag(""),
 		},
 
 		Action: func(c *cli.Context) error {
@@ -27,8 +27,7 @@ func CreateCommand() *cli.Command {
 				image = "mwizner/sonarqube:9.4.0-community"
 			}
 
-			target := 9000
-			port := app.MustPortOrRandom(c, target)
+			port := app.MustPortOrRandom(c, "", 9000)
 
 			username := "admin"
 			password := "admin"
@@ -47,7 +46,7 @@ func CreateCommand() *cli.Command {
 				},
 
 				Ports: map[int]int{
-					port: target,
+					port: 9000,
 				},
 
 				// /opt/sonarqube/data
@@ -60,10 +59,9 @@ func CreateCommand() *cli.Command {
 			}
 
 			cli.Table([]string{"Name", "Value"}, [][]string{
-				{"Host", fmt.Sprintf("localhost:%d", port)},
+				{"URL", fmt.Sprintf("http://localhost:%d", port)},
 				{"Username", username},
 				{"Password", password},
-				{"URL", fmt.Sprintf("http://localhost:%d", port)},
 			})
 
 			return nil

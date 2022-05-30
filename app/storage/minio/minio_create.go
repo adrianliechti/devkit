@@ -17,15 +17,14 @@ func CreateCommand() *cli.Command {
 		Usage: "create instance",
 
 		Flags: []cli.Flag{
-			app.PortFlag,
+			app.PortFlag(""),
 		},
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
 			image := "minio/minio"
 
-			apiPort := app.MustPortOrRandom(c, 9000)
-			consolePort := app.MustRandomPort(c, apiPort+1)
+			port := app.MustPortOrRandom(c, "", 9000)
 
 			username := "root"
 			password := password.MustGenerate(10, 4, 0, false, false)
@@ -41,8 +40,7 @@ func CreateCommand() *cli.Command {
 				},
 
 				Ports: map[int]int{
-					apiPort:     9000,
-					consolePort: 9001,
+					port: 9000,
 				},
 
 				// Volumes: map[string]string{
@@ -55,11 +53,9 @@ func CreateCommand() *cli.Command {
 			}
 
 			cli.Table([]string{"Name", "Value"}, [][]string{
-				{"Host", fmt.Sprintf("localhost:%d", apiPort)},
+				{"URL", fmt.Sprintf("http://localhost:%d", port)},
 				{"Username", username},
 				{"Password", password},
-				{"URL", fmt.Sprintf("http://localhost:%d", apiPort)},
-				{"Console", fmt.Sprintf("http://localhost:%d", consolePort)},
 			})
 
 			return nil

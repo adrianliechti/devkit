@@ -25,5 +25,6 @@ var Command = &cli.Command{
 		common.DeleteCommand(ImmuDB),
 
 		common.LogsCommand(ImmuDB),
+		ConsoleCommand(),
 	},
 }

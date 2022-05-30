@@ -17,15 +17,14 @@ func CreateCommand() *cli.Command {
 		Usage: "create instance",
 
 		Flags: []cli.Flag{
-			app.PortFlag,
+			app.PortFlag(""),
 		},
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
 			image := "postgres:14-bullseye"
 
-			target := 5432
-			port := app.MustPortOrRandom(c, target)
+			port := app.MustPortOrRandom(c, "", 5432)
 
 			database := "postgres"
 			username := "postgres"
@@ -43,7 +42,7 @@ func CreateCommand() *cli.Command {
 				},
 
 				Ports: map[int]int{
-					port: target,
+					port: 5432,
 				},
 
 				// Volumes: map[string]string{
@@ -60,7 +59,6 @@ func CreateCommand() *cli.Command {
 				{"database", database},
 				{"Username", username},
 				{"Password", password},
-				{"URL", fmt.Sprintf("postgresql://%s:%s@localhost:%d/%s", username, password, port, database)},
 			})
 
 			return nil

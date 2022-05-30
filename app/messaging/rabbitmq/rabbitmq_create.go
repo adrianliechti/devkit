@@ -1,4 +1,4 @@
-package mariadb
+package rabbitmq
 
 import (
 	"fmt"
@@ -7,7 +7,6 @@ import (
 	"github.com/adrianliechti/devkit/app/common"
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/docker"
-
 	"github.com/sethvargo/go-password/password"
 )
 
@@ -22,31 +21,26 @@ func CreateCommand() *cli.Command {
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
-			image := "mariadb:10-focal"
+			image := "rabbitmq:3-management"
 
-			port := app.MustPortOrRandom(c, "", 3306)
+			port := app.MustPortOrRandom(c, "", 5672)
 
-			database := "db"
-			username := "root"
+			username := "admin"
 			password := password.MustGenerate(10, 4, 0, false, false)
 
 			options := docker.RunOptions{
 				Labels: map[string]string{
-					common.KindKey: MariaDB,
+					common.KindKey: RabbitMQ,
 				},
 
 				Env: map[string]string{
-					"MARIADB_DATABASE":      database,
-					"MARIADB_ROOT_PASSWORD": password,
+					"RABBITMQ_DEFAULT_USER": username,
+					"RABBITMQ_DEFAULT_PASS": password,
 				},
 
 				Ports: map[int]int{
-					port: 3306,
+					port: 5672,
 				},
-
-				// Volumes: map[string]string{
-				// 	name: "/var/lib/mysql",
-				// },
 			}
 
 			if err := docker.Run(ctx, image, options); err != nil {
@@ -55,7 +49,6 @@ func CreateCommand() *cli.Command {
 
 			cli.Table([]string{"Name", "Value"}, [][]string{
 				{"Host", fmt.Sprintf("localhost:%d", port)},
-				{"database", database},
 				{"Username", username},
 				{"Password", password},
 			})
