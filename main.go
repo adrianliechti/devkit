@@ -61,31 +61,27 @@ func initApp() cli.App {
 		HideHelpCommand: true,
 
 		Commands: []*cli.Command{
-			catalog.Command(&mysql.Manager{}),
-			catalog.Command(&mariadb.Manager{}),
-			catalog.Command(&postgres.Manager{}),
-			catalog.Command(&mongodb.Manager{}),
-			catalog.Command(&mssql.Manager{}),
 			catalog.Command(&cassandra.Manager{}),
 			catalog.Command(&db2.Manager{}),
-
+			catalog.Command(&elasticsearch.Manager{}),
 			catalog.Command(&etcd.Manager{}),
-			catalog.Command(&redis.Manager{}),
+			catalog.Command(&grafana.Manager{}),
 			catalog.Command(&immudb.Manager{}),
 			catalog.Command(&influxdb.Manager{}),
-			catalog.Command(&elasticsearch.Manager{}),
-
-			catalog.Command(&nats.Manager{}),
-			catalog.Command(&kafka.Manager{}),
-			catalog.Command(&rabbitmq.Manager{}),
-
 			catalog.Command(&jenkins.Manager{}),
-			catalog.Command(&sonarqube.Manager{}),
-			catalog.Command(&grafana.Manager{}),
 			catalog.Command(&jupyter.Manager{}),
+			catalog.Command(&kafka.Manager{}),
 			catalog.Command(&mailtrap.Manager{}),
-
+			catalog.Command(&mariadb.Manager{}),
 			catalog.Command(&minio.Manager{}),
+			catalog.Command(&mongodb.Manager{}),
+			catalog.Command(&mssql.Manager{}),
+			catalog.Command(&mysql.Manager{}),
+			catalog.Command(&nats.Manager{}),
+			catalog.Command(&postgres.Manager{}),
+			catalog.Command(&rabbitmq.Manager{}),
+			catalog.Command(&redis.Manager{}),
+			catalog.Command(&sonarqube.Manager{}),
 			catalog.Command(&vault.Manager{}),
 
 			template.Command,
