@@ -3,6 +3,7 @@ package elasticsearch
 import (
 	"github.com/adrianliechti/devkit/pkg/catalog"
 	"github.com/adrianliechti/devkit/pkg/container"
+	"github.com/adrianliechti/devkit/pkg/to"
 	"github.com/sethvargo/go-password/password"
 )
 
@@ -65,6 +66,10 @@ func (m *Manager) New() (container.Container, error) {
 			{
 				Path: "/usr/share/elasticsearch/data",
 			},
+		},
+
+		PlatformContext: &container.PlatformContext{
+			MaxNoFiles: to.IntPtr(65535),
 		},
 	}, nil
 }

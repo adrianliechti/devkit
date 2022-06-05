@@ -90,6 +90,16 @@ func convertContainer(info *docker.ContainerInfo) *container.Container {
 	return container
 }
 
+func convertPullOptions(container container.Container) docker.PullOptions {
+	options := docker.PullOptions{}
+
+	if container.PlatformContext != nil {
+		options.Platform = container.PlatformContext.Platform
+	}
+
+	return options
+}
+
 func convertRunOptions(container container.Container) docker.RunOptions {
 	options := docker.RunOptions{
 		Name:   container.Name,

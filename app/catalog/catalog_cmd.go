@@ -146,9 +146,9 @@ func createCommand(m catalog.Manager) *cli.Command {
 				}
 			}
 
-			options := convertRunOptions(spec)
+			docker.Pull(ctx, spec.Image, convertPullOptions(spec))
 
-			if err := docker.Run(ctx, spec.Image, options, spec.Args...); err != nil {
+			if err := docker.Run(ctx, spec.Image, convertRunOptions(spec), spec.Args...); err != nil {
 				return err
 			}
 
@@ -295,6 +295,8 @@ func consoleCommand(p catalog.ConsoleProvider) *cli.Command {
 			}
 
 			port := app.MustPortOrRandom(c, "", mapping.Port)
+
+			docker.Pull(ctx, "alpine/socat", docker.PullOptions{})
 
 			time.AfterFunc(1*time.Second, func() {
 				cli.OpenURL(fmt.Sprintf("http://localhost:%d", port))

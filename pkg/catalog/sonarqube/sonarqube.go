@@ -5,6 +5,7 @@ import (
 
 	"github.com/adrianliechti/devkit/pkg/catalog"
 	"github.com/adrianliechti/devkit/pkg/container"
+	"github.com/adrianliechti/devkit/pkg/to"
 )
 
 var (
@@ -72,6 +73,11 @@ func (m *Manager) New() (container.Container, error) {
 			{
 				Path: "/opt/sonarqube/extensions",
 			},
+		},
+
+		PlatformContext: &container.PlatformContext{
+			MaxNoProcs: to.IntPtr(8192),
+			MaxNoFiles: to.IntPtr(131072),
 		},
 	}, nil
 }
