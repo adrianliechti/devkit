@@ -7,27 +7,6 @@ import (
 	"syscall"
 
 	"github.com/adrianliechti/devkit/app/catalog"
-	"github.com/adrianliechti/devkit/app/catalog/cassandra"
-	"github.com/adrianliechti/devkit/app/catalog/db2"
-	"github.com/adrianliechti/devkit/app/catalog/elasticsearch"
-	"github.com/adrianliechti/devkit/app/catalog/etcd"
-	"github.com/adrianliechti/devkit/app/catalog/grafana"
-	"github.com/adrianliechti/devkit/app/catalog/immudb"
-	"github.com/adrianliechti/devkit/app/catalog/influxdb"
-	"github.com/adrianliechti/devkit/app/catalog/jenkins"
-	"github.com/adrianliechti/devkit/app/catalog/jupyter"
-	"github.com/adrianliechti/devkit/app/catalog/kafka"
-	"github.com/adrianliechti/devkit/app/catalog/mailtrap"
-	"github.com/adrianliechti/devkit/app/catalog/mariadb"
-	"github.com/adrianliechti/devkit/app/catalog/minio"
-	"github.com/adrianliechti/devkit/app/catalog/mongodb"
-	"github.com/adrianliechti/devkit/app/catalog/mssql"
-	"github.com/adrianliechti/devkit/app/catalog/mysql"
-	"github.com/adrianliechti/devkit/app/catalog/nats"
-	"github.com/adrianliechti/devkit/app/catalog/rabbitmq"
-	"github.com/adrianliechti/devkit/app/catalog/redis"
-	"github.com/adrianliechti/devkit/app/catalog/sonarqube"
-	"github.com/adrianliechti/devkit/app/catalog/vault"
 	"github.com/adrianliechti/devkit/app/template"
 	"github.com/adrianliechti/devkit/app/utility/cloc"
 	"github.com/adrianliechti/devkit/app/utility/code"
@@ -35,7 +14,30 @@ import (
 	"github.com/adrianliechti/devkit/app/utility/image"
 	"github.com/adrianliechti/devkit/app/utility/proxy"
 	"github.com/adrianliechti/devkit/app/utility/server"
+
+	"github.com/adrianliechti/devkit/pkg/catalog/cassandra"
+	"github.com/adrianliechti/devkit/pkg/catalog/db2"
+	"github.com/adrianliechti/devkit/pkg/catalog/elasticsearch"
+	"github.com/adrianliechti/devkit/pkg/catalog/etcd"
+	"github.com/adrianliechti/devkit/pkg/catalog/grafana"
+	"github.com/adrianliechti/devkit/pkg/catalog/immudb"
+	"github.com/adrianliechti/devkit/pkg/catalog/influxdb"
+	"github.com/adrianliechti/devkit/pkg/catalog/jenkins"
+	"github.com/adrianliechti/devkit/pkg/catalog/jupyter"
+	"github.com/adrianliechti/devkit/pkg/catalog/kafka"
+	"github.com/adrianliechti/devkit/pkg/catalog/mailtrap"
+	"github.com/adrianliechti/devkit/pkg/catalog/mariadb"
+	"github.com/adrianliechti/devkit/pkg/catalog/minio"
+	"github.com/adrianliechti/devkit/pkg/catalog/mongodb"
+	"github.com/adrianliechti/devkit/pkg/catalog/mssql"
+	"github.com/adrianliechti/devkit/pkg/catalog/mysql"
+	"github.com/adrianliechti/devkit/pkg/catalog/nats"
 	"github.com/adrianliechti/devkit/pkg/catalog/postgres"
+	"github.com/adrianliechti/devkit/pkg/catalog/rabbitmq"
+	"github.com/adrianliechti/devkit/pkg/catalog/redis"
+	"github.com/adrianliechti/devkit/pkg/catalog/sonarqube"
+	"github.com/adrianliechti/devkit/pkg/catalog/vault"
+
 	"github.com/adrianliechti/devkit/pkg/cli"
 )
 
@@ -59,33 +61,32 @@ func initApp() cli.App {
 		HideHelpCommand: true,
 
 		Commands: []*cli.Command{
-			mysql.Command,
-			mariadb.Command,
-			//postgres.Command,
+			catalog.Command(&mysql.Manager{}),
+			catalog.Command(&mariadb.Manager{}),
 			catalog.Command(&postgres.Manager{}),
-			mongodb.Command,
-			mssql.Command,
-			cassandra.Command,
-			db2.Command,
+			catalog.Command(&mongodb.Manager{}),
+			catalog.Command(&mssql.Manager{}),
+			catalog.Command(&cassandra.Manager{}),
+			catalog.Command(&db2.Manager{}),
 
-			etcd.Command,
-			redis.Command,
-			immudb.Command,
-			influxdb.Command,
-			elasticsearch.Command,
+			catalog.Command(&etcd.Manager{}),
+			catalog.Command(&redis.Manager{}),
+			catalog.Command(&immudb.Manager{}),
+			catalog.Command(&influxdb.Manager{}),
+			catalog.Command(&elasticsearch.Manager{}),
 
-			nats.Command,
-			kafka.Command,
-			rabbitmq.Command,
+			catalog.Command(&nats.Manager{}),
+			catalog.Command(&kafka.Manager{}),
+			catalog.Command(&rabbitmq.Manager{}),
 
-			jenkins.Command,
-			sonarqube.Command,
-			grafana.Command,
-			jupyter.Command,
-			mailtrap.Command,
+			catalog.Command(&jenkins.Manager{}),
+			catalog.Command(&sonarqube.Manager{}),
+			catalog.Command(&grafana.Manager{}),
+			catalog.Command(&jupyter.Manager{}),
+			catalog.Command(&mailtrap.Manager{}),
 
-			minio.Command,
-			vault.Command,
+			catalog.Command(&minio.Manager{}),
+			catalog.Command(&vault.Manager{}),
 
 			template.Command,
 

@@ -1,4 +1,4 @@
-package postgres
+package mongodb
 
 import (
 	"github.com/adrianliechti/devkit/pkg/catalog"
@@ -17,7 +17,7 @@ type Manager struct {
 }
 
 func (m *Manager) Name() string {
-	return "postgres"
+	return "mongodb"
 }
 
 func (m *Manager) Category() catalog.Category {
@@ -25,11 +25,11 @@ func (m *Manager) Category() catalog.Category {
 }
 
 func (m *Manager) DisplayName() string {
-	return "PostgreSQL Database Server"
+	return "MongoDB Database Server"
 }
 
 func (m *Manager) Description() string {
-	return "PostgreSQL is a powerful, open source object-relational database system with over 30 years of active development that has earned it a strong reputation for reliability, feature robustness, and performance."
+	return "MongoDB is a source-available cross-platform document-oriented database program."
 }
 
 const (
@@ -37,40 +37,40 @@ const (
 )
 
 func (m *Manager) New() (container.Container, error) {
-	image := "postgres:14-bullseye"
+	image := "mongo:5-focal"
 
-	database := "postgres"
-	username := "postgres"
+	database := "db"
+	username := "root"
 	password := password.MustGenerate(10, 4, 0, false, false)
 
 	return container.Container{
 		Image: image,
 
 		Env: map[string]string{
-			"POSTGRES_DB":       database,
-			"POSTGRES_USER":     username,
-			"POSTGRES_PASSWORD": password,
+			"MONGO_INITDB_DATABASE":      database,
+			"MONGO_INITDB_ROOT_USERNAME": username,
+			"MONGO_INITDB_ROOT_PASSWORD": password,
 		},
 
 		Ports: []*container.ContainerPort{
 			{
-				Port:     5432,
+				Port:     27017,
 				Protocol: container.ProtocolTCP,
 			},
 		},
 
 		VolumeMounts: []*container.VolumeMount{
 			{
-				Path: "/var/lib/postgresql/data",
+				Path: "/data/db",
 			},
 		},
 	}, nil
 }
 
 func (m *Manager) Info(instance container.Container) (map[string]string, error) {
-	database := instance.Env["POSTGRES_DB"]
-	username := instance.Env["POSTGRES_USER"]
-	password := instance.Env["POSTGRES_PASSWORD"]
+	database := instance.Env["MONGO_INITDB_DATABASE"]
+	username := instance.Env["MONGO_INITDB_ROOT_USERNAME"]
+	password := instance.Env["MONGO_INITDB_ROOT_PASSWORD"]
 
 	return map[string]string{
 		"Database": database,
@@ -86,6 +86,6 @@ func (m *Manager) Shell(instance container.Container) (string, error) {
 func (m *Manager) Client(instance container.Container) (string, []string, error) {
 	return DefaultShell, []string{
 		"-c",
-		"psql --username ${POSTGRES_USER} --dbname ${POSTGRES_DB}",
+		"mongo --quiet --norc --username ${MONGO_INITDB_ROOT_USERNAME} --password ${MONGO_INITDB_ROOT_PASSWORD}",
 	}, nil
 }

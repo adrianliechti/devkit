@@ -1,9 +1,8 @@
-package postgres
+package cassandra
 
 import (
 	"github.com/adrianliechti/devkit/pkg/catalog"
 	"github.com/adrianliechti/devkit/pkg/container"
-	"github.com/sethvargo/go-password/password"
 )
 
 var (
@@ -17,7 +16,7 @@ type Manager struct {
 }
 
 func (m *Manager) Name() string {
-	return "postgres"
+	return "cassandra"
 }
 
 func (m *Manager) Category() catalog.Category {
@@ -25,11 +24,11 @@ func (m *Manager) Category() catalog.Category {
 }
 
 func (m *Manager) DisplayName() string {
-	return "PostgreSQL Database Server"
+	return "Cassandra"
 }
 
 func (m *Manager) Description() string {
-	return "PostgreSQL is a powerful, open source object-relational database system with over 30 years of active development that has earned it a strong reputation for reliability, feature robustness, and performance."
+	return "Cassandra is a free and open-source, distributed, wide-column store, NoSQL database management system designed to handle large amounts of data across many commodity servers, providing high availability with no single point of failure."
 }
 
 const (
@@ -37,46 +36,30 @@ const (
 )
 
 func (m *Manager) New() (container.Container, error) {
-	image := "postgres:14-bullseye"
-
-	database := "postgres"
-	username := "postgres"
-	password := password.MustGenerate(10, 4, 0, false, false)
+	image := "cassandra:4"
 
 	return container.Container{
 		Image: image,
 
-		Env: map[string]string{
-			"POSTGRES_DB":       database,
-			"POSTGRES_USER":     username,
-			"POSTGRES_PASSWORD": password,
-		},
+		Env: map[string]string{},
 
 		Ports: []*container.ContainerPort{
 			{
-				Port:     5432,
+				Port:     9042,
 				Protocol: container.ProtocolTCP,
 			},
 		},
 
 		VolumeMounts: []*container.VolumeMount{
 			{
-				Path: "/var/lib/postgresql/data",
+				Path: "/var/lib/cassandra",
 			},
 		},
 	}, nil
 }
 
 func (m *Manager) Info(instance container.Container) (map[string]string, error) {
-	database := instance.Env["POSTGRES_DB"]
-	username := instance.Env["POSTGRES_USER"]
-	password := instance.Env["POSTGRES_PASSWORD"]
-
-	return map[string]string{
-		"Database": database,
-		"Username": username,
-		"Password": password,
-	}, nil
+	return map[string]string{}, nil
 }
 
 func (m *Manager) Shell(instance container.Container) (string, error) {
@@ -86,6 +69,6 @@ func (m *Manager) Shell(instance container.Container) (string, error) {
 func (m *Manager) Client(instance container.Container) (string, []string, error) {
 	return DefaultShell, []string{
 		"-c",
-		"psql --username ${POSTGRES_USER} --dbname ${POSTGRES_DB}",
+		"/opt/cassandra/bin/cqlsh",
 	}, nil
 }

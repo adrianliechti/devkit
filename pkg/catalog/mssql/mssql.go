@@ -1,6 +1,8 @@
-package postgres
+package mssql
 
 import (
+	"runtime"
+
 	"github.com/adrianliechti/devkit/pkg/catalog"
 	"github.com/adrianliechti/devkit/pkg/container"
 	"github.com/sethvargo/go-password/password"
@@ -17,7 +19,7 @@ type Manager struct {
 }
 
 func (m *Manager) Name() string {
-	return "postgres"
+	return "mssql"
 }
 
 func (m *Manager) Category() catalog.Category {
@@ -25,11 +27,11 @@ func (m *Manager) Category() catalog.Category {
 }
 
 func (m *Manager) DisplayName() string {
-	return "PostgreSQL Database Server"
+	return "Microsoft SQL Server"
 }
 
 func (m *Manager) Description() string {
-	return "PostgreSQL is a powerful, open source object-relational database system with over 30 years of active development that has earned it a strong reputation for reliability, feature robustness, and performance."
+	return "Microsoft SQL Server is a relational database management system developed by Microsoft."
 }
 
 const (
@@ -37,43 +39,45 @@ const (
 )
 
 func (m *Manager) New() (container.Container, error) {
-	image := "postgres:14-bullseye"
+	image := "mcr.microsoft.com/mssql/server:2019-latest"
 
-	database := "postgres"
-	username := "postgres"
+	if runtime.GOARCH == "arm64" {
+		image = "mcr.microsoft.com/azure-sql-edge"
+	}
+
 	password := password.MustGenerate(10, 4, 0, false, false)
 
 	return container.Container{
 		Image: image,
 
 		Env: map[string]string{
-			"POSTGRES_DB":       database,
-			"POSTGRES_USER":     username,
-			"POSTGRES_PASSWORD": password,
+			"ACCEPT_EULA": "Y",
+			"SA_PASSWORD": password,
+
+			"MSSQL_PID":         "Developer",
+			"MSSQL_SA_PASSWORD": password,
 		},
 
 		Ports: []*container.ContainerPort{
 			{
-				Port:     5432,
+				Port:     1433,
 				Protocol: container.ProtocolTCP,
 			},
 		},
 
 		VolumeMounts: []*container.VolumeMount{
 			{
-				Path: "/var/lib/postgresql/data",
+				Path: "/var/opt/mssql",
 			},
 		},
 	}, nil
 }
 
 func (m *Manager) Info(instance container.Container) (map[string]string, error) {
-	database := instance.Env["POSTGRES_DB"]
-	username := instance.Env["POSTGRES_USER"]
-	password := instance.Env["POSTGRES_PASSWORD"]
+	username := "sa"
+	password := instance.Env["SA_PASSWORD"]
 
 	return map[string]string{
-		"Database": database,
 		"Username": username,
 		"Password": password,
 	}, nil
@@ -86,6 +90,6 @@ func (m *Manager) Shell(instance container.Container) (string, error) {
 func (m *Manager) Client(instance container.Container) (string, []string, error) {
 	return DefaultShell, []string{
 		"-c",
-		"psql --username ${POSTGRES_USER} --dbname ${POSTGRES_DB}",
+		"/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${SA_PASSWORD}",
 	}, nil
 }
