@@ -14,20 +14,6 @@ type LogsOptions struct {
 	Stderr io.Writer
 }
 
-func logsArgs(container string, options LogsOptions) []string {
-	args := []string{
-		"logs",
-	}
-
-	if options.Follow {
-		args = append(args, "--follow")
-	}
-
-	args = append(args, container)
-
-	return args
-}
-
 func Logs(ctx context.Context, container string, options LogsOptions) error {
 	tool, _, err := Tool(ctx)
 
@@ -48,4 +34,18 @@ func Logs(ctx context.Context, container string, options LogsOptions) error {
 	logs.Stderr = options.Stderr
 
 	return logs.Run()
+}
+
+func logsArgs(container string, options LogsOptions) []string {
+	args := []string{
+		"logs",
+	}
+
+	if options.Follow {
+		args = append(args, "--follow")
+	}
+
+	args = append(args, container)
+
+	return args
 }

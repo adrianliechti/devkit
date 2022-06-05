@@ -10,24 +10,6 @@ type DeleteOptions struct {
 	Volumes bool
 }
 
-func deleteArgs(container string, options DeleteOptions) []string {
-	args := []string{
-		"rm",
-	}
-
-	if options.Force {
-		args = append(args, "--force")
-	}
-
-	if options.Volumes {
-		args = append(args, "--volumes")
-	}
-
-	args = append(args, container)
-
-	return args
-}
-
 func Delete(ctx context.Context, container string, options DeleteOptions) error {
 	tool, _, err := Tool(ctx)
 
@@ -44,4 +26,22 @@ func Delete(ctx context.Context, container string, options DeleteOptions) error 
 	rm := exec.CommandContext(ctx, tool, deleteArgs(container, options)...)
 
 	return rm.Run()
+}
+
+func deleteArgs(container string, options DeleteOptions) []string {
+	args := []string{
+		"rm",
+	}
+
+	if options.Force {
+		args = append(args, "--force")
+	}
+
+	if options.Volumes {
+		args = append(args, "--volumes")
+	}
+
+	args = append(args, container)
+
+	return args
 }

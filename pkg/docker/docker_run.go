@@ -37,6 +37,54 @@ type RunOptions struct {
 	Volumes map[string]string
 }
 
+func Run(ctx context.Context, image string, options RunOptions, args ...string) error {
+	tool, _, err := Tool(ctx)
+
+	if err != nil {
+		return err
+	}
+
+	run := exec.CommandContext(ctx, tool, runArgs(image, options, args...)...)
+	run.Stdin = options.Stdin
+	run.Stdout = options.Stdout
+	run.Stderr = options.Stderr
+
+	return run.Run()
+}
+
+func RunInteractive(ctx context.Context, image string, options RunOptions, args ...string) error {
+	tool, _, err := Tool(ctx)
+
+	if err != nil {
+		return err
+	}
+
+	if options.Stdin == nil {
+		options.Stdin = os.Stdin
+	}
+
+	if options.Stdout == nil {
+		options.Stdout = os.Stdout
+	}
+
+	if options.Stderr == nil {
+		options.Stderr = os.Stderr
+	}
+
+	options.Temporary = true
+
+	options.TTY = true
+	options.Attach = true
+	options.Interactive = true
+
+	run := exec.CommandContext(ctx, tool, runArgs(image, options, args...)...)
+	run.Stdin = options.Stdin
+	run.Stdout = options.Stdout
+	run.Stderr = options.Stderr
+
+	return run.Run()
+}
+
 func runArgs(image string, options RunOptions, arg ...string) []string {
 	args := []string{
 		"run",
@@ -106,52 +154,4 @@ func runArgs(image string, options RunOptions, arg ...string) []string {
 	args = append(args, arg...)
 
 	return args
-}
-
-func Run(ctx context.Context, image string, options RunOptions, args ...string) error {
-	tool, _, err := Tool(ctx)
-
-	if err != nil {
-		return err
-	}
-
-	run := exec.CommandContext(ctx, tool, runArgs(image, options, args...)...)
-	run.Stdin = options.Stdin
-	run.Stdout = options.Stdout
-	run.Stderr = options.Stderr
-
-	return run.Run()
-}
-
-func RunInteractive(ctx context.Context, image string, options RunOptions, args ...string) error {
-	tool, _, err := Tool(ctx)
-
-	if err != nil {
-		return err
-	}
-
-	if options.Stdin == nil {
-		options.Stdin = os.Stdin
-	}
-
-	if options.Stdout == nil {
-		options.Stdout = os.Stdout
-	}
-
-	if options.Stderr == nil {
-		options.Stderr = os.Stderr
-	}
-
-	options.Temporary = true
-
-	options.TTY = true
-	options.Attach = true
-	options.Interactive = true
-
-	run := exec.CommandContext(ctx, tool, runArgs(image, options, args...)...)
-	run.Stdin = options.Stdin
-	run.Stdout = options.Stdout
-	run.Stderr = options.Stderr
-
-	return run.Run()
 }

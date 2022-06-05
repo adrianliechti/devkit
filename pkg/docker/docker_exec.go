@@ -23,41 +23,6 @@ type ExecOptions struct {
 	Env map[string]string
 }
 
-func execArgs(container string, options ExecOptions, command string, arg ...string) []string {
-	args := []string{
-		"exec",
-	}
-
-	if options.User != "" {
-		args = append(args, "--user", options.User)
-	}
-
-	if options.Privileged {
-		args = append(args, "--privileged")
-	}
-
-	if options.Interactive {
-		args = append(args, "--interactive")
-	}
-
-	if options.TTY {
-		args = append(args, "--tty")
-	}
-
-	if options.Dir != "" {
-		args = append(args, "--workdir", options.Dir)
-	}
-
-	for key, value := range options.Env {
-		args = append(args, "--env", key+"="+value)
-	}
-
-	args = append(args, container, command)
-	args = append(args, arg...)
-
-	return args
-}
-
 func Exec(ctx context.Context, container string, options ExecOptions, command string, args ...string) error {
 	tool, _, err := Tool(ctx)
 
@@ -101,4 +66,39 @@ func ExecInteractive(ctx context.Context, container string, options ExecOptions,
 	run.Stderr = options.Stderr
 
 	return run.Run()
+}
+
+func execArgs(container string, options ExecOptions, command string, arg ...string) []string {
+	args := []string{
+		"exec",
+	}
+
+	if options.User != "" {
+		args = append(args, "--user", options.User)
+	}
+
+	if options.Privileged {
+		args = append(args, "--privileged")
+	}
+
+	if options.Interactive {
+		args = append(args, "--interactive")
+	}
+
+	if options.TTY {
+		args = append(args, "--tty")
+	}
+
+	if options.Dir != "" {
+		args = append(args, "--workdir", options.Dir)
+	}
+
+	for key, value := range options.Env {
+		args = append(args, "--env", key+"="+value)
+	}
+
+	args = append(args, container, command)
+	args = append(args, arg...)
+
+	return args
 }

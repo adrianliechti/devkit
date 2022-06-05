@@ -6,28 +6,28 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/adrianliechti/devkit/app/database/cassandra"
-	"github.com/adrianliechti/devkit/app/database/db2"
-	"github.com/adrianliechti/devkit/app/database/elasticsearch"
-	"github.com/adrianliechti/devkit/app/database/etcd"
-	"github.com/adrianliechti/devkit/app/database/immudb"
-	"github.com/adrianliechti/devkit/app/database/influxdb"
-	"github.com/adrianliechti/devkit/app/database/mariadb"
-	"github.com/adrianliechti/devkit/app/database/mongodb"
-	"github.com/adrianliechti/devkit/app/database/mssql"
-	"github.com/adrianliechti/devkit/app/database/mysql"
-	"github.com/adrianliechti/devkit/app/database/postgres"
-	"github.com/adrianliechti/devkit/app/database/redis"
-	"github.com/adrianliechti/devkit/app/messaging/kafka"
-	"github.com/adrianliechti/devkit/app/messaging/nats"
-	"github.com/adrianliechti/devkit/app/messaging/rabbitmq"
-	"github.com/adrianliechti/devkit/app/platform/grafana"
-	"github.com/adrianliechti/devkit/app/platform/jenkins"
-	"github.com/adrianliechti/devkit/app/platform/jupyter"
-	"github.com/adrianliechti/devkit/app/platform/mailtrap"
-	"github.com/adrianliechti/devkit/app/platform/sonarqube"
-	"github.com/adrianliechti/devkit/app/storage/minio"
-	"github.com/adrianliechti/devkit/app/storage/vault"
+	"github.com/adrianliechti/devkit/app/catalog/cassandra"
+	"github.com/adrianliechti/devkit/app/catalog/db2"
+	"github.com/adrianliechti/devkit/app/catalog/elasticsearch"
+	"github.com/adrianliechti/devkit/app/catalog/etcd"
+	"github.com/adrianliechti/devkit/app/catalog/grafana"
+	"github.com/adrianliechti/devkit/app/catalog/immudb"
+	"github.com/adrianliechti/devkit/app/catalog/influxdb"
+	"github.com/adrianliechti/devkit/app/catalog/jenkins"
+	"github.com/adrianliechti/devkit/app/catalog/jupyter"
+	"github.com/adrianliechti/devkit/app/catalog/kafka"
+	"github.com/adrianliechti/devkit/app/catalog/mailtrap"
+	"github.com/adrianliechti/devkit/app/catalog/mariadb"
+	"github.com/adrianliechti/devkit/app/catalog/minio"
+	"github.com/adrianliechti/devkit/app/catalog/mongodb"
+	"github.com/adrianliechti/devkit/app/catalog/mssql"
+	"github.com/adrianliechti/devkit/app/catalog/mysql"
+	"github.com/adrianliechti/devkit/app/catalog/nats"
+	"github.com/adrianliechti/devkit/app/catalog/postgres"
+	"github.com/adrianliechti/devkit/app/catalog/rabbitmq"
+	"github.com/adrianliechti/devkit/app/catalog/redis"
+	"github.com/adrianliechti/devkit/app/catalog/sonarqube"
+	"github.com/adrianliechti/devkit/app/catalog/vault"
 	"github.com/adrianliechti/devkit/app/template"
 	"github.com/adrianliechti/devkit/app/utility/cloc"
 	"github.com/adrianliechti/devkit/app/utility/code"
@@ -72,19 +72,9 @@ func initApp() cli.App {
 			influxdb.Command,
 			elasticsearch.Command,
 
-			minio.Command,
-			vault.Command,
-
 			nats.Command,
 			kafka.Command,
 			rabbitmq.Command,
-
-			// registryCommand,
-			// mailtrapCommand,
-
-			// codeCommand,
-			// grafanaCommand,
-			// jupyterCommand,
 
 			jenkins.Command,
 			sonarqube.Command,
@@ -92,10 +82,13 @@ func initApp() cli.App {
 			jupyter.Command,
 			mailtrap.Command,
 
-			git.Command,
-			image.Command,
+			minio.Command,
+			vault.Command,
 
 			template.Command,
+
+			git.Command,
+			image.Command,
 
 			cloc.Command,
 
