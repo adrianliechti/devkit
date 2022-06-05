@@ -25,7 +25,7 @@ func (m *Manager) Category() catalog.Category {
 }
 
 func (m *Manager) DisplayName() string {
-	return "MinIO"
+	return "MinIO S3 Object Storage"
 }
 
 func (m *Manager) Description() string {

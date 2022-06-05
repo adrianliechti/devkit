@@ -15,6 +15,7 @@ import (
 	"github.com/adrianliechti/devkit/app/utility/proxy"
 	"github.com/adrianliechti/devkit/app/utility/server"
 
+	"github.com/adrianliechti/devkit/pkg/catalog/azurite"
 	"github.com/adrianliechti/devkit/pkg/catalog/cassandra"
 	"github.com/adrianliechti/devkit/pkg/catalog/db2"
 	"github.com/adrianliechti/devkit/pkg/catalog/elasticsearch"
@@ -63,6 +64,7 @@ func initApp() cli.App {
 		HideHelpCommand: true,
 
 		Commands: []*cli.Command{
+			catalog.Command(&azurite.Manager{}),
 			catalog.Command(&cassandra.Manager{}),
 			catalog.Command(&db2.Manager{}),
 			catalog.Command(&elasticsearch.Manager{}),

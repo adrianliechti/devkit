@@ -29,7 +29,7 @@ func (m *Manager) Category() catalog.Category {
 }
 
 func (m *Manager) DisplayName() string {
-	return "Vault"
+	return "HashiCorp Vault"
 }
 
 func (m *Manager) Description() string {
