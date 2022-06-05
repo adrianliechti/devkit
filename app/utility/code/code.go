@@ -10,6 +10,7 @@ import (
 	"github.com/adrianliechti/devkit/app/utility"
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/docker"
+	"github.com/adrianliechti/devkit/pkg/to"
 )
 
 var Command = &cli.Command{
@@ -37,6 +38,10 @@ func startCode(ctx context.Context, port int) error {
 		return err
 	}
 
+	docker.Pull(ctx, image, docker.PullOptions{
+		Platform: "linux/amd64",
+	})
+
 	cli.Table([]string{"Name", "Value"}, [][]string{
 		{"URL", fmt.Sprintf("http://localhost:%d", port)},
 	})
@@ -48,12 +53,20 @@ func startCode(ctx context.Context, port int) error {
 	options := docker.RunOptions{
 		Platform: "linux/amd64",
 
-		Ports: map[int]string{
-			port: "3000/tcp",
+		Ports: []docker.ContainerPort{
+			{
+				Port:     3000,
+				Protocol: docker.ProtocolTCP,
+
+				HostPort: to.IntPtr(port),
+			},
 		},
 
-		Volumes: map[string]string{
-			path: "/workspace",
+		Volumes: []docker.ContainerMount{
+			{
+				Path:     "/workspace",
+				HostPath: path,
+			},
 		},
 
 		Stdout: io.Discard,

@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 )
 
 type RunOptions struct {
@@ -33,8 +34,8 @@ type RunOptions struct {
 	User string
 
 	Env     map[string]string
-	Ports   map[int]string
-	Volumes map[string]string
+	Ports   []ContainerPort
+	Volumes []ContainerMount
 }
 
 func Run(ctx context.Context, image string, options RunOptions, args ...string) error {
@@ -142,12 +143,32 @@ func runArgs(image string, options RunOptions, arg ...string) []string {
 		args = append(args, "--env", key+"="+value)
 	}
 
-	for source, target := range options.Ports {
-		args = append(args, "--publish", fmt.Sprintf("127.0.0.1:%d:%s", source, target))
+	for _, p := range options.Ports {
+		port := strconv.Itoa(p.Port)
+
+		proto := "tcp"
+
+		if p.Protocol != "" {
+			proto = strings.ToLower(string(p.Protocol))
+		}
+
+		hostIP := "127.0.0.1"
+
+		if p.HostIP != "" {
+			hostIP = p.HostIP
+		}
+
+		hostPort := ""
+
+		if p.HostPort != nil {
+			hostPort = strconv.Itoa(*p.HostPort)
+		}
+
+		args = append(args, "--publish", fmt.Sprintf("%s:%s:%s/%s", hostIP, hostPort, port, proto))
 	}
 
-	for source, target := range options.Volumes {
-		args = append(args, "--volume", source+":"+target)
+	for _, v := range options.Volumes {
+		args = append(args, "--volume", fmt.Sprintf("%s:%s", v.HostPath, v.Path))
 	}
 
 	args = append(args, image)

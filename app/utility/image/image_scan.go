@@ -25,8 +25,11 @@ func runTrivy(ctx context.Context, image string) error {
 	options := docker.RunOptions{
 		Env: map[string]string{},
 
-		Volumes: map[string]string{
-			"trivy-cache": "/root/.cache/",
+		Volumes: []docker.ContainerMount{
+			{
+				Path:     "/var/run/docker.sock",
+				HostPath: "trivy-cache",
+			},
 		},
 	}
 

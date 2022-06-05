@@ -111,8 +111,11 @@ func runTemplate(ctx context.Context, path string, template template, options te
 
 		Platform: "linux/amd64",
 
-		Volumes: map[string]string{
-			path: "/src",
+		Volumes: []docker.ContainerMount{
+			{
+				Path:     "/src",
+				HostPath: path,
+			},
 		},
 	}
 

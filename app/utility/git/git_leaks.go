@@ -45,9 +45,11 @@ func leaks(ctx context.Context) error {
 
 		User: "root",
 
-		Volumes: map[string]string{
-			path: "/src",
-			//config.Name(): "/config",
+		Volumes: []docker.ContainerMount{
+			{
+				Path:     "/src",
+				HostPath: path,
+			},
 		},
 	}
 

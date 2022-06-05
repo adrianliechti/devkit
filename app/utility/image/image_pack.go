@@ -46,10 +46,15 @@ func runPack(ctx context.Context, image, builder string) error {
 
 	options := docker.RunOptions{
 		User: "0:0",
-		Volumes: map[string]string{
-			wd: "/src",
-
-			"/var/run/docker.sock": "/var/run/docker.sock",
+		Volumes: []docker.ContainerMount{
+			{
+				Path:     "/src",
+				HostPath: wd,
+			},
+			{
+				Path:     "/var/run/docker.sock",
+				HostPath: "/var/run/docker.sock",
+			},
 		},
 	}
 

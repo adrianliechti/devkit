@@ -53,7 +53,6 @@ const (
 
 type VolumeMount struct {
 	Name string
-
 	Path string
 
 	HostPath string

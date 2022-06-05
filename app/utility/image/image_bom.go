@@ -29,8 +29,11 @@ func runSyft(ctx context.Context, image string) error {
 	args = append(args, image)
 
 	options := docker.RunOptions{
-		Volumes: map[string]string{
-			"/var/run/docker.sock": "/var/run/docker.sock",
+		Volumes: []docker.ContainerMount{
+			{
+				Path:     "/var/run/docker.sock",
+				HostPath: "/var/run/docker.sock",
+			},
 		},
 	}
 

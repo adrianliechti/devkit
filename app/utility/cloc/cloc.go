@@ -40,8 +40,11 @@ func runCloc(ctx context.Context) error {
 	}
 
 	options := docker.RunOptions{
-		Volumes: map[string]string{
-			wd: "/src",
+		Volumes: []docker.ContainerMount{
+			{
+				Path:     "/src",
+				HostPath: wd,
+			},
 		},
 	}
 

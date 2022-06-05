@@ -32,8 +32,11 @@ func runDockle(ctx context.Context, image string) error {
 			"DOCKER_CONTENT_TRUST": "1",
 		},
 
-		Volumes: map[string]string{
-			"/var/run/docker.sock": "/var/run/docker.sock",
+		Volumes: []docker.ContainerMount{
+			{
+				Path:     "/var/run/docker.sock",
+				HostPath: "/var/run/docker.sock",
+			},
 		},
 	}
 

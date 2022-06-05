@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/container"
@@ -137,35 +136,27 @@ func convertRunOptions(container container.Container) docker.RunOptions {
 		}
 	}
 
-	ports := map[int]string{}
+	ports := []docker.ContainerPort{}
 
 	for _, p := range container.Ports {
-		if p.HostPort == nil {
-			println("no host port")
-			continue
-		}
+		ports = append(ports, docker.ContainerPort{
+			Port:     p.Port,
+			Protocol: docker.Protocol(p.Protocol),
 
-		hostPort := *p.HostPort
-
-		proto := strings.ToLower(string(p.Protocol))
-
-		if proto == "" {
-			proto = "tcp"
-		}
-
-		ports[hostPort] = fmt.Sprintf("%d/%s", p.Port, proto)
+			HostIP:   p.HostIP,
+			HostPort: p.HostPort,
+		})
 	}
 
 	options.Ports = ports
 
-	volumes := map[string]string{}
+	volumes := []docker.ContainerMount{}
 
 	for _, v := range container.VolumeMounts {
-		if v.HostPath == "" {
-			continue
-		}
-
-		volumes[v.HostPath] = v.Path
+		volumes = append(volumes, docker.ContainerMount{
+			Path:     v.Path,
+			HostPath: v.HostPath,
+		})
 	}
 
 	options.Volumes = volumes
