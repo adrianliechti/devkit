@@ -36,6 +36,7 @@ import (
 	"github.com/adrianliechti/devkit/pkg/catalog/mysql"
 	"github.com/adrianliechti/devkit/pkg/catalog/nats"
 	"github.com/adrianliechti/devkit/pkg/catalog/nexus"
+	"github.com/adrianliechti/devkit/pkg/catalog/oracle"
 	"github.com/adrianliechti/devkit/pkg/catalog/postgres"
 	"github.com/adrianliechti/devkit/pkg/catalog/prometheus"
 	"github.com/adrianliechti/devkit/pkg/catalog/rabbitmq"
@@ -87,6 +88,7 @@ func initApp() cli.App {
 			catalog.Command(&mysql.Manager{}),
 			catalog.Command(&nats.Manager{}),
 			catalog.Command(&nexus.Manager{}),
+			catalog.Command(&oracle.Manager{}),
 			catalog.Command(&postgres.Manager{}),
 			catalog.Command(&prometheus.Manager{}),
 			catalog.Command(&rabbitmq.Manager{}),
