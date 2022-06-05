@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/container"
@@ -136,7 +137,7 @@ func convertRunOptions(container container.Container) docker.RunOptions {
 		}
 	}
 
-	ports := map[int]int{}
+	ports := map[int]string{}
 
 	for _, p := range container.Ports {
 		if p.HostPort == nil {
@@ -146,7 +147,13 @@ func convertRunOptions(container container.Container) docker.RunOptions {
 
 		hostPort := *p.HostPort
 
-		ports[hostPort] = p.Port
+		proto := strings.ToLower(string(p.Protocol))
+
+		if proto == "" {
+			proto = "tcp"
+		}
+
+		ports[hostPort] = fmt.Sprintf("%d/%s", p.Port, proto)
 	}
 
 	options.Ports = ports

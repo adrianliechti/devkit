@@ -48,8 +48,8 @@ func startCode(ctx context.Context, port int) error {
 	options := docker.RunOptions{
 		Platform: "linux/amd64",
 
-		Ports: map[int]int{
-			port: 3000,
+		Ports: map[int]string{
+			port: "3000/tcp",
 		},
 
 		Volumes: map[string]string{

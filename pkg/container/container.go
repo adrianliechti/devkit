@@ -48,7 +48,7 @@ type Protocol string
 
 const (
 	ProtocolTCP Protocol = "TCP"
-	//ProtocolUDP Protocol = "UDP"
+	ProtocolUDP Protocol = "UDP"
 )
 
 type VolumeMount struct {

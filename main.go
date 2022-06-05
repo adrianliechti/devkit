@@ -25,6 +25,7 @@ import (
 	"github.com/adrianliechti/devkit/pkg/catalog/grafana"
 	"github.com/adrianliechti/devkit/pkg/catalog/immudb"
 	"github.com/adrianliechti/devkit/pkg/catalog/influxdb"
+	"github.com/adrianliechti/devkit/pkg/catalog/jaeger"
 	"github.com/adrianliechti/devkit/pkg/catalog/jenkins"
 	"github.com/adrianliechti/devkit/pkg/catalog/jupyter"
 	"github.com/adrianliechti/devkit/pkg/catalog/kafka"
@@ -77,6 +78,7 @@ func initApp() cli.App {
 			catalog.Command(&grafana.Manager{}),
 			catalog.Command(&immudb.Manager{}),
 			catalog.Command(&influxdb.Manager{}),
+			catalog.Command(&jaeger.Manager{}),
 			catalog.Command(&jenkins.Manager{}),
 			catalog.Command(&jupyter.Manager{}),
 			catalog.Command(&kafka.Manager{}),

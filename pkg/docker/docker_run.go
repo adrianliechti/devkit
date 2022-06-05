@@ -33,7 +33,7 @@ type RunOptions struct {
 	User string
 
 	Env     map[string]string
-	Ports   map[int]int
+	Ports   map[int]string
 	Volumes map[string]string
 }
 
@@ -143,7 +143,7 @@ func runArgs(image string, options RunOptions, arg ...string) []string {
 	}
 
 	for source, target := range options.Ports {
-		args = append(args, "--publish", fmt.Sprintf("127.0.0.1:%d:%d", source, target))
+		args = append(args, "--publish", fmt.Sprintf("127.0.0.1:%d:%s", source, target))
 	}
 
 	for source, target := range options.Volumes {
