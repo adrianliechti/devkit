@@ -37,6 +37,7 @@ import (
 	"github.com/adrianliechti/devkit/pkg/catalog/nats"
 	"github.com/adrianliechti/devkit/pkg/catalog/nexus"
 	"github.com/adrianliechti/devkit/pkg/catalog/postgres"
+	"github.com/adrianliechti/devkit/pkg/catalog/prometheus"
 	"github.com/adrianliechti/devkit/pkg/catalog/rabbitmq"
 	"github.com/adrianliechti/devkit/pkg/catalog/redis"
 	"github.com/adrianliechti/devkit/pkg/catalog/sonarqube"
@@ -87,6 +88,7 @@ func initApp() cli.App {
 			catalog.Command(&nats.Manager{}),
 			catalog.Command(&nexus.Manager{}),
 			catalog.Command(&postgres.Manager{}),
+			catalog.Command(&prometheus.Manager{}),
 			catalog.Command(&rabbitmq.Manager{}),
 			catalog.Command(&redis.Manager{}),
 			catalog.Command(&sonarqube.Manager{}),
