@@ -19,6 +19,7 @@ import (
 	"github.com/adrianliechti/devkit/pkg/catalog/db2"
 	"github.com/adrianliechti/devkit/pkg/catalog/elasticsearch"
 	"github.com/adrianliechti/devkit/pkg/catalog/etcd"
+	"github.com/adrianliechti/devkit/pkg/catalog/ghost"
 	"github.com/adrianliechti/devkit/pkg/catalog/grafana"
 	"github.com/adrianliechti/devkit/pkg/catalog/immudb"
 	"github.com/adrianliechti/devkit/pkg/catalog/influxdb"
@@ -65,6 +66,7 @@ func initApp() cli.App {
 			catalog.Command(&db2.Manager{}),
 			catalog.Command(&elasticsearch.Manager{}),
 			catalog.Command(&etcd.Manager{}),
+			catalog.Command(&ghost.Manager{}),
 			catalog.Command(&grafana.Manager{}),
 			catalog.Command(&immudb.Manager{}),
 			catalog.Command(&influxdb.Manager{}),

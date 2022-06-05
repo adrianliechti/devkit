@@ -1,11 +1,8 @@
-package sonarqube
+package ghost
 
 import (
-	"runtime"
-
 	"github.com/adrianliechti/devkit/pkg/catalog"
 	"github.com/adrianliechti/devkit/pkg/container"
-	"github.com/adrianliechti/devkit/pkg/to"
 )
 
 var (
@@ -19,7 +16,7 @@ type Manager struct {
 }
 
 func (m *Manager) Name() string {
-	return "sonarqube"
+	return "ghost"
 }
 
 func (m *Manager) Category() catalog.Category {
@@ -27,11 +24,11 @@ func (m *Manager) Category() catalog.Category {
 }
 
 func (m *Manager) DisplayName() string {
-	return "SonarQube"
+	return "Ghost"
 }
 
 func (m *Manager) Description() string {
-	return "SonarQube empowers all developers to write cleaner and safer code."
+	return "Ghost is a powerful app for new-media creators to publish, share, and grow a business around their content."
 }
 
 const (
@@ -39,54 +36,32 @@ const (
 )
 
 func (m *Manager) New() (container.Container, error) {
-	image := "sonarqube:9-community"
-
-	if runtime.GOARCH == "arm64" {
-		image = "mwizner/sonarqube:9.4.0-community"
-	}
+	image := "ghost:5"
 
 	return container.Container{
 		Image: image,
 
 		Env: map[string]string{
-			"SONAR_ES_BOOTSTRAP_CHECKS_DISABLE": "true",
-			"SONAR_SEARCH_JAVAADDITIONALOPTS":   "-Dbootstrap.system_call_filter=false",
+			"url": "http://localhost:2368",
 		},
 
 		Ports: []*container.ContainerPort{
 			{
-				Port:     9000,
+				Port:     2368,
 				Protocol: container.ProtocolTCP,
 			},
 		},
 
 		VolumeMounts: []*container.VolumeMount{
 			{
-				Path: "/opt/sonarqube/data",
+				Path: "/var/lib/ghost/content",
 			},
-			{
-				Path: "/opt/sonarqube/logs",
-			},
-			{
-				Path: "/opt/sonarqube/extensions",
-			},
-		},
-
-		PlatformContext: &container.PlatformContext{
-			MaxNoProcs: to.IntPtr(8192),
-			MaxNoFiles: to.IntPtr(131072),
 		},
 	}, nil
 }
 
 func (m *Manager) Info(instance container.Container) (map[string]string, error) {
-	username := "admin"
-	password := "admin"
-
-	return map[string]string{
-		"Username": username,
-		"Password": password,
-	}, nil
+	return map[string]string{}, nil
 }
 
 func (m *Manager) Shell(instance container.Container) (string, error) {
@@ -95,7 +70,7 @@ func (m *Manager) Shell(instance container.Container) (string, error) {
 
 func (m *Manager) ConsolePort(instance container.Container) (*container.ContainerPort, error) {
 	return &container.ContainerPort{
-		Port:     9000,
+		Port:     2368,
 		Protocol: container.ProtocolTCP,
 	}, nil
 }
