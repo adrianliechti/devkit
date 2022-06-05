@@ -13,7 +13,7 @@ func DeleteCommand(kind string) *cli.Command {
 		Action: func(c *cli.Context) error {
 			container := MustContainer(c.Context, kind)
 
-			return docker.Delete(c.Context, container, docker.DeleteOptions{
+			return docker.Delete(c.Context, container.Name, docker.DeleteOptions{
 				Force:   true,
 				Volumes: true,
 			})

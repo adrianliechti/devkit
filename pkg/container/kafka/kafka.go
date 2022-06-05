@@ -45,7 +45,7 @@ func New() container.Container {
 			"sed -i '/KAFKA_ZOOKEEPER_CONNECT/d' /etc/confluent/docker/configure && sed -i '/cub zk-ready/d' /etc/confluent/docker/ensure && echo \"kafka-storage format --ignore-formatted -t $(kafka-storage random-uuid) -c /etc/kafka/kafka.properties\" >> /etc/confluent/docker/ensure && /etc/confluent/docker/run",
 		},
 
-		Ports: []container.ContainerPort{
+		Ports: []*container.ContainerPort{
 			{
 				Port:     9092,
 				Protocol: container.ProtocolTCP,

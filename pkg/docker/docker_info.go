@@ -15,9 +15,11 @@ type ContainerInfo struct {
 	Image    string
 	Platform string
 
-	Cmd  string
+	Cmd  []string
 	Env  map[string]string
 	Args []string
+
+	Dir string
 
 	Ports map[int]int
 
@@ -39,8 +41,8 @@ func Info(ctx context.Context, container string) (*ContainerInfo, error) {
 	type inspectType struct {
 		ID string `json:"Id"`
 		// Created time.Time `json:"Created"`
-		Path string   `json:"Path"`
-		Args []string `json:"Args"`
+		// Path string   `json:"Path"`
+		// Args []string `json:"Args"`
 		// State   struct {
 		// 	Status     string    `json:"Status"`
 		// 	Running    bool      `json:"Running"`
@@ -171,11 +173,11 @@ func Info(ctx context.Context, container string) (*ContainerInfo, error) {
 			// 	OpenStdin  bool        `json:"OpenStdin"`
 			// 	StdinOnce  bool        `json:"StdinOnce"`
 			Env []string `json:"Env"`
-			// 	Cmd        []string    `json:"Cmd"`
+			Cmd []string `json:"Cmd"`
 			// 	Image      string      `json:"Image"`
 			// 	Volumes    interface{} `json:"Volumes"`
-			// 	WorkingDir string      `json:"WorkingDir"`
-			// 	Entrypoint []string    `json:"Entrypoint"`
+			WorkingDir string   `json:"WorkingDir"`
+			Entrypoint []string `json:"Entrypoint"`
 			// 	OnBuild    interface{} `json:"OnBuild"`
 			// 	Labels     struct {
 			// 	} `json:"Labels"`
@@ -265,9 +267,11 @@ func Info(ctx context.Context, container string) (*ContainerInfo, error) {
 
 		Image: inspectData.Image,
 
-		Cmd:  inspectData.Path,
+		Cmd:  inspectData.Config.Entrypoint,
 		Env:  env,
-		Args: inspectData.Args,
+		Args: inspectData.Config.Cmd,
+
+		Dir: inspectData.Config.WorkingDir,
 
 		IPAddress: inspectData.NetworkSettings.IPAddress,
 	}, nil

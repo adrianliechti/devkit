@@ -25,14 +25,14 @@ func New() container.Container {
 			"POSTGRES_PASSWORD": password,
 		},
 
-		Ports: []container.ContainerPort{
+		Ports: []*container.ContainerPort{
 			{
 				Port:     5432,
 				Protocol: container.ProtocolTCP,
 			},
 		},
 
-		VolumeMounts: []container.VolumeMount{
+		VolumeMounts: []*container.VolumeMount{
 			{
 				Path: "/var/lib/postgresql/data",
 			},

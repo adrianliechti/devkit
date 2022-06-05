@@ -22,7 +22,7 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(MongoDB),
 
-		catalog.CreateCommand(MongoDB, mongodb.New),
+		catalog.CreateCommand(MongoDB, mongodb.New, mongodb.Info),
 		catalog.DeleteCommand(MongoDB),
 
 		catalog.InfoCommand(MongoDB, mongodb.Info),

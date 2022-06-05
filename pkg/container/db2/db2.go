@@ -26,14 +26,14 @@ func New() container.Container {
 			"DB2INST1_PASSWORD": password,
 		},
 
-		Ports: []container.ContainerPort{
+		Ports: []*container.ContainerPort{
 			{
 				Port:     50000,
 				Protocol: container.ProtocolTCP,
 			},
 		},
 
-		VolumeMounts: []container.VolumeMount{
+		VolumeMounts: []*container.VolumeMount{
 			{
 				Path: "/database",
 			},

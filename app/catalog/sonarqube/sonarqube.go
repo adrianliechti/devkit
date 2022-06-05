@@ -22,7 +22,7 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(SonarQube),
 
-		catalog.CreateCommand(SonarQube, sonarqube.New),
+		catalog.CreateCommand(SonarQube, sonarqube.New, sonarqube.Info),
 		catalog.DeleteCommand(SonarQube),
 
 		catalog.InfoCommand(SonarQube, sonarqube.Info),

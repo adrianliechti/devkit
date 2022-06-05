@@ -22,7 +22,7 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(MySQL),
 
-		catalog.CreateCommand(MySQL, mysql.New),
+		catalog.CreateCommand(MySQL, mysql.New, mysql.Info),
 		catalog.DeleteCommand(MySQL),
 
 		catalog.InfoCommand(MySQL, mysql.Info),

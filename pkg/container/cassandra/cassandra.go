@@ -16,14 +16,14 @@ func New() container.Container {
 
 		Env: map[string]string{},
 
-		Ports: []container.ContainerPort{
+		Ports: []*container.ContainerPort{
 			{
 				Port:     9042,
 				Protocol: container.ProtocolTCP,
 			},
 		},
 
-		VolumeMounts: []container.VolumeMount{
+		VolumeMounts: []*container.VolumeMount{
 			{
 				Path: "/var/lib/cassandra",
 			},

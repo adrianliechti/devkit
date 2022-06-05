@@ -23,14 +23,14 @@ func New() container.Container {
 			"MARIADB_ROOT_PASSWORD": password,
 		},
 
-		Ports: []container.ContainerPort{
+		Ports: []*container.ContainerPort{
 			{
 				Port:     3306,
 				Protocol: container.ProtocolTCP,
 			},
 		},
 
-		VolumeMounts: []container.VolumeMount{
+		VolumeMounts: []*container.VolumeMount{
 			{
 				Path: "/var/lib/mysql",
 			},

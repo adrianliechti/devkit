@@ -22,7 +22,7 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(Redis),
 
-		catalog.CreateCommand(Redis, redis.New),
+		catalog.CreateCommand(Redis, redis.New, redis.Info),
 		catalog.DeleteCommand(Redis),
 
 		catalog.InfoCommand(Redis, redis.Info),

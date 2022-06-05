@@ -22,14 +22,14 @@ func New() container.Container {
 			"IMMUDB_ADMIN_PASSWORD": password,
 		},
 
-		Ports: []container.ContainerPort{
+		Ports: []*container.ContainerPort{
 			{
 				Port:     3322,
 				Protocol: container.ProtocolTCP,
 			},
 		},
 
-		VolumeMounts: []container.VolumeMount{
+		VolumeMounts: []*container.VolumeMount{
 			{
 				Path: "/var/lib/immudb",
 			},

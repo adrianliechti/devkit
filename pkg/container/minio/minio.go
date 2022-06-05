@@ -23,14 +23,18 @@ func New() container.Container {
 			"MINIO_ROOT_PASSWORD": password,
 		},
 
-		Ports: []container.ContainerPort{
+		Args: []string{
+			"server", "/data", "--console-address", ":9001",
+		},
+
+		Ports: []*container.ContainerPort{
 			{
 				Port:     9000,
 				Protocol: container.ProtocolTCP,
 			},
 		},
 
-		VolumeMounts: []container.VolumeMount{
+		VolumeMounts: []*container.VolumeMount{
 			{
 				Path: "/data",
 			},

@@ -28,14 +28,14 @@ func New() container.Container {
 			"ELASTIC_PASSWORD": password,
 		},
 
-		Ports: []container.ContainerPort{
+		Ports: []*container.ContainerPort{
 			{
 				Port:     9200,
 				Protocol: container.ProtocolTCP,
 			},
 		},
 
-		VolumeMounts: []container.VolumeMount{
+		VolumeMounts: []*container.VolumeMount{
 			{
 				Path: "/usr/share/elasticsearch/data",
 			},

@@ -35,14 +35,14 @@ func New() container.Container {
 			"DOCKER_INFLUXDB_INIT_ADMIN_TOKEN": token,
 		},
 
-		Ports: []container.ContainerPort{
+		Ports: []*container.ContainerPort{
 			{
 				Port:     8086,
 				Protocol: container.ProtocolTCP,
 			},
 		},
 
-		VolumeMounts: []container.VolumeMount{
+		VolumeMounts: []*container.VolumeMount{
 			{
 				Path: "/var/lib/influxdb2",
 			},

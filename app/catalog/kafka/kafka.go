@@ -22,7 +22,7 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(Kafka),
 
-		catalog.CreateCommand(Kafka, kafka.New),
+		catalog.CreateCommand(Kafka, kafka.New, kafka.Info),
 		catalog.DeleteCommand(Kafka),
 
 		catalog.InfoCommand(Kafka, kafka.Info),

@@ -22,7 +22,7 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(NATS),
 
-		catalog.CreateCommand(NATS, nats.New),
+		catalog.CreateCommand(NATS, nats.New, nats.Info),
 		catalog.DeleteCommand(NATS),
 
 		catalog.InfoCommand(NATS, nats.Info),

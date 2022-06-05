@@ -22,7 +22,7 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(Cassandra),
 
-		catalog.CreateCommand(Cassandra, cassandra.New),
+		catalog.CreateCommand(Cassandra, cassandra.New, cassandra.Info),
 		catalog.DeleteCommand(Cassandra),
 
 		catalog.InfoCommand(Cassandra, cassandra.Info),

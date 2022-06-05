@@ -22,7 +22,7 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(Jenkins),
 
-		catalog.CreateCommand(Jenkins, jenkins.New),
+		catalog.CreateCommand(Jenkins, jenkins.New, jenkins.Info),
 		catalog.DeleteCommand(Jenkins),
 
 		catalog.InfoCommand(Jenkins, jenkins.Info),

@@ -22,13 +22,13 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(ImmuDB),
 
-		catalog.CreateCommand(ImmuDB, immudb.New),
+		catalog.CreateCommand(ImmuDB, immudb.New, immudb.Info),
 		catalog.DeleteCommand(ImmuDB),
 
 		catalog.InfoCommand(ImmuDB, immudb.Info),
 		catalog.LogsCommand(ImmuDB),
 
-		catalog.ConsoleCommand(ImmuDB, immudb.ConsolePort),
+		catalog.ConsoleCommand(ImmuDB, immudb.Info, immudb.ConsolePort),
 		catalog.ShellCommand(ImmuDB, immudb.DefaultShell),
 	},
 }

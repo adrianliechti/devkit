@@ -13,9 +13,9 @@ type Container struct {
 
 	Env map[string]string
 
-	Ports []ContainerPort
+	Ports []*ContainerPort
 
-	VolumeMounts []VolumeMount
+	VolumeMounts []*VolumeMount
 
 	PlatformContext *PlatformContext
 	SecurityContext *SecurityContext
@@ -28,7 +28,7 @@ type ContainerPort struct {
 	Protocol Protocol
 
 	HostIP   string
-	HostPort int32
+	HostPort *int
 }
 
 type SecurityContext struct {
@@ -39,6 +39,9 @@ type SecurityContext struct {
 
 type PlatformContext struct {
 	Platform string
+
+	MaxNoProcs *int
+	MaxNoFiles *int
 }
 
 type Protocol string

@@ -22,7 +22,7 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(Elasticsearch),
 
-		catalog.CreateCommand(Elasticsearch, elasticsearch.New),
+		catalog.CreateCommand(Elasticsearch, elasticsearch.New, elasticsearch.Info),
 		catalog.DeleteCommand(Elasticsearch),
 
 		catalog.InfoCommand(Elasticsearch, elasticsearch.Info),

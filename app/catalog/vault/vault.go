@@ -22,7 +22,7 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(Vault),
 
-		catalog.CreateCommand(Vault, vault.New),
+		catalog.CreateCommand(Vault, vault.New, vault.Info),
 		catalog.DeleteCommand(Vault),
 
 		catalog.InfoCommand(Vault, vault.Info),

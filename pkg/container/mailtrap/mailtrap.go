@@ -27,7 +27,7 @@ func New() container.Container {
 			"PASSWORD": password,
 		},
 
-		Ports: []container.ContainerPort{
+		Ports: []*container.ContainerPort{
 			{
 				Port:     25,
 				Protocol: container.ProtocolTCP,
@@ -50,7 +50,5 @@ func ConsolePort() container.ContainerPort {
 	return container.ContainerPort{
 		Port:     80,
 		Protocol: container.ProtocolTCP,
-
-		HostPort: 2580,
 	}
 }

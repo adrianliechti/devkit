@@ -22,7 +22,7 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(Jupyter),
 
-		catalog.CreateCommand(Jupyter, jupyter.New),
+		catalog.CreateCommand(Jupyter, jupyter.New, jupyter.Info),
 		catalog.DeleteCommand(Jupyter),
 
 		catalog.InfoCommand(Jupyter, jupyter.Info),

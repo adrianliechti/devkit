@@ -13,10 +13,12 @@ func InfoCommand(kind string, h InfoHandler) *cli.Command {
 		Usage: "display instance info",
 
 		Action: func(c *cli.Context) error {
-			name := MustContainer(c.Context, kind)
+			ctx := c.Context
+			container := MustContainer(ctx, kind)
 
-			cli.Info(name)
+			info := h(&container)
 
+			printMapTable(info)
 			return nil
 		},
 	}

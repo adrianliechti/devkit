@@ -21,7 +21,7 @@ func New() container.Container {
 			"VAULT_DEV_ROOT_TOKEN_ID": token,
 		},
 
-		Ports: []container.ContainerPort{
+		Ports: []*container.ContainerPort{
 			{
 				Port:     8200,
 				Protocol: container.ProtocolTCP,

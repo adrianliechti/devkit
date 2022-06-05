@@ -12,10 +12,9 @@ func ShellCommand(kind string, shell string) *cli.Command {
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
+			container := MustContainer(ctx, kind)
 
-			name := MustContainer(ctx, kind)
-
-			return docker.ExecInteractive(ctx, name, docker.ExecOptions{}, shell)
+			return docker.ExecInteractive(ctx, container.Name, docker.ExecOptions{}, shell)
 		},
 	}
 }

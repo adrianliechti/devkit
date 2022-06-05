@@ -22,13 +22,13 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(MailTrap),
 
-		catalog.CreateCommand(MailTrap, mailtrap.New),
+		catalog.CreateCommand(MailTrap, mailtrap.New, mailtrap.Info),
 		catalog.DeleteCommand(MailTrap),
 
 		catalog.InfoCommand(MailTrap, mailtrap.Info),
 		catalog.LogsCommand(MailTrap),
 
-		catalog.ConsoleCommand(MailTrap, mailtrap.ConsolePort),
+		catalog.ConsoleCommand(MailTrap, mailtrap.Info, mailtrap.ConsolePort),
 		catalog.ShellCommand(MailTrap, mailtrap.DefaultShell),
 	},
 }

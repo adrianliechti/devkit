@@ -22,7 +22,7 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(ETCD),
 
-		catalog.CreateCommand(ETCD, etcd.New),
+		catalog.CreateCommand(ETCD, etcd.New, etcd.Info),
 		catalog.DeleteCommand(ETCD),
 
 		catalog.InfoCommand(ETCD, etcd.Info),

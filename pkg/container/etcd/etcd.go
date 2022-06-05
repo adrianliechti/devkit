@@ -33,14 +33,14 @@ func New() container.Container {
 			"ETCD_ADVERTISE_CLIENT_URLS": "http://127.0.0.1:2379",
 		},
 
-		Ports: []container.ContainerPort{
+		Ports: []*container.ContainerPort{
 			{
 				Port:     2379,
 				Protocol: container.ProtocolTCP,
 			},
 		},
 
-		VolumeMounts: []container.VolumeMount{
+		VolumeMounts: []*container.VolumeMount{
 			{
 				Path: "/etcd-data",
 			},

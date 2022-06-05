@@ -8,7 +8,7 @@ import (
 )
 
 func PortFlagName(name string) string {
-	if name == "" {
+	if name == "" || strings.ToLower(name) == "port" {
 		return "port"
 	}
 
@@ -16,10 +16,14 @@ func PortFlagName(name string) string {
 }
 
 func PortFlag(name string) *cli.IntFlag {
-	flagUsage := "Port"
+	flagUsage := "port"
+
+	if strings.ToLower(name) == "port" {
+		name = ""
+	}
 
 	if name != "" {
-		flagUsage = name + " Port"
+		flagUsage = name + " port"
 	}
 
 	return &cli.IntFlag{

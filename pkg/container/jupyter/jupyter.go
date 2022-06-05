@@ -24,14 +24,14 @@ func New() container.Container {
 			"JUPYTER_ENABLE_LAB": "yes",
 		},
 
-		Ports: []container.ContainerPort{
+		Ports: []*container.ContainerPort{
 			{
 				Port:     8888,
 				Protocol: container.ProtocolTCP,
 			},
 		},
 
-		VolumeMounts: []container.VolumeMount{
+		VolumeMounts: []*container.VolumeMount{
 			{
 				Path: "/home/jovyan/work",
 			},

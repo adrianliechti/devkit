@@ -22,13 +22,13 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(InfluxDB),
 
-		catalog.CreateCommand(InfluxDB, influxdb.New),
+		catalog.CreateCommand(InfluxDB, influxdb.New, influxdb.Info),
 		catalog.DeleteCommand(InfluxDB),
 
 		catalog.InfoCommand(InfluxDB, influxdb.Info),
 		catalog.LogsCommand(InfluxDB),
 
-		catalog.ConsoleCommand(InfluxDB, influxdb.ConsolePort),
+		catalog.ConsoleCommand(InfluxDB, influxdb.Info, influxdb.ConsolePort),
 		catalog.ShellCommand(InfluxDB, influxdb.DefaultShell),
 	},
 }

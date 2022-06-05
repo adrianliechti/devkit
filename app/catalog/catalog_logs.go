@@ -14,7 +14,7 @@ func LogsCommand(kind string) *cli.Command {
 			ctx := c.Context
 			container := MustContainer(ctx, kind)
 
-			return docker.Logs(ctx, container, docker.LogsOptions{
+			return docker.Logs(ctx, container.Name, docker.LogsOptions{
 				Follow: true,
 			})
 		},

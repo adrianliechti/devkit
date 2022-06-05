@@ -22,7 +22,7 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(Grafana),
 
-		catalog.CreateCommand(Grafana, grafana.New),
+		catalog.CreateCommand(Grafana, grafana.New, grafana.Info),
 		catalog.DeleteCommand(Grafana),
 
 		catalog.InfoCommand(Grafana, grafana.Info),

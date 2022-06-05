@@ -22,7 +22,7 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(MariaDB),
 
-		catalog.CreateCommand(MariaDB, mariadb.New),
+		catalog.CreateCommand(MariaDB, mariadb.New, mariadb.Info),
 		catalog.DeleteCommand(MariaDB),
 
 		catalog.InfoCommand(MariaDB, mariadb.Info),

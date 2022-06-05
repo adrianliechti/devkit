@@ -22,7 +22,7 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(DB2),
 
-		catalog.CreateCommand(DB2, db2.New),
+		catalog.CreateCommand(DB2, db2.New, db2.Info),
 		catalog.DeleteCommand(DB2),
 
 		catalog.InfoCommand(DB2, db2.Info),

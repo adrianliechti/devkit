@@ -22,13 +22,13 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(RabbitMQ),
 
-		catalog.CreateCommand(RabbitMQ, rabbitmq.New),
+		catalog.CreateCommand(RabbitMQ, rabbitmq.New, rabbitmq.Info),
 		catalog.DeleteCommand(RabbitMQ),
 
 		catalog.InfoCommand(RabbitMQ, rabbitmq.Info),
 		catalog.LogsCommand(RabbitMQ),
 
-		catalog.ConsoleCommand(RabbitMQ, rabbitmq.ConsolePort),
+		catalog.ConsoleCommand(RabbitMQ, rabbitmq.Info, rabbitmq.ConsolePort),
 		catalog.ShellCommand(RabbitMQ, rabbitmq.DefaultShell),
 	},
 }

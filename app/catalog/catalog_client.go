@@ -14,12 +14,11 @@ func ClientCommand(kind string, h ClientHandler) *cli.Command {
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
+			container := MustContainer(ctx, kind)
 
-			name := MustContainer(ctx, kind)
+			shell, args := h()
 
-			command, args := h()
-
-			return docker.ExecInteractive(ctx, name, docker.ExecOptions{}, command, args...)
+			return docker.ExecInteractive(ctx, container.Name, docker.ExecOptions{}, shell, args...)
 		},
 	}
 }

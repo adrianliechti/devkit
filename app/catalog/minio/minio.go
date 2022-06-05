@@ -22,13 +22,13 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(MinIO),
 
-		catalog.CreateCommand(MinIO, minio.New),
+		catalog.CreateCommand(MinIO, minio.New, minio.Info),
 		catalog.DeleteCommand(MinIO),
 
 		catalog.InfoCommand(MinIO, minio.Info),
 		catalog.LogsCommand(MinIO),
 
-		catalog.ConsoleCommand(MinIO, minio.ConsolePort),
+		catalog.ConsoleCommand(MinIO, minio.Info, minio.ConsolePort),
 		catalog.ShellCommand(MinIO, minio.DefaultShell),
 	},
 }

@@ -22,7 +22,7 @@ var Command = &cli.Command{
 	Subcommands: []*cli.Command{
 		catalog.ListCommand(PostgreSQL),
 
-		catalog.CreateCommand(PostgreSQL, postgres.New),
+		catalog.CreateCommand(PostgreSQL, postgres.New, postgres.Info),
 		catalog.DeleteCommand(PostgreSQL),
 
 		catalog.InfoCommand(PostgreSQL, postgres.Info),
