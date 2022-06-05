@@ -187,7 +187,7 @@ func infoCommand(m catalog.Manager) *cli.Command {
 
 	return &cli.Command{
 		Name:  "info",
-		Usage: "display instance info",
+		Usage: "show instance info",
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
@@ -272,7 +272,7 @@ func consoleCommand(p catalog.ConsoleProvider) *cli.Command {
 
 	return &cli.Command{
 		Name:  "console",
-		Usage: "open web console",
+		Usage: "run console in browser",
 
 		Flags: []cli.Flag{
 			app.PortFlag(""),
