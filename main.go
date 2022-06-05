@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/adrianliechti/devkit/app/catalog"
 	"github.com/adrianliechti/devkit/app/catalog/cassandra"
 	"github.com/adrianliechti/devkit/app/catalog/db2"
 	"github.com/adrianliechti/devkit/app/catalog/elasticsearch"
@@ -23,7 +24,6 @@ import (
 	"github.com/adrianliechti/devkit/app/catalog/mssql"
 	"github.com/adrianliechti/devkit/app/catalog/mysql"
 	"github.com/adrianliechti/devkit/app/catalog/nats"
-	"github.com/adrianliechti/devkit/app/catalog/postgres"
 	"github.com/adrianliechti/devkit/app/catalog/rabbitmq"
 	"github.com/adrianliechti/devkit/app/catalog/redis"
 	"github.com/adrianliechti/devkit/app/catalog/sonarqube"
@@ -35,6 +35,7 @@ import (
 	"github.com/adrianliechti/devkit/app/utility/image"
 	"github.com/adrianliechti/devkit/app/utility/proxy"
 	"github.com/adrianliechti/devkit/app/utility/server"
+	"github.com/adrianliechti/devkit/pkg/catalog/postgres"
 	"github.com/adrianliechti/devkit/pkg/cli"
 )
 
@@ -60,7 +61,8 @@ func initApp() cli.App {
 		Commands: []*cli.Command{
 			mysql.Command,
 			mariadb.Command,
-			postgres.Command,
+			//postgres.Command,
+			catalog.Command(&postgres.Manager{}),
 			mongodb.Command,
 			mssql.Command,
 			cassandra.Command,
