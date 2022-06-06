@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/adrianliechti/devkit/pkg/container/engine"
+	"github.com/adrianliechti/devkit/pkg/engine"
 
 	"github.com/cpuguy83/dockercfg"
 	"github.com/docker/distribution/reference"
@@ -67,12 +67,8 @@ func (m *Moby) List(ctx context.Context, options engine.ListOptions) ([]engine.C
 			return nil, err
 		}
 
-		println(container.Hostname)
-
 		containers = append(containers, container)
 	}
-
-	println("done")
 
 	return containers, nil
 }
@@ -152,6 +148,9 @@ func (m *Moby) Logs(ctx context.Context, container string, options engine.LogsOp
 }
 
 func registryCredentials(image string) string {
+	// echo "https://index.docker.io/v1/"|docker-credential-desktop get
+	// {"ServerURL":"https://index.docker.io/v1/","Username":"xxxxx","Secret":"xxxxx"}
+
 	ref, err := reference.ParseNormalizedNamed(image)
 
 	if err != nil {
@@ -204,8 +203,8 @@ func convertContainer(data types.ContainerJSON) engine.Container {
 		Hostname:  data.Config.Hostname,
 		IPAddress: net.ParseIP(data.NetworkSettings.IPAddress),
 
-		Ports:  []engine.ContainerPort{},
-		Mounts: []engine.ContainerMount{},
+		Ports:  []*engine.ContainerPort{},
+		Mounts: []*engine.ContainerMount{},
 	}
 
 	if data.Config.User != "" {
@@ -231,7 +230,7 @@ func convertContainer(data types.ContainerJSON) engine.Container {
 
 	for p, m := range data.NetworkSettings.Ports {
 		for _, b := range m {
-			port := engine.ContainerPort{
+			port := &engine.ContainerPort{
 				Port:  p.Int(),
 				Proto: engine.Protocol(p.Proto()),
 			}
@@ -248,7 +247,7 @@ func convertContainer(data types.ContainerJSON) engine.Container {
 	}
 
 	for _, m := range data.Mounts {
-		mount := engine.ContainerMount{
+		mount := &engine.ContainerMount{
 			Path: m.Destination,
 		}
 

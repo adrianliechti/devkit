@@ -2,7 +2,7 @@ package jaeger
 
 import (
 	"github.com/adrianliechti/devkit/pkg/catalog"
-	"github.com/adrianliechti/devkit/pkg/container"
+	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
 var (
@@ -35,10 +35,10 @@ const (
 	DefaultShell = "/bin/bash"
 )
 
-func (m *Manager) New() (container.Container, error) {
+func (m *Manager) New() (engine.Container, error) {
 	image := "jaegertracing/all-in-one:1.35"
 
-	return container.Container{
+	return engine.Container{
 		Image: image,
 
 		Env: map[string]string{
@@ -46,47 +46,47 @@ func (m *Manager) New() (container.Container, error) {
 			"COLLECTOR_OTLP_ENABLED":     "true",
 		},
 
-		Ports: []*container.ContainerPort{
+		Ports: []*engine.ContainerPort{
 			{
-				Name:     "jaeger-thrift-compact",
-				Port:     6831,
-				Protocol: container.ProtocolUDP,
+				Name:  "jaeger-thrift-compact",
+				Port:  6831,
+				Proto: engine.ProtocolUDP,
 			},
 			{
-				Name:     "jaeger-thrift-binary",
-				Port:     6832,
-				Protocol: container.ProtocolUDP,
+				Name:  "jaeger-thrift-binary",
+				Port:  6832,
+				Proto: engine.ProtocolUDP,
 			},
 			{
-				Name:     "otlp-grpc",
-				Port:     4317,
-				Protocol: container.ProtocolTCP,
+				Name:  "otlp-grpc",
+				Port:  4317,
+				Proto: engine.ProtocolTCP,
 			},
 			{
-				Name:     "otlp-http",
-				Port:     4318,
-				Protocol: container.ProtocolTCP,
+				Name:  "otlp-http",
+				Port:  4318,
+				Proto: engine.ProtocolTCP,
 			},
 			{
-				Name:     "zipkin",
-				Port:     9411,
-				Protocol: container.ProtocolTCP,
+				Name:  "zipkin",
+				Port:  9411,
+				Proto: engine.ProtocolTCP,
 			},
 		},
 	}, nil
 }
 
-func (m *Manager) Info(instance container.Container) (map[string]string, error) {
+func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 	return map[string]string{}, nil
 }
 
-func (m *Manager) Shell(instance container.Container) (string, error) {
+func (m *Manager) Shell(instance engine.Container) (string, error) {
 	return DefaultShell, nil
 }
 
-func (m *Manager) ConsolePort(instance container.Container) (*container.ContainerPort, error) {
-	return &container.ContainerPort{
-		Port:     16686,
-		Protocol: container.ProtocolTCP,
+func (m *Manager) ConsolePort(instance engine.Container) (*engine.ContainerPort, error) {
+	return &engine.ContainerPort{
+		Port:  16686,
+		Proto: engine.ProtocolTCP,
 	}, nil
 }

@@ -2,7 +2,7 @@ package mailtrap
 
 import (
 	"github.com/adrianliechti/devkit/pkg/catalog"
-	"github.com/adrianliechti/devkit/pkg/container"
+	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/sethvargo/go-password/password"
 )
 
@@ -36,34 +36,35 @@ const (
 	DefaultShell = "/bin/bash"
 )
 
-func (m *Manager) New() (container.Container, error) {
+func (m *Manager) New() (engine.Container, error) {
 	image := "adrianliechti/loop-mailtrap"
 
 	username := "admin"
 	password := password.MustGenerate(10, 4, 0, false, false)
 
-	return container.Container{
+	return engine.Container{
 		Image: image,
 
-		PlatformContext: &container.PlatformContext{
-			Platform: "linux/amd64",
-		},
+		// TODO
+		// PlatformContext: &container.PlatformContext{
+		// 	Platform: "linux/amd64",
+		// },
 
 		Env: map[string]string{
 			"USERNAME": username,
 			"PASSWORD": password,
 		},
 
-		Ports: []*container.ContainerPort{
+		Ports: []*engine.ContainerPort{
 			{
-				Port:     25,
-				Protocol: container.ProtocolTCP,
+				Port:  25,
+				Proto: engine.ProtocolTCP,
 			},
 		},
 	}, nil
 }
 
-func (m *Manager) Info(instance container.Container) (map[string]string, error) {
+func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 	username := instance.Env["USERNAME"]
 	password := instance.Env["PASSWORD"]
 
@@ -73,13 +74,13 @@ func (m *Manager) Info(instance container.Container) (map[string]string, error) 
 	}, nil
 }
 
-func (m *Manager) Shell(instance container.Container) (string, error) {
+func (m *Manager) Shell(instance engine.Container) (string, error) {
 	return DefaultShell, nil
 }
 
-func (m *Manager) ConsolePort(instance container.Container) (*container.ContainerPort, error) {
-	return &container.ContainerPort{
-		Port:     80,
-		Protocol: container.ProtocolTCP,
+func (m *Manager) ConsolePort(instance engine.Container) (*engine.ContainerPort, error) {
+	return &engine.ContainerPort{
+		Port:  80,
+		Proto: engine.ProtocolTCP,
 	}, nil
 }

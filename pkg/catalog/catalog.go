@@ -1,7 +1,7 @@
 package catalog
 
 import (
-	"github.com/adrianliechti/devkit/pkg/container"
+	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
 type Category string
@@ -17,8 +17,8 @@ type Manager interface {
 	Name() string
 	Category() Category
 
-	New() (container.Container, error)
-	Info(container.Container) (map[string]string, error)
+	New() (engine.Container, error)
+	Info(engine.Container) (map[string]string, error)
 }
 
 type Decorator interface {
@@ -29,15 +29,15 @@ type Decorator interface {
 
 type ShellProvider interface {
 	Manager
-	Shell(container.Container) (string, error)
+	Shell(engine.Container) (string, error)
 }
 
 type ClientProvider interface {
 	Manager
-	Client(container.Container) (string, []string, error)
+	Client(engine.Container) (string, []string, error)
 }
 
 type ConsoleProvider interface {
 	Manager
-	ConsolePort(container.Container) (*container.ContainerPort, error)
+	ConsolePort(engine.Container) (*engine.ContainerPort, error)
 }

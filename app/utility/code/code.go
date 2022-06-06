@@ -10,7 +10,7 @@ import (
 	"github.com/adrianliechti/devkit/app/utility"
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/docker"
-	"github.com/adrianliechti/devkit/pkg/to"
+	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
 var Command = &cli.Command{
@@ -24,12 +24,15 @@ var Command = &cli.Command{
 	},
 
 	Action: func(c *cli.Context) error {
+		client := app.MustClient(c)
+
 		port := app.MustPortOrRandom(c, "", 3000)
-		return startCode(c.Context, port)
+
+		return startCode(c.Context, client, port)
 	},
 }
 
-func startCode(ctx context.Context, port int) error {
+func startCode(ctx context.Context, client engine.Engine, port int) error {
 	image := "adrianliechti/loop-code"
 
 	path, err := os.Getwd()
@@ -38,7 +41,7 @@ func startCode(ctx context.Context, port int) error {
 		return err
 	}
 
-	docker.Pull(ctx, image, docker.PullOptions{
+	client.Pull(ctx, image, engine.PullOptions{
 		Platform: "linux/amd64",
 	})
 
@@ -58,7 +61,7 @@ func startCode(ctx context.Context, port int) error {
 				Port:     3000,
 				Protocol: docker.ProtocolTCP,
 
-				HostPort: to.IntPtr(port),
+				HostPort: &port,
 			},
 		},
 

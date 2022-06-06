@@ -2,7 +2,7 @@ package ghost
 
 import (
 	"github.com/adrianliechti/devkit/pkg/catalog"
-	"github.com/adrianliechti/devkit/pkg/container"
+	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
 var (
@@ -35,24 +35,24 @@ const (
 	DefaultShell = "/bin/bash"
 )
 
-func (m *Manager) New() (container.Container, error) {
+func (m *Manager) New() (engine.Container, error) {
 	image := "ghost:5"
 
-	return container.Container{
+	return engine.Container{
 		Image: image,
 
 		Env: map[string]string{
 			"url": "http://localhost:2368",
 		},
 
-		Ports: []*container.ContainerPort{
+		Ports: []*engine.ContainerPort{
 			{
-				Port:     2368,
-				Protocol: container.ProtocolTCP,
+				Port:  2368,
+				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		VolumeMounts: []*container.VolumeMount{
+		Mounts: []*engine.ContainerMount{
 			{
 				Path: "/var/lib/ghost/content",
 			},
@@ -60,17 +60,17 @@ func (m *Manager) New() (container.Container, error) {
 	}, nil
 }
 
-func (m *Manager) Info(instance container.Container) (map[string]string, error) {
+func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 	return map[string]string{}, nil
 }
 
-func (m *Manager) Shell(instance container.Container) (string, error) {
+func (m *Manager) Shell(instance engine.Container) (string, error) {
 	return DefaultShell, nil
 }
 
-func (m *Manager) ConsolePort(instance container.Container) (*container.ContainerPort, error) {
-	return &container.ContainerPort{
-		Port:     2368,
-		Protocol: container.ProtocolTCP,
+func (m *Manager) ConsolePort(instance engine.Container) (*engine.ContainerPort, error) {
+	return &engine.ContainerPort{
+		Port:  2368,
+		Proto: engine.ProtocolTCP,
 	}, nil
 }

@@ -2,7 +2,7 @@ package mysql
 
 import (
 	"github.com/adrianliechti/devkit/pkg/catalog"
-	"github.com/adrianliechti/devkit/pkg/container"
+	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/sethvargo/go-password/password"
 )
 
@@ -36,13 +36,13 @@ const (
 	DefaultShell = "/bin/bash"
 )
 
-func (m *Manager) New() (container.Container, error) {
+func (m *Manager) New() (engine.Container, error) {
 	image := "docker.io/library/mysql:8-oracle"
 
 	database := "db"
 	password := password.MustGenerate(10, 4, 0, false, false)
 
-	return container.Container{
+	return engine.Container{
 		Image: image,
 
 		Env: map[string]string{
@@ -50,14 +50,14 @@ func (m *Manager) New() (container.Container, error) {
 			"MYSQL_ROOT_PASSWORD": password,
 		},
 
-		Ports: []*container.ContainerPort{
+		Ports: []*engine.ContainerPort{
 			{
-				Port:     3306,
-				Protocol: container.ProtocolTCP,
+				Port:  3306,
+				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		VolumeMounts: []*container.VolumeMount{
+		Mounts: []*engine.ContainerMount{
 			{
 				Path: "/var/lib/mysql",
 			},
@@ -65,7 +65,7 @@ func (m *Manager) New() (container.Container, error) {
 	}, nil
 }
 
-func (m *Manager) Info(instance container.Container) (map[string]string, error) {
+func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 	database := instance.Env["MYSQL_DATABASE"]
 	username := "root"
 	password := instance.Env["MYSQL_ROOT_PASSWORD"]
@@ -77,11 +77,11 @@ func (m *Manager) Info(instance container.Container) (map[string]string, error) 
 	}, nil
 }
 
-func (m *Manager) Shell(instance container.Container) (string, error) {
+func (m *Manager) Shell(instance engine.Container) (string, error) {
 	return DefaultShell, nil
 }
 
-func (m *Manager) Client(instance container.Container) (string, []string, error) {
+func (m *Manager) Client(instance engine.Container) (string, []string, error) {
 	return DefaultShell, []string{
 		"-c",
 		"mysql --user=root --password=${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE}",

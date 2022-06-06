@@ -2,8 +2,7 @@ package elasticsearch
 
 import (
 	"github.com/adrianliechti/devkit/pkg/catalog"
-	"github.com/adrianliechti/devkit/pkg/container"
-	"github.com/adrianliechti/devkit/pkg/to"
+	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/sethvargo/go-password/password"
 )
 
@@ -36,12 +35,12 @@ const (
 	DefaultShell = "/bin/bash"
 )
 
-func (m *Manager) New() (container.Container, error) {
+func (m *Manager) New() (engine.Container, error) {
 	image := "docker.elastic.co/elasticsearch/elasticsearch:8.2.0"
 
 	password := password.MustGenerate(10, 4, 0, false, false)
 
-	return container.Container{
+	return engine.Container{
 		Image: image,
 
 		Env: map[string]string{
@@ -55,30 +54,31 @@ func (m *Manager) New() (container.Container, error) {
 			"ELASTIC_PASSWORD": password,
 		},
 
-		Ports: []*container.ContainerPort{
+		Ports: []*engine.ContainerPort{
 			{
-				Port:     9200,
-				Protocol: container.ProtocolTCP,
+				Port:  9200,
+				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		VolumeMounts: []*container.VolumeMount{
+		Mounts: []*engine.ContainerMount{
 			{
 				Path: "/usr/share/elasticsearch/data",
 			},
 		},
 
-		PlatformContext: &container.PlatformContext{
-			MaxNoFiles: to.IntPtr(65535),
-		},
+		// TODO
+		// PlatformContext: &container.PlatformContext{
+		// 	MaxNoFiles: to.IntPtr(65535),
+		// },
 	}, nil
 }
 
-func (m *Manager) Shell(instance container.Container) (string, error) {
+func (m *Manager) Shell(instance engine.Container) (string, error) {
 	return DefaultShell, nil
 }
 
-func (m *Manager) Info(instance container.Container) (map[string]string, error) {
+func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 	username := "elastic"
 	password := instance.Env["ELASTIC_PASSWORD"]
 

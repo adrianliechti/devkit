@@ -2,7 +2,7 @@ package azurite
 
 import (
 	"github.com/adrianliechti/devkit/pkg/catalog"
-	"github.com/adrianliechti/devkit/pkg/container"
+	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
 var (
@@ -34,35 +34,35 @@ const (
 	DefaultShell = "/bin/ash"
 )
 
-func (m *Manager) New() (container.Container, error) {
+func (m *Manager) New() (engine.Container, error) {
 	image := "mcr.microsoft.com/azure-storage/azurite:3.17.1"
 
-	return container.Container{
+	return engine.Container{
 		Image: image,
 
 		Env: map[string]string{
 			// AZURITE_ACCOUNTS="account1:key1:key2;account2:key1:key2"
 		},
 
-		Ports: []*container.ContainerPort{
+		Ports: []*engine.ContainerPort{
 			{
-				Name:     "blob",
-				Port:     10000,
-				Protocol: container.ProtocolTCP,
+				Name:  "blob",
+				Port:  10000,
+				Proto: engine.ProtocolTCP,
 			},
 			{
-				Name:     "queue",
-				Port:     10001,
-				Protocol: container.ProtocolTCP,
+				Name:  "queue",
+				Port:  10001,
+				Proto: engine.ProtocolTCP,
 			},
 			{
-				Name:     "table",
-				Port:     10002,
-				Protocol: container.ProtocolTCP,
+				Name:  "table",
+				Port:  10002,
+				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		VolumeMounts: []*container.VolumeMount{
+		Mounts: []*engine.ContainerMount{
 			{
 				Path: "/data",
 			},
@@ -70,13 +70,13 @@ func (m *Manager) New() (container.Container, error) {
 	}, nil
 }
 
-func (m *Manager) Info(instance container.Container) (map[string]string, error) {
+func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 	return map[string]string{
 		"Account":    "devstoreaccount1",
 		"AccountKey": "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==",
 	}, nil
 }
 
-func (m *Manager) Shell(instance container.Container) (string, error) {
+func (m *Manager) Shell(instance engine.Container) (string, error) {
 	return DefaultShell, nil
 }

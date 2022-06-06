@@ -62,8 +62,8 @@ type Container struct {
 	Hostname  string
 	IPAddress net.IP
 
-	Ports  []ContainerPort
-	Mounts []ContainerMount
+	Ports  []*ContainerPort
+	Mounts []*ContainerMount
 }
 
 type Protocol string
@@ -74,6 +74,8 @@ const (
 )
 
 type ContainerPort struct {
+	Name string
+
 	Port  int
 	Proto Protocol
 

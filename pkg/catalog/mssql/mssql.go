@@ -4,7 +4,7 @@ import (
 	"runtime"
 
 	"github.com/adrianliechti/devkit/pkg/catalog"
-	"github.com/adrianliechti/devkit/pkg/container"
+	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/sethvargo/go-password/password"
 )
 
@@ -38,7 +38,7 @@ const (
 	DefaultShell = "/bin/bash"
 )
 
-func (m *Manager) New() (container.Container, error) {
+func (m *Manager) New() (engine.Container, error) {
 	image := "mcr.microsoft.com/mssql/server:2019-latest"
 
 	if runtime.GOARCH == "arm64" {
@@ -47,7 +47,7 @@ func (m *Manager) New() (container.Container, error) {
 
 	password := password.MustGenerate(10, 4, 0, false, false)
 
-	return container.Container{
+	return engine.Container{
 		Image: image,
 
 		Env: map[string]string{
@@ -58,14 +58,14 @@ func (m *Manager) New() (container.Container, error) {
 			"MSSQL_SA_PASSWORD": password,
 		},
 
-		Ports: []*container.ContainerPort{
+		Ports: []*engine.ContainerPort{
 			{
-				Port:     1433,
-				Protocol: container.ProtocolTCP,
+				Port:  1433,
+				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		VolumeMounts: []*container.VolumeMount{
+		Mounts: []*engine.ContainerMount{
 			{
 				Path: "/var/opt/mssql",
 			},
@@ -73,7 +73,7 @@ func (m *Manager) New() (container.Container, error) {
 	}, nil
 }
 
-func (m *Manager) Info(instance container.Container) (map[string]string, error) {
+func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 	username := "sa"
 	password := instance.Env["SA_PASSWORD"]
 
@@ -83,11 +83,11 @@ func (m *Manager) Info(instance container.Container) (map[string]string, error) 
 	}, nil
 }
 
-func (m *Manager) Shell(instance container.Container) (string, error) {
+func (m *Manager) Shell(instance engine.Container) (string, error) {
 	return DefaultShell, nil
 }
 
-func (m *Manager) Client(instance container.Container) (string, []string, error) {
+func (m *Manager) Client(instance engine.Container) (string, []string, error) {
 	return DefaultShell, []string{
 		"-c",
 		"/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${SA_PASSWORD}",

@@ -2,14 +2,15 @@ package catalog
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
 	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/pkg/catalog"
 	"github.com/adrianliechti/devkit/pkg/cli"
-	"github.com/adrianliechti/devkit/pkg/container"
 	"github.com/adrianliechti/devkit/pkg/docker"
+	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
 func Command(m catalog.Manager) *cli.Command {
@@ -62,11 +63,14 @@ func listCommand(m catalog.Manager) *cli.Command {
 		Usage: "list instances",
 
 		Action: func(c *cli.Context) error {
-			list, err := docker.List(c.Context, docker.ListOptions{
+			ctx := c.Context
+			client := app.MustClient(c)
+
+			containers, err := client.List(ctx, engine.ListOptions{
 				All: true,
 
-				Filter: []string{
-					fmt.Sprintf("label=%s=%s", KindKey, kind(m)),
+				LabelSelector: map[string]string{
+					KindKey: kind(m),
 				},
 			})
 
@@ -74,9 +78,8 @@ func listCommand(m catalog.Manager) *cli.Command {
 				return err
 			}
 
-			for _, c := range list {
-				name := c.Names[0]
-				cli.Info(name)
+			for _, container := range containers {
+				cli.Info(container.Name)
 			}
 
 			return nil
@@ -99,10 +102,10 @@ func createCommand(m catalog.Manager) *cli.Command {
 			name = "port"
 		}
 
-		proto := p.Protocol
+		proto := string(p.Proto)
 
 		if proto == "" {
-			proto = container.ProtocolTCP
+			proto = string(engine.ProtocolTCP)
 		}
 
 		f := app.PortFlag(name)
@@ -120,6 +123,8 @@ func createCommand(m catalog.Manager) *cli.Command {
 
 		Action: func(c *cli.Context) error {
 			ctx := c.Context
+			client := app.MustClient(c)
+
 			spec, err := m.New()
 
 			if err != nil {
@@ -146,7 +151,10 @@ func createCommand(m catalog.Manager) *cli.Command {
 				}
 			}
 
-			docker.Pull(ctx, spec.Image, convertPullOptions(spec))
+			// TODO
+			client.Pull(ctx, spec.Image, engine.PullOptions{
+				//Platform: spec.PlatformContext.Platform,
+			})
 
 			if err := docker.Run(ctx, spec.Image, convertRunOptions(spec), spec.Args...); err != nil {
 				return err
@@ -172,12 +180,10 @@ func deleteCommand(m catalog.Manager) *cli.Command {
 		Usage: "delete instance",
 
 		Action: func(c *cli.Context) error {
-			container := MustContainer(c.Context, kind)
+			client := app.MustClient(c)
+			container := MustContainer(c.Context, client, kind, true)
 
-			return docker.Delete(c.Context, container.Name, docker.DeleteOptions{
-				Force:   true,
-				Volumes: true,
-			})
+			return client.Remove(c.Context, container.ID, engine.RemoveOptions{})
 		},
 	}
 }
@@ -190,8 +196,8 @@ func infoCommand(m catalog.Manager) *cli.Command {
 		Usage: "show instance info",
 
 		Action: func(c *cli.Context) error {
-			ctx := c.Context
-			container := MustContainer(ctx, kind)
+			client := app.MustClient(c)
+			container := MustContainer(c.Context, client, kind, true)
 
 			info, err := m.Info(container)
 
@@ -213,11 +219,13 @@ func logsCommand(m catalog.Manager) *cli.Command {
 		Usage: "show instance logs",
 
 		Action: func(c *cli.Context) error {
-			ctx := c.Context
-			container := MustContainer(ctx, kind)
+			client := app.MustClient(c)
+			container := MustContainer(c.Context, client, kind, true)
 
-			return docker.Logs(ctx, container.Name, docker.LogsOptions{
+			return client.Logs(c.Context, container.ID, engine.LogsOptions{
 				Follow: true,
+				Stdout: os.Stdout,
+				Stderr: os.Stderr,
 			})
 		},
 	}
@@ -231,16 +239,16 @@ func clientCommand(p catalog.ClientProvider) *cli.Command {
 		Usage: "run client in instance",
 
 		Action: func(c *cli.Context) error {
-			ctx := c.Context
-			container := MustContainer(ctx, kind)
+			client := app.MustClient(c)
+			container := MustContainer(c.Context, client, kind, true)
 
-			shell, args, err := p.Client(container)
+			cmd, args, err := p.Client(container)
 
 			if err != nil {
 				return err
 			}
 
-			return docker.ExecInteractive(ctx, container.Name, docker.ExecOptions{}, shell, args...)
+			return docker.ExecInteractive(c.Context, container.Name, docker.ExecOptions{}, cmd, args...)
 		},
 	}
 }
@@ -253,16 +261,16 @@ func shellCommand(p catalog.ShellProvider) *cli.Command {
 		Usage: "run shell in instance",
 
 		Action: func(c *cli.Context) error {
-			ctx := c.Context
-			container := MustContainer(ctx, kind)
+			client := app.MustClient(c)
+			container := MustContainer(c.Context, client, kind, true)
 
-			shell, err := p.Shell(container)
+			cmd, err := p.Shell(container)
 
 			if err != nil {
 				return err
 			}
 
-			return docker.ExecInteractive(ctx, container.Name, docker.ExecOptions{}, shell)
+			return docker.ExecInteractive(c.Context, container.Name, docker.ExecOptions{}, cmd)
 		},
 	}
 }
@@ -279,8 +287,8 @@ func consoleCommand(p catalog.ConsoleProvider) *cli.Command {
 		},
 
 		Action: func(c *cli.Context) error {
-			ctx := c.Context
-			container := MustContainer(ctx, kind)
+			client := app.MustClient(c)
+			container := MustContainer(c.Context, client, kind, true)
 
 			info, err := p.Info(container)
 
@@ -296,7 +304,7 @@ func consoleCommand(p catalog.ConsoleProvider) *cli.Command {
 
 			port := app.MustPortOrRandom(c, "", mapping.Port)
 
-			docker.Pull(ctx, "alpine/socat", docker.PullOptions{})
+			client.Pull(c.Context, "alpine/socat", engine.PullOptions{})
 
 			time.AfterFunc(1*time.Second, func() {
 				cli.OpenURL(fmt.Sprintf("http://localhost:%d", port))

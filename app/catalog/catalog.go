@@ -3,36 +3,29 @@ package catalog
 import (
 	"context"
 	"errors"
-	"fmt"
+	"strings"
 
 	"github.com/adrianliechti/devkit/pkg/cli"
-	"github.com/adrianliechti/devkit/pkg/container"
 	"github.com/adrianliechti/devkit/pkg/docker"
-	"github.com/adrianliechti/devkit/pkg/to"
+	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
 const (
 	KindKey = "local.devkit.kind"
 )
 
-func Container(ctx context.Context, name string) (*container.Container, error) {
-	info, err := docker.Info(ctx, name)
+func SelectContainer(ctx context.Context, client engine.Engine, kind string, all bool) (*engine.Container, error) {
+	containers, err := client.List(ctx, engine.ListOptions{
+		All: all,
+
+		LabelSelector: map[string]string{
+			KindKey: kind,
+		},
+	})
 
 	if err != nil {
 		return nil, err
 	}
-
-	return convertContainer(info), nil
-}
-
-func SelectContainer(ctx context.Context, kind string) (*container.Container, error) {
-	list, err := docker.List(ctx, docker.ListOptions{
-		All: true,
-
-		Filter: []string{
-			"label=" + KindKey + "=" + kind,
-		},
-	})
 
 	var items []string
 
@@ -40,26 +33,26 @@ func SelectContainer(ctx context.Context, kind string) (*container.Container, er
 		return nil, err
 	}
 
-	for _, c := range list {
-		name := c.Names[0]
-		items = append(items, name)
+	for _, i := range containers {
+		items = append(items, i.Name)
 	}
 
 	if len(items) == 0 {
-		return nil, errors.New("no instances found")
+		return nil, errors.New("no container(s) found")
 	}
 
-	i, _, err := cli.Select("select instance", items)
+	i, _, err := cli.Select("select container", items)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return Container(ctx, list[i].ID)
+	container := containers[i]
+	return &container, nil
 }
 
-func MustContainer(ctx context.Context, kind string) container.Container {
-	container, err := SelectContainer(ctx, kind)
+func MustContainer(ctx context.Context, client engine.Engine, kind string, all bool) engine.Container {
+	container, err := SelectContainer(ctx, client, kind, all)
 
 	if err != nil {
 		cli.Fatal(err)
@@ -68,98 +61,84 @@ func MustContainer(ctx context.Context, kind string) container.Container {
 	return *container
 }
 
-func convertContainer(info *docker.ContainerInfo) *container.Container {
-	if info == nil {
-		return nil
-	}
+// func convertContainer(info *docker.ContainerInfo) *container.Container {
+// 	if info == nil {
+// 		return nil
+// 	}
 
-	container := &container.Container{
-		Name: info.Name,
+// 	container := &container.Container{
+// 		Name: info.Name,
 
-		//Labels: info.Labels,
+// 		//Labels: info.Labels,
 
-		Image:   info.Image,
-		Command: info.Cmd,
-		Args:    info.Args,
+// 		Image:   info.Image,
+// 		Command: info.Cmd,
+// 		Args:    info.Args,
 
-		WorkingDir: info.Dir,
+// 		WorkingDir: info.Dir,
 
-		Env: info.Env,
-	}
+// 		Env: info.Env,
+// 	}
 
-	return container
-}
+// 	return container
+// }
 
-func convertPullOptions(container container.Container) docker.PullOptions {
-	options := docker.PullOptions{}
+// func convertPullOptions(container container.Container) docker.PullOptions {
+// 	options := docker.PullOptions{}
 
-	if container.PlatformContext != nil {
-		options.Platform = container.PlatformContext.Platform
-	}
+// 	if container.PlatformContext != nil {
+// 		options.Platform = container.PlatformContext.Platform
+// 	}
 
-	return options
-}
+// 	return options
+// }
 
-func convertRunOptions(container container.Container) docker.RunOptions {
+func convertRunOptions(container engine.Container) docker.RunOptions {
 	options := docker.RunOptions{
 		Name:   container.Name,
 		Labels: container.Labels,
 
-		Dir: container.WorkingDir,
+		Privileged: container.Privileged,
 
-		Env: container.Env,
+		Dir:  container.Dir,
+		User: strings.Join([]string{container.RunAsUser, container.RunAsGroup}, ":"),
+
+		Env:     container.Env,
+		Ports:   []docker.ContainerPort{},
+		Volumes: []docker.ContainerMount{},
 	}
 
-	if container.PlatformContext != nil {
-		options.Platform = container.PlatformContext.Platform
+	// TODO
+	// if container.PlatformContext != nil {
+	// 	options.Platform = container.PlatformContext.Platform
 
-		if container.PlatformContext.MaxNoProcs != nil {
-			options.MaxNoProcs = *container.PlatformContext.MaxNoProcs
-		}
+	// 	if container.PlatformContext.MaxNoProcs != nil {
+	// 		options.MaxNoProcs = *container.PlatformContext.MaxNoProcs
+	// 	}
 
-		if container.PlatformContext.MaxNoFiles != nil {
-			options.MaxNoFiles = *container.PlatformContext.MaxNoFiles
-		}
-	}
-
-	if container.SecurityContext != nil {
-		options.Privileged = to.Bool(container.SecurityContext.Privileged)
-
-		if container.SecurityContext.RunAsUser != nil {
-			user := fmt.Sprintf("%d", *container.SecurityContext.RunAsUser)
-
-			if container.SecurityContext.RunAsGroup != nil {
-				user += fmt.Sprintf(":%d", *container.SecurityContext.RunAsGroup)
-			}
-
-			options.User = user
-		}
-	}
-
-	ports := []docker.ContainerPort{}
+	// 	if container.PlatformContext.MaxNoFiles != nil {
+	// 		options.MaxNoFiles = *container.PlatformContext.MaxNoFiles
+	// 	}
+	// }
 
 	for _, p := range container.Ports {
-		ports = append(ports, docker.ContainerPort{
+		options.Ports = append(options.Ports, docker.ContainerPort{
 			Port:     p.Port,
-			Protocol: docker.Protocol(p.Protocol),
+			Protocol: docker.Protocol(p.Proto),
 
 			HostIP:   p.HostIP,
 			HostPort: p.HostPort,
 		})
 	}
 
-	options.Ports = ports
-
-	volumes := []docker.ContainerMount{}
-
-	for _, v := range container.VolumeMounts {
-		volumes = append(volumes, docker.ContainerMount{
-			Path:     v.Path,
-			HostPath: v.HostPath,
-		})
+	for _, v := range container.Mounts {
+		if v.HostPath != "" {
+			options.Volumes = append(options.Volumes, docker.ContainerMount{
+				Path:     v.Path,
+				HostPath: v.HostPath,
+			})
+		}
 	}
-
-	options.Volumes = volumes
 
 	return options
 }

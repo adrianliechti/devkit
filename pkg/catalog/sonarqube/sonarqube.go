@@ -4,8 +4,7 @@ import (
 	"runtime"
 
 	"github.com/adrianliechti/devkit/pkg/catalog"
-	"github.com/adrianliechti/devkit/pkg/container"
-	"github.com/adrianliechti/devkit/pkg/to"
+	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
 var (
@@ -38,14 +37,14 @@ const (
 	DefaultShell = "/bin/bash"
 )
 
-func (m *Manager) New() (container.Container, error) {
+func (m *Manager) New() (engine.Container, error) {
 	image := "sonarqube:9-community"
 
 	if runtime.GOARCH == "arm64" {
 		image = "mwizner/sonarqube:9.4.0-community"
 	}
 
-	return container.Container{
+	return engine.Container{
 		Image: image,
 
 		Env: map[string]string{
@@ -53,14 +52,14 @@ func (m *Manager) New() (container.Container, error) {
 			"SONAR_SEARCH_JAVAADDITIONALOPTS":   "-Dbootstrap.system_call_filter=false",
 		},
 
-		Ports: []*container.ContainerPort{
+		Ports: []*engine.ContainerPort{
 			{
-				Port:     9000,
-				Protocol: container.ProtocolTCP,
+				Port:  9000,
+				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		VolumeMounts: []*container.VolumeMount{
+		Mounts: []*engine.ContainerMount{
 			{
 				Path: "/opt/sonarqube/data",
 			},
@@ -72,14 +71,15 @@ func (m *Manager) New() (container.Container, error) {
 			},
 		},
 
-		PlatformContext: &container.PlatformContext{
-			MaxNoProcs: to.IntPtr(8192),
-			MaxNoFiles: to.IntPtr(131072),
-		},
+		// TODO
+		// PlatformContext: &container.PlatformContext{
+		// 	MaxNoProcs: to.IntPtr(8192),
+		// 	MaxNoFiles: to.IntPtr(131072),
+		// },
 	}, nil
 }
 
-func (m *Manager) Info(instance container.Container) (map[string]string, error) {
+func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 	username := "admin"
 	password := "admin"
 
@@ -89,13 +89,13 @@ func (m *Manager) Info(instance container.Container) (map[string]string, error) 
 	}, nil
 }
 
-func (m *Manager) Shell(instance container.Container) (string, error) {
+func (m *Manager) Shell(instance engine.Container) (string, error) {
 	return DefaultShell, nil
 }
 
-func (m *Manager) ConsolePort(instance container.Container) (*container.ContainerPort, error) {
-	return &container.ContainerPort{
-		Port:     9000,
-		Protocol: container.ProtocolTCP,
+func (m *Manager) ConsolePort(instance engine.Container) (*engine.ContainerPort, error) {
+	return &engine.ContainerPort{
+		Port:  9000,
+		Proto: engine.ProtocolTCP,
 	}, nil
 }

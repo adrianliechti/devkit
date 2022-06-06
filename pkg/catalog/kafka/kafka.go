@@ -2,7 +2,7 @@ package kafka
 
 import (
 	"github.com/adrianliechti/devkit/pkg/catalog"
-	"github.com/adrianliechti/devkit/pkg/container"
+	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
 var (
@@ -34,15 +34,16 @@ const (
 	DefaultShell = "/bin/bash"
 )
 
-func (m *Manager) New() (container.Container, error) {
+func (m *Manager) New() (engine.Container, error) {
 	image := "confluentinc/cp-kafka:7.1.0"
 
-	return container.Container{
+	return engine.Container{
 		Image: image,
 
-		PlatformContext: &container.PlatformContext{
-			Platform: "linux/amd64",
-		},
+		// TODO
+		// PlatformContext: &container.PlatformContext{
+		// 	Platform: "linux/amd64",
+		// },
 
 		Env: map[string]string{
 			"KAFKA_NODE_ID":   "1",
@@ -71,19 +72,19 @@ func (m *Manager) New() (container.Container, error) {
 			"sed -i '/KAFKA_ZOOKEEPER_CONNECT/d' /etc/confluent/docker/configure && sed -i '/cub zk-ready/d' /etc/confluent/docker/ensure && echo \"kafka-storage format --ignore-formatted -t $(kafka-storage random-uuid) -c /etc/kafka/kafka.properties\" >> /etc/confluent/docker/ensure && /etc/confluent/docker/run",
 		},
 
-		Ports: []*container.ContainerPort{
+		Ports: []*engine.ContainerPort{
 			{
-				Port:     9092,
-				Protocol: container.ProtocolTCP,
+				Port:  9092,
+				Proto: engine.ProtocolTCP,
 			},
 		},
 	}, nil
 }
 
-func (m *Manager) Info(instance container.Container) (map[string]string, error) {
+func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 	return map[string]string{}, nil
 }
 
-func (m *Manager) Shell(instance container.Container) (string, error) {
+func (m *Manager) Shell(instance engine.Container) (string, error) {
 	return DefaultShell, nil
 }

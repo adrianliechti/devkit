@@ -2,7 +2,7 @@ package nats
 
 import (
 	"github.com/adrianliechti/devkit/pkg/catalog"
-	"github.com/adrianliechti/devkit/pkg/container"
+	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/sethvargo/go-password/password"
 )
 
@@ -30,13 +30,13 @@ func (m *Manager) Description() string {
 	return "NATS is a connective technology that powers modern distributed systems."
 }
 
-func (m *Manager) New() (container.Container, error) {
+func (m *Manager) New() (engine.Container, error) {
 	image := "nats:2-linux"
 
 	username := "admin"
 	password := password.MustGenerate(10, 4, 0, false, false)
 
-	return container.Container{
+	return engine.Container{
 		Image: image,
 
 		Env: map[string]string{
@@ -52,14 +52,14 @@ func (m *Manager) New() (container.Container, error) {
 			"--pass", password,
 		},
 
-		Ports: []*container.ContainerPort{
+		Ports: []*engine.ContainerPort{
 			{
-				Port:     4222,
-				Protocol: container.ProtocolTCP,
+				Port:  4222,
+				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		VolumeMounts: []*container.VolumeMount{
+		Mounts: []*engine.ContainerMount{
 			{
 				Path: "/var/lib/mysql",
 			},
@@ -67,7 +67,7 @@ func (m *Manager) New() (container.Container, error) {
 	}, nil
 }
 
-func (m *Manager) Info(instance container.Container) (map[string]string, error) {
+func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 	username := instance.Env["USERNAME"]
 	password := instance.Env["PASSWORD"]
 
