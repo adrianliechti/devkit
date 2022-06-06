@@ -17,36 +17,6 @@ var (
 	errOutdated = errors.New("docker is outdated. see https://docs.docker.com/get-docker/")
 )
 
-type Container struct {
-	ID string
-
-	Names  []string
-	Labels map[string]string
-
-	Image string `json:"Image"`
-}
-
-type Protocol string
-
-const (
-	ProtocolTCP Protocol = "TCP"
-	ProtocolUDP Protocol = "UDP"
-)
-
-type ContainerPort struct {
-	Port     int
-	Protocol Protocol
-
-	HostIP   string
-	HostPort *int
-}
-
-type ContainerMount struct {
-	Path string
-
-	HostPath string
-}
-
 func Tool(ctx context.Context) (string, *semver.Version, error) {
 	path, version, err := Path(ctx)
 

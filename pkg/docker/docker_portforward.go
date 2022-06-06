@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 func PortForward(ctx context.Context, container string, source, target int) error {
@@ -15,13 +16,15 @@ func PortForward(ctx context.Context, container string, source, target int) erro
 		return err
 	}
 
-	info, err := Info(ctx, container)
+	inspect, err := exec.CommandContext(ctx, tool, "inspect", "--format", "{{ .NetworkSettings.IPAddress }}", container).Output()
 
 	if err != nil {
 		return err
 	}
 
-	if info.IPAddress == "" {
+	address := strings.TrimRight(string(inspect), "\n")
+
+	if address == "" {
 		return errors.New("invalid container ip")
 	}
 
@@ -31,7 +34,7 @@ func PortForward(ctx context.Context, container string, source, target int) erro
 
 		"alpine/socat",
 		fmt.Sprintf("TCP4-LISTEN:%d,fork,reuseaddr", source),
-		fmt.Sprintf("TCP4:%s:%d", info.IPAddress, target),
+		fmt.Sprintf("TCP4:%s:%d", address, target),
 	}
 
 	socat := exec.CommandContext(ctx, tool, args...)

@@ -56,16 +56,16 @@ func startCode(ctx context.Context, client engine.Client, port int) error {
 	options := docker.RunOptions{
 		Platform: "linux/amd64",
 
-		Ports: []docker.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
-				Port:     3000,
-				Protocol: docker.ProtocolTCP,
+				Port:  3000,
+				Proto: engine.ProtocolTCP,
 
 				HostPort: &port,
 			},
 		},
 
-		Volumes: []docker.ContainerMount{
+		Volumes: []engine.ContainerMount{
 			{
 				Path:     "/workspace",
 				HostPath: path,

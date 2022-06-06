@@ -6,6 +6,7 @@ import (
 
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/docker"
+	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
 var packCommand = &cli.Command{
@@ -46,7 +47,7 @@ func runPack(ctx context.Context, image, builder string) error {
 
 	options := docker.RunOptions{
 		User: "0:0",
-		Volumes: []docker.ContainerMount{
+		Volumes: []engine.ContainerMount{
 			{
 				Path:     "/src",
 				HostPath: wd,

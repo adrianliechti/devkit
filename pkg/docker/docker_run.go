@@ -7,7 +7,8 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
-	"strings"
+
+	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
 type RunOptions struct {
@@ -34,8 +35,8 @@ type RunOptions struct {
 	User string
 
 	Env     map[string]string
-	Ports   []ContainerPort
-	Volumes []ContainerMount
+	Ports   []engine.ContainerPort
+	Volumes []engine.ContainerMount
 }
 
 func Run(ctx context.Context, image string, options RunOptions, args ...string) error {
@@ -54,12 +55,6 @@ func Run(ctx context.Context, image string, options RunOptions, args ...string) 
 }
 
 func RunInteractive(ctx context.Context, image string, options RunOptions, args ...string) error {
-	tool, _, err := Tool(ctx)
-
-	if err != nil {
-		return err
-	}
-
 	if options.Stdin == nil {
 		options.Stdin = os.Stdin
 	}
@@ -78,12 +73,7 @@ func RunInteractive(ctx context.Context, image string, options RunOptions, args 
 	options.Attach = true
 	options.Interactive = true
 
-	run := exec.CommandContext(ctx, tool, runArgs(image, options, args...)...)
-	run.Stdin = options.Stdin
-	run.Stdout = options.Stdout
-	run.Stderr = options.Stderr
-
-	return run.Run()
+	return Run(ctx, image, options, args...)
 }
 
 func runArgs(image string, options RunOptions, arg ...string) []string {
@@ -145,20 +135,18 @@ func runArgs(image string, options RunOptions, arg ...string) []string {
 
 	for _, p := range options.Ports {
 		port := strconv.Itoa(p.Port)
+		proto := p.Proto
 
-		proto := "tcp"
-
-		if p.Protocol != "" {
-			proto = strings.ToLower(string(p.Protocol))
+		if proto == "" {
+			proto = engine.ProtocolTCP
 		}
 
 		hostIP := "127.0.0.1"
+		hostPort := ""
 
 		if p.HostIP != "" {
 			hostIP = p.HostIP
 		}
-
-		hostPort := ""
 
 		if p.HostPort != nil {
 			hostPort = strconv.Itoa(*p.HostPort)
@@ -168,7 +156,13 @@ func runArgs(image string, options RunOptions, arg ...string) []string {
 	}
 
 	for _, v := range options.Volumes {
-		args = append(args, "--volume", fmt.Sprintf("%s:%s", v.HostPath, v.Path))
+		if v.Volume != "" {
+			args = append(args, "--volume", fmt.Sprintf("%s:%s", v.Volume, v.Path))
+		}
+
+		if v.HostPath != "" {
+			args = append(args, "--volume", fmt.Sprintf("%s:%s", v.HostPath, v.Path))
+		}
 	}
 
 	args = append(args, image)

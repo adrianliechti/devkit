@@ -38,13 +38,7 @@ func Exec(ctx context.Context, container string, options ExecOptions, command st
 	return run.Run()
 }
 
-func ExecInteractive(ctx context.Context, container string, options ExecOptions, shell string, args ...string) error {
-	tool, _, err := Tool(ctx)
-
-	if err != nil {
-		return err
-	}
-
+func ExecInteractive(ctx context.Context, container string, options ExecOptions, command string, args ...string) error {
 	if options.Stdin == nil {
 		options.Stdin = os.Stdin
 	}
@@ -60,12 +54,7 @@ func ExecInteractive(ctx context.Context, container string, options ExecOptions,
 	options.TTY = true
 	options.Interactive = true
 
-	run := exec.CommandContext(ctx, tool, execArgs(container, options, shell, args...)...)
-	run.Stdin = options.Stdin
-	run.Stdout = options.Stdout
-	run.Stderr = options.Stderr
-
-	return run.Run()
+	return Exec(ctx, container, options, command, args...)
 }
 
 func execArgs(container string, options ExecOptions, command string, arg ...string) []string {

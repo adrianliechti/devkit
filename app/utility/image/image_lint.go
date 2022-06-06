@@ -5,6 +5,7 @@ import (
 
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/docker"
+	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
 var lintCommand = &cli.Command{
@@ -32,7 +33,7 @@ func runDockle(ctx context.Context, image string) error {
 			"DOCKER_CONTENT_TRUST": "1",
 		},
 
-		Volumes: []docker.ContainerMount{
+		Volumes: []engine.ContainerMount{
 			{
 				Path:     "/var/run/docker.sock",
 				HostPath: "/var/run/docker.sock",

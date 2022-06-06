@@ -104,8 +104,8 @@ func convertRunOptions(container engine.Container) docker.RunOptions {
 		User: strings.Join([]string{container.RunAsUser, container.RunAsGroup}, ":"),
 
 		Env:     container.Env,
-		Ports:   []docker.ContainerPort{},
-		Volumes: []docker.ContainerMount{},
+		Ports:   []engine.ContainerPort{},
+		Volumes: []engine.ContainerMount{},
 	}
 
 	// TODO
@@ -122,9 +122,9 @@ func convertRunOptions(container engine.Container) docker.RunOptions {
 	// }
 
 	for _, p := range container.Ports {
-		options.Ports = append(options.Ports, docker.ContainerPort{
-			Port:     p.Port,
-			Protocol: docker.Protocol(p.Proto),
+		options.Ports = append(options.Ports, engine.ContainerPort{
+			Port:  p.Port,
+			Proto: p.Proto,
 
 			HostIP:   p.HostIP,
 			HostPort: p.HostPort,
@@ -132,8 +132,15 @@ func convertRunOptions(container engine.Container) docker.RunOptions {
 	}
 
 	for _, v := range container.Mounts {
+		if v.Volume != "" {
+			options.Volumes = append(options.Volumes, engine.ContainerMount{
+				Path:   v.Path,
+				Volume: v.Volume,
+			})
+		}
+
 		if v.HostPath != "" {
-			options.Volumes = append(options.Volumes, docker.ContainerMount{
+			options.Volumes = append(options.Volumes, engine.ContainerMount{
 				Path:     v.Path,
 				HostPath: v.HostPath,
 			})

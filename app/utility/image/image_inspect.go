@@ -5,6 +5,7 @@ import (
 
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/docker"
+	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
 var inspectCommand = &cli.Command{
@@ -35,7 +36,7 @@ func runWhaler(ctx context.Context, image string, verbose bool) error {
 	args = append(args, image)
 
 	options := docker.RunOptions{
-		Volumes: []docker.ContainerMount{
+		Volumes: []engine.ContainerMount{
 			{
 				Path:     "/var/run/docker.sock",
 				HostPath: "/var/run/docker.sock",

@@ -10,6 +10,7 @@ import (
 	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/docker"
+	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
 type template string
@@ -111,7 +112,7 @@ func runTemplate(ctx context.Context, path string, template template, options te
 
 		Platform: "linux/amd64",
 
-		Volumes: []docker.ContainerMount{
+		Volumes: []engine.ContainerMount{
 			{
 				Path:     "/src",
 				HostPath: path,
