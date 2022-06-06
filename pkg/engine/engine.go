@@ -11,7 +11,8 @@ type Client interface {
 
 	Pull(ctx context.Context, image string, options PullOptions) error
 
-	Remove(ctx context.Context, container string, options RemoveOptions) error
+	Create(ctx context.Context, spec Container, options CreateOptions) (string, error)
+	Delete(ctx context.Context, container string, options DeleteOptions) error
 
 	Inspect(ctx context.Context, container string) (Container, error)
 
@@ -31,7 +32,14 @@ type PullOptions struct {
 	Stderr io.Writer
 }
 
-type RemoveOptions struct {
+type CreateOptions struct {
+	Platform string
+
+	Stdout io.Writer
+	Stderr io.Writer
+}
+
+type DeleteOptions struct {
 }
 
 type LogsOptions struct {

@@ -122,20 +122,18 @@ func createCommand(m catalog.Manager) *cli.Command {
 		Flags: flags,
 
 		Action: func(c *cli.Context) error {
-			ctx := c.Context
 			client := app.MustClient(c)
-
-			spec, err := m.New()
+			container, err := m.New()
 
 			if err != nil {
 				return err
 			}
 
-			spec.Labels = map[string]string{
+			container.Labels = map[string]string{
 				KindKey: kind,
 			}
 
-			for _, p := range spec.Ports {
+			for _, p := range container.Ports {
 				flag := app.PortFlagName(p.Name)
 
 				for _, f := range portFlags {
@@ -151,16 +149,28 @@ func createCommand(m catalog.Manager) *cli.Command {
 				}
 			}
 
-			// TODO
-			client.Pull(ctx, spec.Image, engine.PullOptions{
-				//Platform: spec.PlatformContext.Platform,
-			})
+			containerID, err := client.Create(c.Context, container, engine.CreateOptions{})
 
-			if err := docker.Run(ctx, spec.Image, convertRunOptions(spec), spec.Args...); err != nil {
+			if err != nil {
 				return err
 			}
 
-			info, err := m.Info(spec)
+			container, err = client.Inspect(c.Context, containerID)
+
+			if err != nil {
+				return err
+			}
+
+			// // TODO
+			// client.Pull(ctx, spec.Image, engine.PullOptions{
+			// 	//Platform: spec.PlatformContext.Platform,
+			// })
+
+			// if err := docker.Run(ctx, spec.Image, convertRunOptions(spec), spec.Args...); err != nil {
+			// 	return err
+			// }
+
+			info, err := m.Info(container)
 
 			if err != nil {
 				return err
@@ -183,7 +193,7 @@ func deleteCommand(m catalog.Manager) *cli.Command {
 			client := app.MustClient(c)
 			container := MustContainer(c.Context, client, kind, true)
 
-			return client.Remove(c.Context, container.ID, engine.RemoveOptions{})
+			return client.Delete(c.Context, container.ID, engine.DeleteOptions{})
 		},
 	}
 }
