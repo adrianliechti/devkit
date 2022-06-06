@@ -6,6 +6,24 @@ import (
 	"net"
 )
 
+type Engine interface {
+	List(ctx context.Context, options ListOptions) ([]Container, error)
+
+	Pull(ctx context.Context, image string, options PullOptions) error
+
+	Remove(ctx context.Context, container string, options RemoveOptions) error
+
+	Inspect(ctx context.Context, container string) (Container, error)
+
+	Logs(ctx context.Context, container string, options LogsOptions) error
+}
+
+type ListOptions struct {
+	All bool
+
+	LabelSelector map[string]string
+}
+
 type PullOptions struct {
 	Platform string
 
@@ -21,16 +39,6 @@ type LogsOptions struct {
 
 	Stdout io.Writer
 	Stderr io.Writer
-}
-
-type Engine interface {
-	Pull(ctx context.Context, image string, options PullOptions) error
-
-	Remove(ctx context.Context, container string, options RemoveOptions) error
-
-	Inspect(ctx context.Context, container string) (Container, error)
-
-	Logs(ctx context.Context, container string, options LogsOptions) error
 }
 
 type Container struct {

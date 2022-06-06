@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net"
 	"strconv"
@@ -14,6 +15,7 @@ import (
 	"github.com/cpuguy83/dockercfg"
 	"github.com/docker/distribution/reference"
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
 )
@@ -36,6 +38,43 @@ func New() (*Moby, error) {
 	return &Moby{
 		client: cli,
 	}, nil
+}
+
+func (m *Moby) List(ctx context.Context, options engine.ListOptions) ([]engine.Container, error) {
+	opts := types.ContainerListOptions{
+		Quiet: true,
+
+		All:     options.All,
+		Filters: filters.NewArgs(),
+	}
+
+	for k, v := range options.LabelSelector {
+		opts.Filters.Add("label", fmt.Sprintf("%s=%s", k, v))
+	}
+
+	list, err := m.client.ContainerList(ctx, opts)
+
+	if err != nil {
+		return nil, err
+	}
+
+	containers := []engine.Container{}
+
+	for _, i := range list {
+		container, err := m.Inspect(ctx, i.ID)
+
+		if err != nil {
+			return nil, err
+		}
+
+		println(container.Hostname)
+
+		containers = append(containers, container)
+	}
+
+	println("done")
+
+	return containers, nil
 }
 
 func (m *Moby) Pull(ctx context.Context, image string, options engine.PullOptions) error {
