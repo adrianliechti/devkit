@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  loki:
+    image: grafana/loki
+    volumes:
+      - loki-data:/loki
+    ports:
+      - "3100:3100"
+
+  tempo:
+    image: grafana/tempo
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    volumes:
+      - ./tempo.yaml:/etc/tempo.yaml
+      - tempo-data:/tmp/tempo
+    ports:
+      - "3200:3200"
+      - "4317:4317"
+      - "4318:4318"
+      - "6831:6831"
+      - "6832:6832"
+      - "9411:9411"
+      - "9095:9095"
+      - "14250:14250"
+      - "14268:14268"
+      - "55678:55678"
+
+  prometheus:
+    image: prom/prometheus
+    command: [ "--config.file=/etc/prometheus.yaml" ]
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus.yaml
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana
+    volumes:
+      - ./grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+    ports:
+      - "3000:3000"
+
+volumes:
+  loki-data:
+  tempo-data:
+  prometheus-data:
+  grafana-data:
