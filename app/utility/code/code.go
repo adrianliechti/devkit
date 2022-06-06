@@ -32,7 +32,7 @@ var Command = &cli.Command{
 	},
 }
 
-func startCode(ctx context.Context, client engine.Engine, port int) error {
+func startCode(ctx context.Context, client engine.Client, port int) error {
 	image := "adrianliechti/loop-code"
 
 	path, err := os.Getwd()

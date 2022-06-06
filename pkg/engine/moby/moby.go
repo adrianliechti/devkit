@@ -21,7 +21,7 @@ import (
 )
 
 var (
-	_ engine.Engine = &Moby{}
+	_ engine.Client = &Moby{}
 )
 
 type Moby struct {

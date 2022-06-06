@@ -14,7 +14,7 @@ const (
 	KindKey = "local.devkit.kind"
 )
 
-func SelectContainer(ctx context.Context, client engine.Engine, kind string, all bool) (*engine.Container, error) {
+func SelectContainer(ctx context.Context, client engine.Client, kind string, all bool) (*engine.Container, error) {
 	containers, err := client.List(ctx, engine.ListOptions{
 		All: all,
 
@@ -51,7 +51,7 @@ func SelectContainer(ctx context.Context, client engine.Engine, kind string, all
 	return &container, nil
 }
 
-func MustContainer(ctx context.Context, client engine.Engine, kind string, all bool) engine.Container {
+func MustContainer(ctx context.Context, client engine.Client, kind string, all bool) engine.Container {
 	container, err := SelectContainer(ctx, client, kind, all)
 
 	if err != nil {

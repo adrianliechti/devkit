@@ -6,7 +6,7 @@ import (
 	"net"
 )
 
-type Engine interface {
+type Client interface {
 	List(ctx context.Context, options ListOptions) ([]Container, error)
 
 	Pull(ctx context.Context, image string, options PullOptions) error

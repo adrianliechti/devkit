@@ -15,11 +15,11 @@ const (
 	TemplateCategory  = "TEMPLATE"
 )
 
-func Client(c *cli.Context) (engine.Engine, error) {
+func Client(c *cli.Context) (engine.Client, error) {
 	return moby.New()
 }
 
-func MustClient(c *cli.Context) engine.Engine {
+func MustClient(c *cli.Context) engine.Client {
 	client, err := Client(c)
 
 	if err != nil {
