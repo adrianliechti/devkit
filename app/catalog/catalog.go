@@ -61,38 +61,6 @@ func MustContainer(ctx context.Context, client engine.Client, kind string, all b
 	return *container
 }
 
-// func convertContainer(info *docker.ContainerInfo) *container.Container {
-// 	if info == nil {
-// 		return nil
-// 	}
-
-// 	container := &container.Container{
-// 		Name: info.Name,
-
-// 		//Labels: info.Labels,
-
-// 		Image:   info.Image,
-// 		Command: info.Cmd,
-// 		Args:    info.Args,
-
-// 		WorkingDir: info.Dir,
-
-// 		Env: info.Env,
-// 	}
-
-// 	return container
-// }
-
-// func convertPullOptions(container container.Container) docker.PullOptions {
-// 	options := docker.PullOptions{}
-
-// 	if container.PlatformContext != nil {
-// 		options.Platform = container.PlatformContext.Platform
-// 	}
-
-// 	return options
-// }
-
 func convertRunOptions(container engine.Container) docker.RunOptions {
 	options := docker.RunOptions{
 		Name:   container.Name,
