@@ -149,7 +149,10 @@ func createCommand(m catalog.Manager) *cli.Command {
 				}
 			}
 
-			containerID, err := client.Create(c.Context, container, engine.CreateOptions{})
+			containerID, err := client.Create(c.Context, container, engine.CreateOptions{
+				// TODO
+				// Platform: container.Platform,
+			})
 
 			if err != nil {
 				return err
@@ -160,15 +163,6 @@ func createCommand(m catalog.Manager) *cli.Command {
 			if err != nil {
 				return err
 			}
-
-			// // TODO
-			// client.Pull(ctx, spec.Image, engine.PullOptions{
-			// 	//Platform: spec.PlatformContext.Platform,
-			// })
-
-			// if err := docker.Run(ctx, spec.Image, convertRunOptions(spec), spec.Args...); err != nil {
-			// 	return err
-			// }
 
 			info, err := m.Info(container)
 

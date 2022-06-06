@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"time"
 
 	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/app/utility"
@@ -43,6 +44,10 @@ func startCode(ctx context.Context, client engine.Client, port int) error {
 
 	client.Pull(ctx, image, engine.PullOptions{
 		Platform: "linux/amd64",
+	})
+
+	time.AfterFunc(2*time.Second, func() {
+		cli.OpenURL(fmt.Sprintf("http://localhost:%d", port))
 	})
 
 	cli.Table([]string{"Name", "Value"}, [][]string{

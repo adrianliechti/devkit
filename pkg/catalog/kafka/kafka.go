@@ -40,11 +40,6 @@ func (m *Manager) New() (engine.Container, error) {
 	return engine.Container{
 		Image: image,
 
-		// TODO
-		// PlatformContext: &container.PlatformContext{
-		// 	Platform: "linux/amd64",
-		// },
-
 		Env: map[string]string{
 			"KAFKA_NODE_ID":   "1",
 			"KAFKA_BROKER_ID": "1",
