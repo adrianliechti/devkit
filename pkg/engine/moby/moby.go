@@ -21,6 +21,7 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/docker/go-connections/nat"
+	"github.com/docker/go-units"
 )
 
 var (
@@ -305,6 +306,16 @@ func convertContainer(data types.ContainerJSON) engine.Container {
 		container.Mounts = append(container.Mounts, mount)
 	}
 
+	for _, l := range data.HostConfig.Ulimits {
+		if l.Name == "nofile" {
+			container.MaxFiles = l.Hard
+		}
+
+		if l.Name == "nproc" {
+			container.MaxProcesses = l.Hard
+		}
+	}
+
 	return container
 }
 
@@ -404,8 +415,27 @@ func convertHostConfig(spec engine.Container) (*container.HostConfig, error) {
 				Source: m.HostPath,
 			})
 		}
-
 	}
+
+	ulimits := []*units.Ulimit{}
+
+	if spec.MaxFiles != 0 {
+		ulimits = append(ulimits, &units.Ulimit{
+			Name: "nofile",
+			Soft: spec.MaxFiles,
+			Hard: spec.MaxFiles,
+		})
+	}
+
+	if spec.MaxProcesses != 0 {
+		ulimits = append(ulimits, &units.Ulimit{
+			Name: "nproc",
+			Soft: spec.MaxProcesses,
+			Hard: spec.MaxProcesses,
+		})
+	}
+
+	config.Ulimits = ulimits
 
 	return config, nil
 }

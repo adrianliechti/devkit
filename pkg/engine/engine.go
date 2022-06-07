@@ -58,8 +58,12 @@ type Container struct {
 	Image string
 
 	Privileged bool
+
 	RunAsUser  string
 	RunAsGroup string
+
+	MaxFiles     int64
+	MaxProcesses int64
 
 	Env map[string]string
 	Dir string

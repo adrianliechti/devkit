@@ -47,6 +47,9 @@ func (m *Manager) New() (engine.Container, error) {
 	return engine.Container{
 		Image: image,
 
+		MaxFiles:     131072,
+		MaxProcesses: 8192,
+
 		Env: map[string]string{
 			"SONAR_ES_BOOTSTRAP_CHECKS_DISABLE": "true",
 			"SONAR_SEARCH_JAVAADDITIONALOPTS":   "-Dbootstrap.system_call_filter=false",
@@ -70,12 +73,6 @@ func (m *Manager) New() (engine.Container, error) {
 				Path: "/opt/sonarqube/extensions",
 			},
 		},
-
-		// TODO
-		// PlatformContext: &container.PlatformContext{
-		// 	MaxNoProcs: to.IntPtr(8192),
-		// 	MaxNoFiles: to.IntPtr(131072),
-		// },
 	}, nil
 }
 
