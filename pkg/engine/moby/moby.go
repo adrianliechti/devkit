@@ -325,8 +325,6 @@ func convertContainerConfig(spec engine.Container) (*container.Config, error) {
 
 		Image: spec.Image,
 
-		User: strings.Join([]string{spec.RunAsUser, spec.RunAsGroup}, ":"),
-
 		Env:        []string{},
 		WorkingDir: spec.Dir,
 
@@ -336,6 +334,16 @@ func convertContainerConfig(spec engine.Container) (*container.Config, error) {
 		Hostname: spec.Hostname,
 
 		ExposedPorts: nat.PortSet{},
+	}
+
+	if spec.RunAsUser != "" {
+		user := spec.RunAsUser
+
+		if spec.RunAsGroup != "" {
+			user += ":" + spec.RunAsGroup
+		}
+
+		config.User = user
 	}
 
 	for k, v := range spec.Env {
