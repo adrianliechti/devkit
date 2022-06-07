@@ -6,7 +6,9 @@ require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/cpuguy83/dockercfg v0.3.1
 	github.com/docker/distribution v2.8.1+incompatible
-	github.com/docker/docker v20.10.16+incompatible
+	github.com/docker/docker v20.10.17+incompatible
+	github.com/docker/go-connections v0.4.0
+	github.com/docker/go-units v0.4.0
 	github.com/gofiber/fiber/v2 v2.34.0
 	github.com/manifoldco/promptui v0.9.0
 	github.com/olekukonko/tablewriter v0.0.5
@@ -20,8 +22,6 @@ require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect
-	github.com/docker/go-connections v0.4.0 // indirect
-	github.com/docker/go-units v0.4.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/klauspost/compress v1.15.0 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
