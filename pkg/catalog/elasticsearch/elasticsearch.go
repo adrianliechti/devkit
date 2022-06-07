@@ -43,6 +43,11 @@ func (m *Manager) New() (engine.Container, error) {
 	return engine.Container{
 		Image: image,
 
+<<<<<<< HEAD
+=======
+		MaxFiles: 65535,
+
+>>>>>>> d02e966ce156371bbaffbed0fbfcaf8cd9a711bd
 		Env: map[string]string{
 			"node.name": "es",
 
@@ -66,11 +71,14 @@ func (m *Manager) New() (engine.Container, error) {
 				Path: "/usr/share/elasticsearch/data",
 			},
 		},
+<<<<<<< HEAD
 
 		// TODO
 		// PlatformContext: &container.PlatformContext{
 		// 	MaxNoFiles: to.IntPtr(65535),
 		// },
+=======
+>>>>>>> d02e966ce156371bbaffbed0fbfcaf8cd9a711bd
 	}, nil
 }
 
