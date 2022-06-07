@@ -9,7 +9,7 @@ build:
 	go build -ldflags "-X main.version=$(version)" .
 
 install:
-	go build -ldflags "-X main.version=$(version)" -o /usr/local/bin/loop .
+	go build -ldflags "-X main.version=$(version)" -o /usr/local/bin/devkit .
 
 images: image-code image-jenkins image-mailtrap image-template
 

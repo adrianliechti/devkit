@@ -6,6 +6,7 @@ import (
 
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/docker"
+	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
 var leaksCommand = &cli.Command{
@@ -45,9 +46,11 @@ func leaks(ctx context.Context) error {
 
 		User: "root",
 
-		Volumes: map[string]string{
-			path: "/src",
-			//config.Name(): "/config",
+		Volumes: []engine.ContainerMount{
+			{
+				Path:     "/src",
+				HostPath: path,
+			},
 		},
 	}
 

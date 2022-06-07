@@ -5,6 +5,7 @@ import (
 
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/docker"
+	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
 var scanCommand = &cli.Command{
@@ -25,8 +26,11 @@ func runTrivy(ctx context.Context, image string) error {
 	options := docker.RunOptions{
 		Env: map[string]string{},
 
-		Volumes: map[string]string{
-			"trivy-cache": "/root/.cache/",
+		Volumes: []engine.ContainerMount{
+			{
+				Path:   "/root/.cache/",
+				Volume: "trivy-cache",
+			},
 		},
 	}
 

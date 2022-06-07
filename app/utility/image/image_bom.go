@@ -5,6 +5,7 @@ import (
 
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/docker"
+	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
 var bomCommand = &cli.Command{
@@ -29,8 +30,11 @@ func runSyft(ctx context.Context, image string) error {
 	args = append(args, image)
 
 	options := docker.RunOptions{
-		Volumes: map[string]string{
-			"/var/run/docker.sock": "/var/run/docker.sock",
+		Volumes: []engine.ContainerMount{
+			{
+				Path:     "/var/run/docker.sock",
+				HostPath: "/var/run/docker.sock",
+			},
 		},
 	}
 
