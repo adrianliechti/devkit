@@ -124,16 +124,9 @@ func (m *Moby) Create(ctx context.Context, spec engine.Container, options engine
 		return "", err
 	}
 
-	pullOut, err := m.client.ImagePull(ctx, spec.Image, types.ImagePullOptions{
-		Platform: options.Platform,
-	})
-
-	if err != nil {
+	if err := m.Pull(ctx, spec.Image, engine.PullOptions{Platform: options.Platform}); err != nil {
 		return "", err
 	}
-
-	defer pullOut.Close()
-	io.Copy(options.Stdout, pullOut)
 
 	resp, err := m.client.ContainerCreate(ctx, containerConfig, hostConfig, nil, nil, spec.Name)
 
