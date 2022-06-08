@@ -58,11 +58,6 @@ type Container struct {
 	Image string
 
 	Privileged bool
-<<<<<<< HEAD
-	RunAsUser  string
-	RunAsGroup string
-
-=======
 
 	RunAsUser  string
 	RunAsGroup string
@@ -70,7 +65,6 @@ type Container struct {
 	MaxFiles     int64
 	MaxProcesses int64
 
->>>>>>> d02e966ce156371bbaffbed0fbfcaf8cd9a711bd
 	Env map[string]string
 	Dir string
 

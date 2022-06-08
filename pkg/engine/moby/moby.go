@@ -21,10 +21,7 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/docker/go-connections/nat"
-<<<<<<< HEAD
-=======
 	"github.com/docker/go-units"
->>>>>>> d02e966ce156371bbaffbed0fbfcaf8cd9a711bd
 )
 
 var (
@@ -128,24 +125,10 @@ func (m *Moby) Create(ctx context.Context, spec engine.Container, options engine
 		return "", err
 	}
 
-<<<<<<< HEAD
-	pullOut, err := m.client.ImagePull(ctx, spec.Image, types.ImagePullOptions{
-		Platform: options.Platform,
-	})
-
-	if err != nil {
-		return "", err
-	}
-
-	defer pullOut.Close()
-	io.Copy(options.Stdout, pullOut)
-
-=======
 	if err := m.Pull(ctx, spec.Image, engine.PullOptions{Platform: options.Platform}); err != nil {
 		return "", err
 	}
 
->>>>>>> d02e966ce156371bbaffbed0fbfcaf8cd9a711bd
 	resp, err := m.client.ContainerCreate(ctx, containerConfig, hostConfig, nil, nil, spec.Name)
 
 	if err != nil {
@@ -323,8 +306,6 @@ func convertContainer(data types.ContainerJSON) engine.Container {
 		container.Mounts = append(container.Mounts, mount)
 	}
 
-<<<<<<< HEAD
-=======
 	for _, l := range data.HostConfig.Ulimits {
 		if l.Name == "nofile" {
 			container.MaxFiles = l.Hard
@@ -335,7 +316,6 @@ func convertContainer(data types.ContainerJSON) engine.Container {
 		}
 	}
 
->>>>>>> d02e966ce156371bbaffbed0fbfcaf8cd9a711bd
 	return container
 }
 
@@ -345,11 +325,6 @@ func convertContainerConfig(spec engine.Container) (*container.Config, error) {
 
 		Image: spec.Image,
 
-<<<<<<< HEAD
-		User: strings.Join([]string{spec.RunAsUser, spec.RunAsGroup}, ":"),
-
-=======
->>>>>>> d02e966ce156371bbaffbed0fbfcaf8cd9a711bd
 		Env:        []string{},
 		WorkingDir: spec.Dir,
 
@@ -361,8 +336,6 @@ func convertContainerConfig(spec engine.Container) (*container.Config, error) {
 		ExposedPorts: nat.PortSet{},
 	}
 
-<<<<<<< HEAD
-=======
 	if spec.RunAsUser != "" {
 		user := spec.RunAsUser
 
@@ -373,7 +346,6 @@ func convertContainerConfig(spec engine.Container) (*container.Config, error) {
 		config.User = user
 	}
 
->>>>>>> d02e966ce156371bbaffbed0fbfcaf8cd9a711bd
 	for k, v := range spec.Env {
 		config.Env = append(config.Env, fmt.Sprintf("%s=%s", k, v))
 	}
@@ -451,11 +423,6 @@ func convertHostConfig(spec engine.Container) (*container.HostConfig, error) {
 				Source: m.HostPath,
 			})
 		}
-<<<<<<< HEAD
-
-	}
-
-=======
 	}
 
 	ulimits := []*units.Ulimit{}
@@ -478,6 +445,5 @@ func convertHostConfig(spec engine.Container) (*container.HostConfig, error) {
 
 	config.Ulimits = ulimits
 
->>>>>>> d02e966ce156371bbaffbed0fbfcaf8cd9a711bd
 	return config, nil
 }

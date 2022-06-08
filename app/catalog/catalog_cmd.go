@@ -149,14 +149,7 @@ func createCommand(m catalog.Manager) *cli.Command {
 				}
 			}
 
-<<<<<<< HEAD
-			containerID, err := client.Create(c.Context, container, engine.CreateOptions{
-				// TODO
-				// Platform: container.Platform,
-			})
-=======
 			containerID, err := client.Create(c.Context, container, engine.CreateOptions{})
->>>>>>> d02e966ce156371bbaffbed0fbfcaf8cd9a711bd
 
 			if err != nil {
 				return err
