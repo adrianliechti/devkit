@@ -1,6 +1,6 @@
 version = 0.0.1
 
-.PHONY: run build install image-code image-elastic image-grafana image-jenkins image-jenkins-dind image-mailtrap image-template
+.PHONY: run build install image-code image-elastic image-grafana image-jenkins image-jenkins-dind image-mailtrap image-template image-unleash
 
 run:
 	go run -ldflags "-X main.version=$(version)" .
@@ -42,3 +42,7 @@ image-template: helpers/loop-template/*
 		docker build $$path --tag adrianliechti/loop-template:$$tag --platform linux/amd64 ; \
 		docker push adrianliechti/loop-template:$$tag ; \
 	done
+
+image-unleash:
+	docker build helpers/loop-unleash --tag adrianliechti/loop-unleash && \
+	docker push adrianliechti/loop-unleash
