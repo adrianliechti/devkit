@@ -1,0 +1,79 @@
+# https://taskfile.dev
+
+version: "3"
+
+vars:
+  VERSION: 0.0.1
+
+tasks:
+  run: go run -ldflags "-X main.version={{.VERSION}}" .
+  build: go build -ldflags "-X main.version={{.VERSION}}" .
+  install: go build -ldflags "-X main.version=$(version)" -o /usr/local/bin/devkit .
+
+  images:
+    cmds:
+      - task: image-code
+      - task: image-jenkins
+      - task: image-jenkins-dind
+      - task: image-mailtrap
+      - task: image-templates
+
+  image-code:
+    dir: helpers/loop-code
+    vars:
+      DOCKER_IMAGE: adrianliechti/loop-code
+    cmds:
+      - docker build . --tag {{.DOCKER_IMAGE}} --platform linux/amd64
+      - docker push {{.DOCKER_IMAGE}}
+
+  image-jenkins:
+    dir: helpers/loop-jenkins
+    vars:
+      DOCKER_IMAGE: adrianliechti/loop-jenkins
+    cmds:
+      - docker build . --tag {{.DOCKER_IMAGE}} --platform linux/amd64
+      - docker push {{.DOCKER_IMAGE}}
+
+  image-jenkins-dind:
+    dir: helpers/loop-jenkins-dind
+    vars:
+      DOCKER_IMAGE: adrianliechti/loop-jenkins:dind
+    deps: [image-jenkins]
+    cmds:
+      - docker build . --tag {{.DOCKER_IMAGE}} --platform linux/amd64
+      - docker push {{.DOCKER_IMAGE}}
+
+  image-mailtrap:
+    dir: helpers/loop-mailtrap
+    vars:
+      DOCKER_IMAGE: adrianliechti/loop-mailtrap
+    cmds:
+      - docker build . --tag {{.DOCKER_IMAGE}} --platform linux/amd64
+      - docker push {{.DOCKER_IMAGE}}
+
+  image-templates:
+    cmds:
+      - task: image-template
+        vars: { STACK: angular }
+      - task: image-template
+        vars: { STACK: aspnet }
+      - task: image-template
+        vars: { STACK: golang }
+      - task: image-template
+        vars: { STACK: nginx }
+      - task: image-template
+        vars: { STACK: pack }
+      - task: image-template
+        vars: { STACK: python }
+      - task: image-template
+        vars: { STACK: react }
+      - task: image-template
+        vars: { STACK: spring }
+
+  image-template:
+    dir: helpers/loop-template/{{.STACK}}
+    vars:
+      DOCKER_IMAGE: adrianliechti/loop-template:{{.STACK}}
+    cmds:
+      - docker build . --tag {{.DOCKER_IMAGE}} --platform linux/amd64
+      - docker push {{.DOCKER_IMAGE}}
