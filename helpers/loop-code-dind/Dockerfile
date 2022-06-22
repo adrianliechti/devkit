@@ -1,8 +1,8 @@
-FROM adrianliechti/loop-jenkins
+FROM adrianliechti/loop-code
 
 USER root
 
-RUN apt-get update -qq && apt-get install -qq -y --no-install-recommends \
+RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y --no-install-recommends \
     supervisor \
     procps \
     uidmap \
@@ -15,4 +15,5 @@ RUN apt-get update -qq && apt-get install -qq -y --no-install-recommends \
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+ENTRYPOINT [ ]
 CMD [ "/usr/bin/supervisord" ]

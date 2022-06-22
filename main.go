@@ -43,6 +43,7 @@ import (
 	"github.com/adrianliechti/devkit/pkg/catalog/rabbitmq"
 	"github.com/adrianliechti/devkit/pkg/catalog/redis"
 	"github.com/adrianliechti/devkit/pkg/catalog/sonarqube"
+	"github.com/adrianliechti/devkit/pkg/catalog/unleash"
 	"github.com/adrianliechti/devkit/pkg/catalog/vault"
 
 	"github.com/adrianliechti/devkit/pkg/cli"
@@ -96,6 +97,7 @@ func initApp() cli.App {
 			catalog.Command(&rabbitmq.Manager{}),
 			catalog.Command(&redis.Manager{}),
 			catalog.Command(&sonarqube.Manager{}),
+			catalog.Command(&unleash.Manager{}),
 			catalog.Command(&vault.Manager{}),
 
 			template.Command,

@@ -34,7 +34,7 @@ var Command = &cli.Command{
 }
 
 func startCode(ctx context.Context, client engine.Client, port int) error {
-	image := "adrianliechti/loop-code"
+	image := "adrianliechti/loop-code:dind"
 
 	path, err := os.Getwd()
 
@@ -42,9 +42,7 @@ func startCode(ctx context.Context, client engine.Client, port int) error {
 		return err
 	}
 
-	client.Pull(ctx, image, engine.PullOptions{
-		Platform: "linux/amd64",
-	})
+	client.Pull(ctx, image, engine.PullOptions{})
 
 	time.AfterFunc(2*time.Second, func() {
 		cli.OpenURL(fmt.Sprintf("http://localhost:%d", port))
@@ -59,7 +57,7 @@ func startCode(ctx context.Context, client engine.Client, port int) error {
 	cli.Info()
 
 	options := docker.RunOptions{
-		Platform: "linux/amd64",
+		Privileged: true,
 
 		Ports: []engine.ContainerPort{
 			{
