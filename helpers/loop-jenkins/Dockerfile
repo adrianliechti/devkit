@@ -12,7 +12,7 @@ ENV JENKINS_REF /usr/share/jenkins/ref
 ENV JENKINS_HOME /var/jenkins_home
 
 ARG JENKINS_VERSION
-ENV JENKINS_VERSION ${JENKINS_VERSION:-2.332.3}
+ENV JENKINS_VERSION ${JENKINS_VERSION:-2.346.1}
 
 ARG JENKINS_PM_VERSION
 ENV JENKINS_PM_VERSION ${JENKINS_PM_VERSION:-2.12.6}
@@ -48,7 +48,7 @@ RUN jenkins-plugin-cli --plugin-file $JENKINS_REF/plugins.txt
 
 # Docker CLI
 ENV DOCKER_CLIENT_VERSION="20.10.16"
-RUN curl -fsSL "https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_CLIENT_VERSION}.tgz" | tar -zxf - --strip=1 -C /usr/local/bin/ docker/docker
+RUN curl -fsSL "https://download.docker.com/linux/static/stable/$(uname -m)/docker-${DOCKER_CLIENT_VERSION}.tgz" | tar -zxf - --strip=1 -C /usr/local/bin/ docker/docker
 
 USER 1000
 

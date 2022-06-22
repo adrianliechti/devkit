@@ -1,6 +1,6 @@
 FROM ubuntu:21.04
 
-ARG VERSION=v1.67.2
+ARG VERSION=v1.68.1
 
 ARG USERNAME=code
 
@@ -12,10 +12,18 @@ RUN apt update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /opt/code && \
-    wget https://github.com/gitpod-io/openvscode-server/releases/download/openvscode-server-${VERSION}/openvscode-server-${VERSION}-linux-x64.tar.gz && \
-    tar -xzf openvscode-server-${VERSION}-linux-x64.tar.gz -C /opt/code --strip 1 && \
+    arch=$(uname -m) && \
+    if [ "${arch}" = "x86_64" ]; then \
+    arch="x64"; \
+    elif [ "${arch}" = "aarch64" ]; then \
+    arch="arm64"; \
+    elif [ "${arch}" = "armv7l" ]; then \
+    arch="armhf"; \
+    fi && \
+    wget https://github.com/gitpod-io/openvscode-server/releases/download/openvscode-server-${VERSION}/openvscode-server-${VERSION}-linux-${arch}.tar.gz && \
+    tar -xzf openvscode-server-${VERSION}-linux-${arch}.tar.gz -C /opt/code --strip 1 && \
     chown -R root:root /opt/code && \
-    rm -f openvscode-server-${VERSION}-linux-x64.tar.gz
+    rm -f openvscode-server-${VERSION}-linux-${arch}.tar.gz
 
 RUN groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USERNAME -m $USERNAME \
