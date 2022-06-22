@@ -38,18 +38,16 @@ func (m *Manager) New() (engine.Container, error) {
 
 		Env: map[string]string{},
 
-		Privileged: true,
-
 		Ports: []*engine.ContainerPort{
 			{
-				Port:  3000,
+				Port:  4242,
 				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		Mounts: []*engine.ContainerMount{
-			{},
-		},
+		// Mounts: []*engine.ContainerMount{
+		// 	{},
+		// },
 	}, nil
 }
 
