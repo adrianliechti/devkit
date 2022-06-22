@@ -42,12 +42,11 @@ tasks:
       - docker buildx build --push --platform linux/arm64,linux/amd64 --tag {{.DOCKER_IMAGE}} .
 
   push-jenkins-image:
-    dir: helpers/loop-jenkins
     vars:
       DOCKER_IMAGE: adrianliechti/loop-jenkins
     cmds:
-      - docker buildx build --push --platform linux/arm64,linux/amd64 --tag {{.DOCKER_IMAGE}} helpers/loop-jenkins -f helpers/loop-jenkins/Dockerfile .
-      - docker buildx build --push --platform linux/arm64,linux/amd64 --tag {{.DOCKER_IMAGE}}:dind helpers/loop-jenkins-dind -f helpers/loop-jenkins-dind/Dockerfile .
+      - docker buildx build --push --platform linux/arm64,linux/amd64 --tag {{.DOCKER_IMAGE}} helpers/loop-jenkins -f helpers/loop-jenkins/Dockerfile
+      - docker buildx build --push --platform linux/arm64,linux/amd64 --tag {{.DOCKER_IMAGE}}:dind helpers/loop-jenkins-dind -f helpers/loop-jenkins-dind/Dockerfile
 
   push-mailtrap-image:
     dir: helpers/loop-mailtrap
@@ -87,5 +86,4 @@ tasks:
     vars:
       DOCKER_IMAGE: adrianliechti/loop-template:{{.STACK}}
     cmds:
-      - docker build . --tag {{.DOCKER_IMAGE}} --platform linux/amd64
-      - docker push {{.DOCKER_IMAGE}}
+      - docker buildx build --push --platform linux/amd64 --tag {{.DOCKER_IMAGE}} .
