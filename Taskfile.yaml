@@ -21,11 +21,11 @@ tasks:
       - task: push-template-images
 
   push-code-image:
-    dir: helpers/loop-code
     vars:
       DOCKER_IMAGE: adrianliechti/loop-code
     cmds:
-      - docker buildx build --push --platform linux/arm64,linux/amd64 --tag {{.DOCKER_IMAGE}} .
+      - docker buildx build --push --platform linux/arm64,linux/amd64 --tag {{.DOCKER_IMAGE}} helpers/loop-code -f helpers/loop-code/Dockerfile
+      - docker buildx build --push --platform linux/arm64,linux/amd64 --tag {{.DOCKER_IMAGE}}:dind helpers/loop-code-dind -f helpers/loop-code-dind/Dockerfile
 
   push-elastic-image:
     dir: helpers/loop-elastic

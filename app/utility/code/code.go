@@ -34,7 +34,7 @@ var Command = &cli.Command{
 }
 
 func startCode(ctx context.Context, client engine.Client, port int) error {
-	image := "adrianliechti/loop-code"
+	image := "adrianliechti/loop-code:dind"
 
 	path, err := os.Getwd()
 
@@ -57,6 +57,8 @@ func startCode(ctx context.Context, client engine.Client, port int) error {
 	cli.Info()
 
 	options := docker.RunOptions{
+		Privileged: true,
+
 		Ports: []engine.ContainerPort{
 			{
 				Port:  3000,

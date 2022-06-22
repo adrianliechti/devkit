@@ -2,13 +2,8 @@ FROM ubuntu:21.04
 
 ARG VERSION=v1.68.1
 
-ARG USERNAME=code
-
-ARG USER_UID=1000
-ARG USER_GID=1000
-
 RUN apt update && \
-    apt install -y tini git wget sudo && \
+    apt install -y tini git curl wget sudo && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /opt/code && \
@@ -25,15 +20,19 @@ RUN mkdir -p /opt/code && \
     chown -R root:root /opt/code && \
     rm -f openvscode-server-${VERSION}-linux-${arch}.tar.gz
 
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USERNAME -m $USERNAME \
-    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME
+RUN groupadd --gid 1000 code \
+    && useradd --uid 1000 --gid 1000 -m code \
+    && echo code ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/code \
+    && chmod 0440 /etc/sudoers.d/code
 
 RUN mkdir -p /workspace && \
-    chown -R $USERNAME:$USERNAME /workspace
+    chown -R code:code /workspace
 
-USER $USERNAME
+# Docker CLI
+ENV DOCKER_CLIENT_VERSION="20.10.16"
+RUN curl -fsSL "https://download.docker.com/linux/static/stable/$(uname -m)/docker-${DOCKER_CLIENT_VERSION}.tgz" | tar -zxf - --strip=1 -C /usr/local/bin/ docker/docker
+
+USER 1000
 
 ENV PATH /opt/code/bin:$PATH
 
