@@ -10,67 +10,79 @@ tasks:
   build: go build -ldflags "-X main.version={{.VERSION}}" .
   install: go build -ldflags "-X main.version=$(version)" -o /usr/local/bin/devkit .
 
-  images:
+  push-images:
     cmds:
-      - task: image-code
-      - task: image-jenkins
-      - task: image-jenkins-dind
-      - task: image-mailtrap
-      - task: image-templates
+      - task: push-code-image
+      - task: push-elastic-image
+      - task: push-grafana-image
+      - task: push-jenkins-image
+      - task: push-mailtrap-image
+      - task: push-unleash-image
+      - task: push-template-images
 
-  image-code:
+  push-code-image:
     dir: helpers/loop-code
     vars:
       DOCKER_IMAGE: adrianliechti/loop-code
     cmds:
-      - docker build . --tag {{.DOCKER_IMAGE}} --platform linux/amd64
-      - docker push {{.DOCKER_IMAGE}}
+      - docker buildx build --push --platform linux/amd64 --tag {{.DOCKER_IMAGE}} .
 
-  image-jenkins:
+  push-elastic-image:
+    dir: helpers/loop-elastic
+    vars:
+      DOCKER_IMAGE: adrianliechti/loop-elastic
+    cmds:
+      - docker buildx build --push --platform linux/arm64,linux/amd64 --tag {{.DOCKER_IMAGE}} .
+
+  push-grafana-image:
+    dir: helpers/loop-grafana
+    vars:
+      DOCKER_IMAGE: adrianliechti/loop-grafana
+    cmds:
+      - docker buildx build --push --platform linux/arm64,linux/amd64 --tag {{.DOCKER_IMAGE}} .
+
+  push-jenkins-image:
     dir: helpers/loop-jenkins
     vars:
       DOCKER_IMAGE: adrianliechti/loop-jenkins
     cmds:
-      - docker build . --tag {{.DOCKER_IMAGE}} --platform linux/amd64
-      - docker push {{.DOCKER_IMAGE}}
+      - docker buildx build --push --platform linux/arm64,linux/amd64 --tag {{.DOCKER_IMAGE}} helpers/loop-jenkins -f helpers/loop-jenkins/Dockerfile .
+      - docker buildx build --push --platform linux/arm64,linux/amd64 --tag {{.DOCKER_IMAGE}}:dind helpers/loop-jenkins-dind -f helpers/loop-jenkins-dind/Dockerfile .
 
-  image-jenkins-dind:
-    dir: helpers/loop-jenkins-dind
-    vars:
-      DOCKER_IMAGE: adrianliechti/loop-jenkins:dind
-    deps: [image-jenkins]
-    cmds:
-      - docker build . --tag {{.DOCKER_IMAGE}} --platform linux/amd64
-      - docker push {{.DOCKER_IMAGE}}
-
-  image-mailtrap:
+  push-mailtrap-image:
     dir: helpers/loop-mailtrap
     vars:
       DOCKER_IMAGE: adrianliechti/loop-mailtrap
     cmds:
-      - docker build . --tag {{.DOCKER_IMAGE}} --platform linux/amd64
-      - docker push {{.DOCKER_IMAGE}}
+      - docker buildx build --push --platform linux/arm64,linux/amd64 --tag {{.DOCKER_IMAGE}} .
 
-  image-templates:
+  push-unleash-image:
+    dir: helpers/loop-unleash
+    vars:
+      DOCKER_IMAGE: adrianliechti/loop-unleash
     cmds:
-      - task: image-template
+      - docker buildx build --push --platform linux/arm64,linux/amd64 --tag {{.DOCKER_IMAGE}} .
+
+  push-template-images:
+    cmds:
+      - task: push-template-image
         vars: { STACK: angular }
-      - task: image-template
+      - task: push-template-image
         vars: { STACK: aspnet }
-      - task: image-template
+      - task: push-template-image
         vars: { STACK: golang }
-      - task: image-template
+      - task: push-template-image
         vars: { STACK: nginx }
-      - task: image-template
+      - task: push-template-image
         vars: { STACK: pack }
-      - task: image-template
+      - task: push-template-image
         vars: { STACK: python }
-      - task: image-template
+      - task: push-template-image
         vars: { STACK: react }
-      - task: image-template
+      - task: push-template-image
         vars: { STACK: spring }
 
-  image-template:
+  push-template-image:
     dir: helpers/loop-template/{{.STACK}}
     vars:
       DOCKER_IMAGE: adrianliechti/loop-template:{{.STACK}}

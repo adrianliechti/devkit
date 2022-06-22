@@ -1,5 +1,5 @@
 ```bash
-docker build . --tag elk
+docker build . --tag loop-elastic
 
 docker run -it --rm \
     -p 9200:9200 \
@@ -7,5 +7,5 @@ docker run -it --rm \
     -p 5601:5601 \
     --ulimit nofile=65535:65535 \
     --ulimit memlock=-1:-1 \
-    elk
+    loop-elastic
 ```
