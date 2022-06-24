@@ -37,9 +37,10 @@ USER 1000
 
 ENV PATH /opt/code/bin:$PATH
 
+WORKDIR /workspace
+
 ENV LANG=C.UTF-8 \
     LC_ALL=C.UTF-8 \
-    HOME=/workspace \
     EDITOR=code \
     VISUAL=code \
     GIT_EDITOR="code --wait"
