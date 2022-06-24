@@ -14,7 +14,7 @@ RUN apt-get update -qq && apt-get install -qq -y --no-install-recommends \
 RUN apt-get update -qq && apt-get install -qq -y --no-install-recommends \
     sudo \
     && rm -rf /var/lib/apt/lists/* \
-    && echo code ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/jenkins \
+    && echo jenkins ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/jenkins \
     && chmod 0440 /etc/sudoers.d/jenkins
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh

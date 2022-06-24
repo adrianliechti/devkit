@@ -3,7 +3,7 @@ FROM ubuntu:21.04
 ARG VERSION=v1.68.1
 
 RUN apt update && \
-    apt install -y git curl wget sudo && \
+    apt install -y git curl wget && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /opt/code && \
@@ -22,9 +22,7 @@ RUN mkdir -p /opt/code && \
     rm -f openvscode-server-${VERSION}-linux-${arch}.tar.gz
 
 RUN groupadd --gid 1000 code \
-    && useradd --uid 1000 --gid 1000 -m code \
-    && echo code ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/code \
-    && chmod 0440 /etc/sudoers.d/code
+    && useradd --uid 1000 --gid 1000 -m code
 
 RUN mkdir -p /workspace && \
     chown -R code:code /workspace
@@ -37,10 +35,11 @@ USER 1000
 
 ENV PATH /opt/code/bin:$PATH
 
-WORKDIR /workspace
+WORKDIR /home/code
 
 ENV LANG=C.UTF-8 \
     LC_ALL=C.UTF-8 \
+    HOME=/home/code \
     EDITOR=code \
     VISUAL=code \
     GIT_EDITOR="code --wait"
