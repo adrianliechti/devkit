@@ -21,8 +21,8 @@ RUN mkdir -p /opt/code && \
     chown -R root:root /opt/code && \
     rm -f openvscode-server-${VERSION}-linux-${arch}.tar.gz
 
-RUN groupadd --gid 1000 code \
-    && useradd --uid 1000 --gid 1000 -m code
+RUN groupadd -g 1000 code \
+    && useradd -u 1000 -g 1000 -m -s /bin/bash code
 
 RUN mkdir -p /workspace && \
     chown -R code:code /workspace
