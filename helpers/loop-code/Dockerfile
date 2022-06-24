@@ -3,7 +3,7 @@ FROM ubuntu:21.04
 ARG VERSION=v1.68.1
 
 RUN apt update && \
-    apt install -y tini git curl wget sudo && \
+    apt install -y git curl wget sudo && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /opt/code && \
@@ -17,6 +17,7 @@ RUN mkdir -p /opt/code && \
     fi && \
     wget https://github.com/gitpod-io/openvscode-server/releases/download/openvscode-server-${VERSION}/openvscode-server-${VERSION}-linux-${arch}.tar.gz && \
     tar -xzf openvscode-server-${VERSION}-linux-${arch}.tar.gz -C /opt/code --strip 1 && \
+    cp /opt/code/bin/remote-cli/openvscode-server /opt/code/bin/remote-cli/code && \
     chown -R root:root /opt/code && \
     rm -f openvscode-server-${VERSION}-linux-${arch}.tar.gz
 
@@ -36,16 +37,13 @@ USER 1000
 
 ENV PATH /opt/code/bin:$PATH
 
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
-
-WORKDIR /workspace
-
-ENV EDITOR=code
-ENV VISUAL=code
-ENV GIT_EDITOR="code --wait"
+ENV LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    HOME=/workspace \
+    EDITOR=code \
+    VISUAL=code \
+    GIT_EDITOR="code --wait"
 
 EXPOSE 3000
 
-ENTRYPOINT [ "/usr/bin/tini", "--" ]
-CMD [ "/opt/code/bin/openvscode-server", "--host", "0.0.0.0", "--without-connection-token" ]
+CMD [ "/bin/sh", "-c", "exec /opt/code/bin/openvscode-server --host 0.0.0.0 --without-connection-token" ]
