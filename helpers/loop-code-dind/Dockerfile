@@ -13,7 +13,7 @@ RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y 
     && curl -fsSL "https://raw.githubusercontent.com/moby/moby/master/hack/dind" -o /usr/local/bin/dind && chmod +x /usr/local/bin/dind \
     && rm -rf /var/lib/apt/lists/*
 
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY supervisord.conf /etc/supervisor/conf.d/code.conf
 
 ENTRYPOINT [ ]
-CMD [ "/usr/bin/supervisord" ]
+CMD [ "/usr/bin/supervisord", "-n", "-u", "root" ]
