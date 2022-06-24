@@ -29,8 +29,8 @@ RUN mkdir -p /workspace && \
     chown -R code:code /workspace
 
 # Docker CLI
-ENV DOCKER_CLIENT_VERSION="20.10.16"
-RUN curl -fsSL "https://download.docker.com/linux/static/stable/$(uname -m)/docker-${DOCKER_CLIENT_VERSION}.tgz" | tar -zxf - --strip=1 -C /usr/local/bin/ docker/docker
+ENV DOCKER_VERSION="20.10.16"
+RUN curl -fsSL "https://download.docker.com/linux/static/stable/$(uname -m)/docker-${DOCKER_VERSION}.tgz" | tar -zxf - --strip=1 -C /usr/local/bin/ docker/docker
 
 USER 1000
 
