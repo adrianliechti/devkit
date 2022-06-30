@@ -12,20 +12,11 @@ tasks:
 
   push-images:
     cmds:
-      - task: push-code-image
       - task: push-elastic-image
       - task: push-grafana-image
-      - task: push-jenkins-image
       - task: push-mailtrap-image
       - task: push-unleash-image
       - task: push-template-images
-
-  push-code-image:
-    vars:
-      DOCKER_IMAGE: adrianliechti/loop-code
-    cmds:
-      - docker buildx build --push --platform linux/arm64,linux/amd64 --tag {{.DOCKER_IMAGE}} helpers/loop-code -f helpers/loop-code/Dockerfile
-      - docker buildx build --push --platform linux/arm64,linux/amd64 --tag {{.DOCKER_IMAGE}}:dind helpers/loop-code-dind -f helpers/loop-code-dind/Dockerfile
 
   push-elastic-image:
     dir: helpers/loop-elastic
@@ -40,13 +31,6 @@ tasks:
       DOCKER_IMAGE: adrianliechti/loop-grafana
     cmds:
       - docker buildx build --push --platform linux/arm64,linux/amd64 --tag {{.DOCKER_IMAGE}} .
-
-  push-jenkins-image:
-    vars:
-      DOCKER_IMAGE: adrianliechti/loop-jenkins
-    cmds:
-      - docker buildx build --push --platform linux/arm64,linux/amd64 --tag {{.DOCKER_IMAGE}} helpers/loop-jenkins -f helpers/loop-jenkins/Dockerfile
-      - docker buildx build --push --platform linux/arm64,linux/amd64 --tag {{.DOCKER_IMAGE}}:dind helpers/loop-jenkins-dind -f helpers/loop-jenkins-dind/Dockerfile
 
   push-mailtrap-image:
     dir: helpers/loop-mailtrap
