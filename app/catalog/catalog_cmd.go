@@ -167,7 +167,7 @@ func createCommand(m catalog.Manager) *cli.Command {
 				return err
 			}
 
-			printMapTable(info)
+			printContainerInfo(container, info)
 			return nil
 		},
 	}
@@ -206,7 +206,7 @@ func infoCommand(m catalog.Manager) *cli.Command {
 				return err
 			}
 
-			printMapTable(info)
+			printContainerInfo(container, info)
 			return nil
 		},
 	}
@@ -318,7 +318,7 @@ func consoleCommand(p catalog.ConsoleProvider) *cli.Command {
 				cli.OpenURL(fmt.Sprintf("http://localhost:%d", port))
 			})
 
-			printMapTable(info)
+			printContainerInfo(container, info)
 
 			return docker.PortForward(c.Context, container.Name, port, mapping.Port)
 		},

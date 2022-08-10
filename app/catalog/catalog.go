@@ -3,6 +3,7 @@ package catalog
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/engine"
@@ -59,12 +60,25 @@ func MustContainer(ctx context.Context, client engine.Client, kind string, all b
 	return *container
 }
 
-func printMapTable(v map[string]string) {
-	rows := [][]string{}
+func printContainerInfo(container engine.Container, info map[string]string) {
+	rowsPorts := [][]string{}
 
-	for k, v := range v {
-		rows = append(rows, []string{k, v})
+	for _, p := range container.Ports {
+		if container.IPAddress == nil || p.HostPort == nil {
+			continue
+		}
+
+		rowsPorts = append(rowsPorts, []string{fmt.Sprintf("localhost:%d", *p.HostPort), fmt.Sprintf("%s://%s:%d", p.Proto, container.IPAddress, p.Port)})
 	}
 
-	cli.Table([]string{"Key", "Value"}, rows)
+	cli.Table([]string{"Mapping", "Target"}, rowsPorts)
+	cli.Info()
+
+	rowsInfo := [][]string{}
+
+	for k, v := range info {
+		rowsInfo = append(rowsInfo, []string{k, v})
+	}
+
+	cli.Table([]string{"Description", "Value"}, rowsInfo)
 }
