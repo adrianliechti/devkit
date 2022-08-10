@@ -37,6 +37,11 @@ type ClientProvider interface {
 	Client(engine.Container) (string, []string, error)
 }
 
+type ClientContainerProvider interface {
+	Manager
+	Client(engine.Container) (string, string, []string, error)
+}
+
 type ConsoleProvider interface {
 	Manager
 	ConsolePort(engine.Container) (*engine.ContainerPort, error)

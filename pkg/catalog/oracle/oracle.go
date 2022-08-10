@@ -77,7 +77,8 @@ func (m *Manager) Shell(instance engine.Container) (string, error) {
 }
 
 func (m *Manager) Client(instance engine.Container) (string, []string, error) {
-	return DefaultShell, []string{
+	return "", []string{
+		DefaultShell,
 		"-c",
 		"sqlplus system/${ORACLE_PASSWORD}@XEPDB1",
 	}, nil

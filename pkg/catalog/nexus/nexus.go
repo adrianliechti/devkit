@@ -38,10 +38,10 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "sonatype/nexus3"
+	image := "sonatype/nexus3:latest"
 
 	if runtime.GOARCH == "arm64" {
-		image = "klo2k/nexus3"
+		image = "klo2k/nexus3:latest"
 	}
 
 	return engine.Container{

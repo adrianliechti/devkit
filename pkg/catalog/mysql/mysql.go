@@ -82,7 +82,8 @@ func (m *Manager) Shell(instance engine.Container) (string, error) {
 }
 
 func (m *Manager) Client(instance engine.Container) (string, []string, error) {
-	return DefaultShell, []string{
+	return "", []string{
+		DefaultShell,
 		"-c",
 		"mysql --user=root --password=${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE}",
 	}, nil

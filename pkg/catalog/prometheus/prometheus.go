@@ -36,7 +36,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "prom/prometheus:v2.36.0"
+	image := "prom/prometheus:v2.37.0"
 
 	return engine.Container{
 		Image: image,

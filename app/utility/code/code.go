@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/adrianliechti/devkit/app"
@@ -27,14 +28,27 @@ var Command = &cli.Command{
 	Action: func(c *cli.Context) error {
 		client := app.MustClient(c)
 
+		items := []string{
+			"dotnet",
+			"golang",
+			"java",
+		}
+
+		i, _, err := cli.Select("select stack", items)
+
+		if err != nil {
+			return err
+		}
+
+		stack := strings.ToLower(items[i])
 		port := app.MustPortOrRandom(c, "", 3000)
 
-		return startCode(c.Context, client, port)
+		return startCode(c.Context, client, stack, port)
 	},
 }
 
-func startCode(ctx context.Context, client engine.Client, port int) error {
-	image := "adrianliechti/loop-code:dind"
+func startCode(ctx context.Context, client engine.Client, stack string, port int) error {
+	image := "adrianliechti/loop-code:" + stack + "-dind"
 
 	path, err := os.Getwd()
 

@@ -37,7 +37,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "grafana/grafana"
+	image := "grafana/grafana:latest"
 
 	username := "admin"
 	password := password.MustGenerate(10, 4, 0, false, false)

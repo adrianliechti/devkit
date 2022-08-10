@@ -37,7 +37,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "codenotary/immudb"
+	image := "codenotary/immudb:1.3"
 
 	password := password.MustGenerate(10, 4, 0, false, false)
 

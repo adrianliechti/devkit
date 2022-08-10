@@ -37,7 +37,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "jupyter/datascience-notebook"
+	image := "jupyter/datascience-notebook:latest"
 
 	token := password.MustGenerate(10, 4, 0, false, false)
 

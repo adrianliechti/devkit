@@ -35,7 +35,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "confluentinc/cp-kafka:7.1.0"
+	image := "confluentinc/cp-kafka:7.2.1"
 
 	return engine.Container{
 		Image: image,

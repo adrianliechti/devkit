@@ -31,7 +31,7 @@ func (m *Manager) Description() string {
 }
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "adrianliechti/loop-unleash"
+	image := "adrianliechti/loop-unleash:latest"
 
 	return engine.Container{
 		Image: image,

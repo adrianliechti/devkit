@@ -243,13 +243,20 @@ func clientCommand(p catalog.ClientProvider) *cli.Command {
 			client := app.MustClient(c)
 			container := MustContainer(c.Context, client, kind, true)
 
-			cmd, args, err := p.Client(container)
+			image, args, err := p.Client(container)
 
 			if err != nil {
 				return err
 			}
 
-			return docker.ExecInteractive(c.Context, container.Name, docker.ExecOptions{}, cmd, args...)
+			if image == "" {
+				command := args[0]
+				arg := args[1:]
+
+				return docker.ExecInteractive(c.Context, container.Name, docker.ExecOptions{}, command, arg...)
+			}
+
+			return docker.RunInteractive(c.Context, image, docker.RunOptions{}, args...)
 		},
 	}
 }

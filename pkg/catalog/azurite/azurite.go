@@ -35,7 +35,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "mcr.microsoft.com/azure-storage/azurite:3.17.1"
+	image := "mcr.microsoft.com/azure-storage/azurite:3.18.0"
 
 	return engine.Container{
 		Image: image,

@@ -1,7 +1,7 @@
 package mssql
 
 import (
-	"runtime"
+	"fmt"
 
 	"github.com/adrianliechti/devkit/pkg/catalog"
 	"github.com/adrianliechti/devkit/pkg/engine"
@@ -39,16 +39,14 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "mcr.microsoft.com/mssql/server:2019-latest"
-
-	if runtime.GOARCH == "arm64" {
-		image = "mcr.microsoft.com/azure-sql-edge"
-	}
+	image := "mcr.microsoft.com/azure-sql-edge:1.0.6"
 
 	password := password.MustGenerate(10, 4, 0, false, false)
 
 	return engine.Container{
 		Image: image,
+
+		Privileged: true,
 
 		Env: map[string]string{
 			"ACCEPT_EULA": "Y",
@@ -88,8 +86,14 @@ func (m *Manager) Shell(instance engine.Container) (string, error) {
 }
 
 func (m *Manager) Client(instance engine.Container) (string, []string, error) {
-	return DefaultShell, []string{
+	image := "mcr.microsoft.com/mssql-tools:latest"
+
+	username := "sa"
+	password := instance.Env["SA_PASSWORD"]
+
+	return image, []string{
+		DefaultShell,
 		"-c",
-		"/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${SA_PASSWORD}",
+		fmt.Sprintf("/opt/mssql-tools/bin/sqlcmd -S %s,1433 -U %s -P %s", instance.IPAddress, username, password),
 	}, nil
 }

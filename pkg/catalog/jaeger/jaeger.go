@@ -36,7 +36,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "jaegertracing/all-in-one:1.35"
+	image := "jaegertracing/all-in-one:1"
 
 	return engine.Container{
 		Image: image,

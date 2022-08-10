@@ -37,7 +37,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "adrianliechti/loop-mailtrap"
+	image := "adrianliechti/loop-mailtrap:latest"
 
 	username := "admin"
 	password := password.MustGenerate(10, 4, 0, false, false)

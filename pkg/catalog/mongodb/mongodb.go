@@ -84,7 +84,8 @@ func (m *Manager) Shell(instance engine.Container) (string, error) {
 }
 
 func (m *Manager) Client(instance engine.Container) (string, []string, error) {
-	return DefaultShell, []string{
+	return "", []string{
+		DefaultShell,
 		"-c",
 		"mongo --quiet --norc --username ${MONGO_INITDB_ROOT_USERNAME} --password ${MONGO_INITDB_ROOT_PASSWORD}",
 	}, nil
