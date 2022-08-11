@@ -23,6 +23,8 @@ var bomCommand = &cli.Command{
 }
 
 func runSyft(ctx context.Context, image string) error {
+	tool := "anchore/syft:v0.53.4"
+
 	args := []string{
 		"-o", "table",
 	}
@@ -38,5 +40,5 @@ func runSyft(ctx context.Context, image string) error {
 		},
 	}
 
-	return docker.RunInteractive(ctx, "anchore/syft", options, args...)
+	return docker.RunInteractive(ctx, tool, options, args...)
 }

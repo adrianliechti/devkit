@@ -23,6 +23,8 @@ var lintCommand = &cli.Command{
 }
 
 func runDockle(ctx context.Context, image string) error {
+	tool := "goodwithtech/dockle:v0.4.6"
+
 	args := []string{
 		// "--debug",
 		image,
@@ -41,5 +43,5 @@ func runDockle(ctx context.Context, image string) error {
 		},
 	}
 
-	return docker.RunInteractive(ctx, "goodwithtech/dockle", options, args...)
+	return docker.RunInteractive(ctx, tool, options, args...)
 }
