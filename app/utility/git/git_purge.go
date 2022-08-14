@@ -28,7 +28,7 @@ func purge(ctx context.Context, files []string) error {
 		return nil
 	}
 
-	tool, _, err := git.Tool(ctx)
+	tool, _, err := git.Info(ctx)
 
 	if err != nil {
 		return err

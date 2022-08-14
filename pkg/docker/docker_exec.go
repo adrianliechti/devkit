@@ -24,7 +24,7 @@ type ExecOptions struct {
 }
 
 func Exec(ctx context.Context, container string, options ExecOptions, command string, args ...string) error {
-	tool, _, err := Tool(ctx)
+	tool, _, err := Info(ctx)
 
 	if err != nil {
 		return err

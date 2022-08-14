@@ -25,7 +25,7 @@ var blobsCommand = &cli.Command{
 }
 
 func blobs(ctx context.Context) error {
-	tool, _, err := git.Tool(ctx)
+	tool, _, err := git.Info(ctx)
 
 	if err != nil {
 		return err

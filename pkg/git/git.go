@@ -20,15 +20,11 @@ var (
 	errOutdated = errors.New("git is outdated. see https://git-scm.com/download")
 )
 
-func Tool(ctx context.Context) (string, *semver.Version, error) {
-	if path, version, err := Path(ctx); err == nil {
-		return path, version, err
-	}
-
-	return "", nil, errNotFound
+func Info(ctx context.Context) (string, *semver.Version, error) {
+	return path(ctx)
 }
 
-func Path(ctx context.Context) (string, *semver.Version, error) {
+func path(ctx context.Context) (string, *semver.Version, error) {
 	name := "git"
 
 	if runtime.GOOS == "windows" {
@@ -71,7 +67,7 @@ func version(ctx context.Context, path string) (*semver.Version, error) {
 }
 
 func Clone(ctx context.Context, path, uri, username, password string) error {
-	tool, _, err := Tool(ctx)
+	tool, _, err := Info(ctx)
 
 	if err != nil {
 		return err

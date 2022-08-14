@@ -36,7 +36,7 @@ type RunOptions struct {
 }
 
 func Run(ctx context.Context, image string, options RunOptions, args ...string) error {
-	tool, _, err := Tool(ctx)
+	tool, _, err := Info(ctx)
 
 	if err != nil {
 		return err

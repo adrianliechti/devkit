@@ -10,7 +10,7 @@ import (
 )
 
 func PortForward(ctx context.Context, container string, source, target int) error {
-	tool, _, err := Tool(ctx)
+	tool, _, err := Info(ctx)
 
 	if err != nil {
 		return err
