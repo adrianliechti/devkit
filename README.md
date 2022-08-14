@@ -15,5 +15,6 @@ brew install adrianliechti/tap/devkit
 [Scoop](https://scoop.sh)
 
 ```shell
-scoop install https://raw.githubusercontent.com/adrianliechti/scoop-bucket/main/devkit.json
+scoop bucket add adrianliechti https://github.com/adrianliechti/scoop-bucket
+scoop install adrianliechti/devkit
 ```
