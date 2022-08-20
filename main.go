@@ -64,6 +64,9 @@ func main() {
 
 func initApp() cli.App {
 	return cli.App{
+		Usage: "DevKit",
+
+		Suggest: true,
 		Version: version,
 
 		HideHelpCommand: true,
