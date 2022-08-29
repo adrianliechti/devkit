@@ -33,6 +33,7 @@ import (
 	"github.com/adrianliechti/devkit/pkg/catalog/mariadb"
 	"github.com/adrianliechti/devkit/pkg/catalog/minio"
 	"github.com/adrianliechti/devkit/pkg/catalog/mongodb"
+	"github.com/adrianliechti/devkit/pkg/catalog/mosquitto"
 	"github.com/adrianliechti/devkit/pkg/catalog/mssql"
 	"github.com/adrianliechti/devkit/pkg/catalog/mysql"
 	"github.com/adrianliechti/devkit/pkg/catalog/nats"
@@ -90,6 +91,7 @@ func initApp() cli.App {
 			catalog.Command(&mariadb.Manager{}),
 			catalog.Command(&minio.Manager{}),
 			catalog.Command(&mongodb.Manager{}),
+			catalog.Command(&mosquitto.Manager{}),
 			catalog.Command(&mssql.Manager{}),
 			catalog.Command(&mysql.Manager{}),
 			catalog.Command(&nats.Manager{}),
