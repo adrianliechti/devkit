@@ -1,6 +1,8 @@
 package etcd
 
 import (
+	"fmt"
+
 	"github.com/adrianliechti/devkit/pkg/catalog"
 	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/sethvargo/go-password/password"
@@ -75,7 +77,19 @@ func (m *Manager) New() (engine.Container, error) {
 }
 
 func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
-	return map[string]string{}, nil
+	var uri string
+
+	for _, p := range instance.Ports {
+		if p.HostPort == nil || p.Port != 2379 {
+			continue
+		}
+
+		uri = fmt.Sprintf("http://localhost:%d", *p.HostPort)
+	}
+
+	return map[string]string{
+		"URI": uri,
+	}, nil
 }
 
 func (m *Manager) Shell(instance engine.Container) (string, error) {

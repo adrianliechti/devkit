@@ -1,6 +1,8 @@
 package postgres
 
 import (
+	"fmt"
+
 	"github.com/adrianliechti/devkit/pkg/catalog"
 	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/sethvargo/go-password/password"
@@ -39,7 +41,7 @@ const (
 func (m *Manager) New() (engine.Container, error) {
 	image := "postgres:14-bullseye"
 
-	database := "postgres"
+	database := "db"
 	username := "postgres"
 	password := password.MustGenerate(10, 4, 0, false, false)
 
@@ -72,10 +74,21 @@ func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 	username := instance.Env["POSTGRES_USER"]
 	password := instance.Env["POSTGRES_PASSWORD"]
 
+	var uri string
+
+	for _, p := range instance.Ports {
+		if p.HostPort == nil || p.Port != 5432 {
+			continue
+		}
+
+		uri = fmt.Sprintf("postgresql://%s:%s@localhost:%d/%s?sslmode=disable", username, password, *p.HostPort, database)
+	}
+
 	return map[string]string{
 		"Database": database,
 		"Username": username,
 		"Password": password,
+		"URI":      uri,
 	}, nil
 }
 

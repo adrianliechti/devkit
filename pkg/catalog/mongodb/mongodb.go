@@ -1,6 +1,8 @@
 package mongodb
 
 import (
+	"fmt"
+
 	"github.com/adrianliechti/devkit/pkg/catalog"
 	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/sethvargo/go-password/password"
@@ -39,7 +41,6 @@ const (
 func (m *Manager) New() (engine.Container, error) {
 	image := "mongo:5-focal"
 
-	database := "db"
 	username := "root"
 	password := password.MustGenerate(10, 4, 0, false, false)
 
@@ -47,7 +48,6 @@ func (m *Manager) New() (engine.Container, error) {
 		Image: image,
 
 		Env: map[string]string{
-			"MONGO_INITDB_DATABASE":      database,
 			"MONGO_INITDB_ROOT_USERNAME": username,
 			"MONGO_INITDB_ROOT_PASSWORD": password,
 		},
@@ -68,14 +68,23 @@ func (m *Manager) New() (engine.Container, error) {
 }
 
 func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
-	database := instance.Env["MONGO_INITDB_DATABASE"]
 	username := instance.Env["MONGO_INITDB_ROOT_USERNAME"]
 	password := instance.Env["MONGO_INITDB_ROOT_PASSWORD"]
 
+	var uri string
+
+	for _, p := range instance.Ports {
+		if p.HostPort == nil || p.Port != 27017 {
+			continue
+		}
+
+		uri = fmt.Sprintf("mongodb://%s:%s@localhost:%d", username, password, *p.HostPort)
+	}
+
 	return map[string]string{
-		"Database": database,
 		"Username": username,
 		"Password": password,
+		"URI":      uri,
 	}, nil
 }
 

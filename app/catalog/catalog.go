@@ -71,8 +71,9 @@ func printContainerInfo(container engine.Container, info map[string]string) {
 		rowsPorts = append(rowsPorts, []string{fmt.Sprintf("localhost:%d", *p.HostPort), fmt.Sprintf("%s://%s:%d", p.Proto, container.IPAddress, p.Port)})
 	}
 
-	cli.Table([]string{"Mapping", "Target"}, rowsPorts)
-	cli.Info()
+	if len(rowsPorts) > 0 {
+		cli.Table([]string{"Mapping", "Target"}, rowsPorts)
+	}
 
 	rowsInfo := [][]string{}
 
@@ -80,5 +81,11 @@ func printContainerInfo(container engine.Container, info map[string]string) {
 		rowsInfo = append(rowsInfo, []string{k, v})
 	}
 
-	cli.Table([]string{"Description", "Value"}, rowsInfo)
+	if len(rowsInfo) > 0 {
+		if len(rowsPorts) > 0 {
+			cli.Info()
+		}
+
+		cli.Table([]string{"Description", "Value"}, rowsInfo)
+	}
 }

@@ -1,6 +1,8 @@
 package redis
 
 import (
+	"fmt"
+
 	"github.com/adrianliechti/devkit/pkg/catalog"
 	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/sethvargo/go-password/password"
@@ -66,8 +68,19 @@ func (m *Manager) New() (engine.Container, error) {
 func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 	password := instance.Env["REDIS_PASSWORD"]
 
+	var uri string
+
+	for _, p := range instance.Ports {
+		if p.HostPort == nil || p.Port != 6379 {
+			continue
+		}
+
+		uri = fmt.Sprintf("redis://:%s@localhost:%d", password, *p.HostPort)
+	}
+
 	return map[string]string{
 		"Password": password,
+		"URI":      uri,
 	}, nil
 }
 

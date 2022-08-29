@@ -1,6 +1,8 @@
 package nats
 
 import (
+	"fmt"
+
 	"github.com/adrianliechti/devkit/pkg/catalog"
 	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/sethvargo/go-password/password"
@@ -71,8 +73,19 @@ func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 	username := instance.Env["USERNAME"]
 	password := instance.Env["PASSWORD"]
 
+	var uri string
+
+	for _, p := range instance.Ports {
+		if p.HostPort == nil || p.Port != 4222 {
+			continue
+		}
+
+		uri = fmt.Sprintf("nats://%s:%s@localhost:%d", username, password, *p.HostPort)
+	}
+
 	return map[string]string{
 		"Username": username,
 		"Password": password,
+		"URI":      uri,
 	}, nil
 }
