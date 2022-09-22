@@ -57,10 +57,11 @@ func leaks(ctx context.Context) error {
 	args := []string{
 		"detect",
 		"--source=/src",
+		"--no-banner",
 		//"--config=/config",
 	}
 
-	return docker.RunInteractive(ctx, "zricethezav/gitleaks:v8.8.4", options, args...)
+	return docker.RunInteractive(ctx, "zricethezav/gitleaks:v8.13.0", options, args...)
 }
 
 // const gitleaksConfig = `
