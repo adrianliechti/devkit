@@ -19,6 +19,7 @@ import (
 	"github.com/adrianliechti/devkit/pkg/catalog/azurite"
 	"github.com/adrianliechti/devkit/pkg/catalog/cassandra"
 	"github.com/adrianliechti/devkit/pkg/catalog/db2"
+	"github.com/adrianliechti/devkit/pkg/catalog/directus"
 	"github.com/adrianliechti/devkit/pkg/catalog/elasticsearch"
 	"github.com/adrianliechti/devkit/pkg/catalog/etcd"
 	"github.com/adrianliechti/devkit/pkg/catalog/ghost"
@@ -44,6 +45,7 @@ import (
 	"github.com/adrianliechti/devkit/pkg/catalog/rabbitmq"
 	"github.com/adrianliechti/devkit/pkg/catalog/redis"
 	"github.com/adrianliechti/devkit/pkg/catalog/sonarqube"
+	"github.com/adrianliechti/devkit/pkg/catalog/tooljet"
 	"github.com/adrianliechti/devkit/pkg/catalog/unleash"
 	"github.com/adrianliechti/devkit/pkg/catalog/vault"
 
@@ -77,6 +79,7 @@ func initApp() cli.App {
 			catalog.Command(&azurite.Manager{}),
 			catalog.Command(&cassandra.Manager{}),
 			catalog.Command(&db2.Manager{}),
+			catalog.Command(&directus.Manager{}),
 			catalog.Command(&elasticsearch.Manager{}),
 			catalog.Command(&etcd.Manager{}),
 			catalog.Command(&ghost.Manager{}),
@@ -102,6 +105,7 @@ func initApp() cli.App {
 			catalog.Command(&rabbitmq.Manager{}),
 			catalog.Command(&redis.Manager{}),
 			catalog.Command(&sonarqube.Manager{}),
+			catalog.Command(&tooljet.Manager{}),
 			catalog.Command(&unleash.Manager{}),
 			catalog.Command(&vault.Manager{}),
 
