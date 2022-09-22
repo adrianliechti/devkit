@@ -42,6 +42,7 @@ import (
 	"github.com/adrianliechti/devkit/pkg/catalog/postgres"
 	"github.com/adrianliechti/devkit/pkg/catalog/prometheus"
 	"github.com/adrianliechti/devkit/pkg/catalog/rabbitmq"
+	"github.com/adrianliechti/devkit/pkg/catalog/ravendb"
 	"github.com/adrianliechti/devkit/pkg/catalog/redis"
 	"github.com/adrianliechti/devkit/pkg/catalog/sonarqube"
 	"github.com/adrianliechti/devkit/pkg/catalog/unleash"
@@ -100,6 +101,7 @@ func initApp() cli.App {
 			catalog.Command(&postgres.Manager{}),
 			catalog.Command(&prometheus.Manager{}),
 			catalog.Command(&rabbitmq.Manager{}),
+			catalog.Command(&ravendb.Manager{}),
 			catalog.Command(&redis.Manager{}),
 			catalog.Command(&sonarqube.Manager{}),
 			catalog.Command(&unleash.Manager{}),
