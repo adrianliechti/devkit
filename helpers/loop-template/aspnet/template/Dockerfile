@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 as builder
+FROM mcr.microsoft.com/dotnet/sdk:6.0 as builder
 
 WORKDIR /src
 
@@ -9,17 +9,17 @@ COPY . .
 RUN dotnet publish -c Release -o /app --nologo --no-restore --no-self-contained
 
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
 
 RUN apt-get update -qq && apt-get install -qq -y --no-install-recommends \
     tini \
- && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 RUN groupadd -r app -g 1000 \
- && useradd -m -r app -u 1000 -g app -s /usr/sbin/nologin \
- && chown app:app /app
+    && useradd -m -r app -u 1000 -g app -s /usr/sbin/nologin \
+    && chown app:app /app
 
 COPY --from=builder --chown=app:app /app /app
 
