@@ -19,4 +19,3 @@ cp -R /template/* .
 find /src -type f -exec envsubst -i {} -o {} -no-unset -no-empty \;
 
 ng new ${APP_NAME} --defaults --directory . --strict --minimal --routing --style scss --skip-git --skip-install --skip-tests --force
-sed -i 's/"ng build"/"ng build --prod --output-path dist"/' package.json
