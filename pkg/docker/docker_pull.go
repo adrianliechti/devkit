@@ -14,21 +14,21 @@ type PullOptions struct {
 	Stderr io.Writer
 }
 
-func Pull(ctx context.Context, image string, options PullOptions, args ...string) error {
+func Pull(ctx context.Context, image string, options PullOptions) error {
 	tool, _, err := Info(ctx)
 
 	if err != nil {
 		return err
 	}
 
-	pull := exec.CommandContext(ctx, tool, pullArgs(image, options, args...)...)
+	pull := exec.CommandContext(ctx, tool, pullArgs(image, options)...)
 	pull.Stdout = options.Stdout
 	pull.Stderr = options.Stderr
 
 	return pull.Run()
 }
 
-func PullInteractive(ctx context.Context, image string, options PullOptions, args ...string) error {
+func PullInteractive(ctx context.Context, image string, options PullOptions) error {
 
 	if options.Stdout == nil {
 		options.Stdout = os.Stdout
@@ -38,10 +38,10 @@ func PullInteractive(ctx context.Context, image string, options PullOptions, arg
 		options.Stderr = os.Stderr
 	}
 
-	return Pull(ctx, image, options, args...)
+	return Pull(ctx, image, options)
 }
 
-func pullArgs(image string, options PullOptions, arg ...string) []string {
+func pullArgs(image string, options PullOptions) []string {
 	args := []string{
 		"pull",
 	}
@@ -51,7 +51,6 @@ func pullArgs(image string, options PullOptions, arg ...string) []string {
 	}
 
 	args = append(args, image)
-	args = append(args, arg...)
 
 	return args
 }

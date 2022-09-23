@@ -70,4 +70,4 @@ tasks:
     vars:
       DOCKER_IMAGE: adrianliechti/loop-template:{{.STACK}}
     cmds:
-      - docker buildx build --push --platform linux/amd64 --tag {{.DOCKER_IMAGE}} .
+      - docker buildx build --push --platform linux/arm64,linux/amd64 --tag {{.DOCKER_IMAGE}} .
