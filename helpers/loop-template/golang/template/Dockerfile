@@ -1,4 +1,4 @@
-FROM golang:1.17-alpine3.14 as builder
+FROM golang:golang:1.19-alpine3.16 as builder
 
 WORKDIR /src
 
@@ -9,7 +9,7 @@ COPY . .
 RUN go build -o ${APP_NAME}
 
 
-FROM alpine:3.14
+FROM alpine:3.16
 
 RUN apk add --no-cache ca-certificates tini
 
@@ -19,8 +19,8 @@ COPY --from=builder /src/${APP_NAME} /app/${APP_NAME}
 COPY --from=builder /src/public/ /app/public/
 
 RUN addgroup -g 1000 -S app \
- && adduser -u 1000 -S -G app app \
- && chown -R app:app /app
+    && adduser -u 1000 -S -G app app \
+    && chown -R app:app /app
 
 USER 1000
 
