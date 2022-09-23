@@ -1,4 +1,4 @@
-FROM node:14-buster-slim as builder
+FROM node:16-buster-slim as builder
 
 WORKDIR /src
 

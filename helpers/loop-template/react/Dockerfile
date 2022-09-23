@@ -1,4 +1,4 @@
-FROM node:14-buster-slim
+FROM node:16-buster-slim
 
 RUN apt-get update -qq && apt-get install -qq -y --no-install-recommends \
   curl ca-certificates \
