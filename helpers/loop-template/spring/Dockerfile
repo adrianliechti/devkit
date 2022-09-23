@@ -1,4 +1,4 @@
-FROM maven:3-openjdk-11-slim
+FROM maven:3-openjdk-17-slim
 
 RUN curl -fsSL "https://github.com/a8m/envsubst/releases/download/v1.2.0/envsubst-Linux-x86_64" -o /usr/local/bin/envsubst && chmod +x /usr/local/bin/envsubst
 

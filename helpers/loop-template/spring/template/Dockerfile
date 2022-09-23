@@ -1,4 +1,4 @@
-FROM maven:3-openjdk-11-slim as builder
+FROM maven:3-openjdk-17-slim as builder
 
 WORKDIR /src
 
@@ -9,17 +9,17 @@ COPY . .
 RUN mvn clean install -DskipTests --no-transfer-progress
 
 
-FROM openjdk:11-jre-slim-buster
+FROM openjdk:17-slim-buster
 
 RUN apt-get update -qq && apt-get install -qq -y --no-install-recommends \
     tini \
- && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 RUN groupadd -r app -g 1000 \
- && useradd -m -r app -u 1000 -g app -s /usr/sbin/nologin \
- && chown app:app /app
+    && useradd -m -r app -u 1000 -g app -s /usr/sbin/nologin \
+    && chown app:app /app
 
 COPY --from=builder --chown=app:app /src/target/${APP_ARTIFACT}-*.jar /app/${APP_ARTIFACT}.jar
 

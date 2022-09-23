@@ -23,7 +23,7 @@ find /src -type f -exec envsubst -i {} -o {} -no-unset -no-empty \;
 
 curl -s https://start.spring.io/starter.tgz \
     -d language=java \
-    -d javaVersion=11 \
+    -d javaVersion=17 \
     -d type=maven-project \
     -d artifactId=${APP_ARTIFACT} \
     -d groupId=${APP_GROUP} \
