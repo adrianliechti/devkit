@@ -105,12 +105,17 @@ func runTemplate(ctx context.Context, path string, template template, options te
 		return err
 	}
 
-	runImage := fmt.Sprintf("adrianliechti/loop-template:%s", template)
+	image := fmt.Sprintf("adrianliechti/loop-template:%s", template)
+	platform := "linux/amd64"
+
+	if err := docker.PullInteractive(ctx, image, docker.PullOptions{Platform: platform}); err != nil {
+		return err
+	}
 
 	runOptions := docker.RunOptions{
 		Env: options.env(),
 
-		Platform: "linux/amd64",
+		Platform: platform,
 
 		Volumes: []engine.ContainerMount{
 			{
@@ -120,7 +125,7 @@ func runTemplate(ctx context.Context, path string, template template, options te
 		},
 	}
 
-	return docker.RunInteractive(ctx, runImage, runOptions)
+	return docker.RunInteractive(ctx, image, runOptions)
 }
 
 type templateOptions struct {
