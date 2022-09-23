@@ -10,8 +10,8 @@ RUN pip3 install -r requirements.txt
 COPY . .
 
 RUN addgroup -g 1000 -S app \
- && adduser -u 1000 -S -G app app \
- && chown -R app:app /app
+    && adduser -u 1000 -S -G app app \
+    && chown -R app:app /app
 
 USER 1000
 
