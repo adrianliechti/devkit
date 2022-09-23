@@ -42,8 +42,6 @@ func leaks(ctx context.Context) error {
 	// }
 
 	options := docker.RunOptions{
-		Platform: "linux/amd64",
-
 		User: "root",
 
 		Volumes: []engine.ContainerMount{
