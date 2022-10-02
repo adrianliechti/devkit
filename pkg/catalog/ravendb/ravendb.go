@@ -8,9 +8,11 @@ import (
 )
 
 var (
-	_ catalog.Manager       = &Manager{}
-	_ catalog.Decorator     = &Manager{}
-	_ catalog.ShellProvider = &Manager{}
+	_ catalog.Manager         = &Manager{}
+	_ catalog.Decorator       = &Manager{}
+	_ catalog.ShellProvider   = &Manager{}
+	_ catalog.ClientProvider  = &Manager{}
+	_ catalog.ConsoleProvider = &Manager{}
 )
 
 type Manager struct {
@@ -69,10 +71,6 @@ func (m *Manager) New() (engine.Container, error) {
 }
 
 func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
-	// database := instance.Env["POSTGRES_DB"]
-	// username := instance.Env["POSTGRES_USER"]
-	// password := instance.Env["POSTGRES_PASSWORD"]
-
 	var uri string
 
 	for _, p := range instance.Ports {
@@ -80,18 +78,29 @@ func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 			continue
 		}
 
-		//uri = fmt.Sprintf("postgresql://%s:%s@localhost:%d/%s?sslmode=disable", username, password, *p.HostPort, database)
 		uri = fmt.Sprintf("http://localhost:%d/", *p.HostPort)
 	}
 
 	return map[string]string{
-		// 	"Database": database,
-		// 	"Username": username,
-		// 	"Password": password,
 		"URI": uri,
 	}, nil
 }
 
 func (m *Manager) Shell(instance engine.Container) (string, error) {
 	return DefaultShell, nil
+}
+
+func (m *Manager) Client(instance engine.Container) (string, []string, error) {
+	return "", []string{
+		DefaultShell,
+		"-c",
+		"./rvn admin-channel",
+	}, nil
+}
+
+func (m *Manager) ConsolePort(instance engine.Container) (*engine.ContainerPort, error) {
+	return &engine.ContainerPort{
+		Port:  8080,
+		Proto: engine.ProtocolTCP,
+	}, nil
 }
