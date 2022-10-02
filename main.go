@@ -18,6 +18,7 @@ import (
 	"github.com/adrianliechti/devkit/pkg/catalog/activemq"
 	"github.com/adrianliechti/devkit/pkg/catalog/azurite"
 	"github.com/adrianliechti/devkit/pkg/catalog/cassandra"
+	"github.com/adrianliechti/devkit/pkg/catalog/cockroachdb"
 	"github.com/adrianliechti/devkit/pkg/catalog/db2"
 	"github.com/adrianliechti/devkit/pkg/catalog/directus"
 	"github.com/adrianliechti/devkit/pkg/catalog/elasticsearch"
@@ -78,6 +79,7 @@ func initApp() cli.App {
 			catalog.Command(&activemq.Manager{}),
 			catalog.Command(&azurite.Manager{}),
 			catalog.Command(&cassandra.Manager{}),
+			catalog.Command(&cockroachdb.Manager{}),
 			catalog.Command(&db2.Manager{}),
 			catalog.Command(&directus.Manager{}),
 			catalog.Command(&elasticsearch.Manager{}),
