@@ -3,6 +3,8 @@ kind: Config
 build:
   artifacts:
     - image: ${IMAGE_REPOSITORY}
+  tagPolicy:
+    inputDigest: {}
 manifests:
   helm:
     releases:

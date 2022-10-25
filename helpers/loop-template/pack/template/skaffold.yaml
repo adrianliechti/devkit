@@ -5,6 +5,8 @@ build:
     - image: ${IMAGE_REPOSITORY}
       buildpacks:
         builder: gcr.io/buildpacks/builder
+  tagPolicy:
+    inputDigest: {}
 manifests:
   helm:
     releases:
