@@ -91,7 +91,13 @@ func createCommand(m catalog.Manager) *cli.Command {
 	ref, _ := m.New()
 	kind := kind(m)
 
-	flags := []cli.Flag{}
+	flags := []cli.Flag{
+		&cli.StringFlag{
+			Name:  "name",
+			Usage: "module name",
+		},
+	}
+
 	portFlags := []*cli.IntFlag{}
 
 	for _, p := range ref.Ports {
@@ -127,6 +133,10 @@ func createCommand(m catalog.Manager) *cli.Command {
 
 			if err != nil {
 				return err
+			}
+
+			if name := c.String("name"); name != "" {
+				container.Name = name
 			}
 
 			container.Labels = map[string]string{
