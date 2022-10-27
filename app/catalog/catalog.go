@@ -89,3 +89,13 @@ func printContainerInfo(container engine.Container, info map[string]string) {
 		cli.Table([]string{"Description", "Value"}, rowsInfo)
 	}
 }
+
+func printContainerList(containers []engine.Container) {
+	rowsInfo := [][]string{}
+
+	for _, container := range containers {
+		rowsInfo = append(rowsInfo, []string{container.Name, container.Image})
+	}
+
+	cli.Table([]string{"Name", "Image"}, rowsInfo)
+}

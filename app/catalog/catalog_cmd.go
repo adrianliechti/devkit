@@ -100,9 +100,7 @@ func listContainer(c *cli.Context, listOptions engine.ListOptions) error {
 		return err
 	}
 
-	for _, container := range containers {
-		cli.Info(container.Name)
-	}
+	printContainerList(containers)
 
 	return nil
 }
