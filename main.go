@@ -76,6 +76,7 @@ func initApp() cli.App {
 		HideHelpCommand: true,
 
 		Commands: []*cli.Command{
+			catalog.ListAllCommand,
 			catalog.Command(&activemq.Manager{}),
 			catalog.Command(&azurite.Manager{}),
 			catalog.Command(&cassandra.Manager{}),

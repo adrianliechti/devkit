@@ -53,7 +53,13 @@ func (m *Moby) List(ctx context.Context, options engine.ListOptions) ([]engine.C
 	}
 
 	for k, v := range options.LabelSelector {
-		opts.Filters.Add("label", fmt.Sprintf("%s=%s", k, v))
+		var filter string = fmt.Sprintf("%s=%s", k, v)
+
+		if len(v) <= 0 {
+			filter = k
+		}
+
+		opts.Filters.Add("label", filter)
 	}
 
 	list, err := m.client.ContainerList(ctx, opts)

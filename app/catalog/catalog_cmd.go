@@ -57,34 +57,54 @@ func kind(m catalog.Manager) string {
 	return strings.ToLower(m.Name())
 }
 
+var ListAllCommand = &cli.Command{
+	Name:     "list",
+	Usage:    "list all instances created with devkit",
+	Category: "CATALOG",
+
+	Action: func(c *cli.Context) error {
+		return listContainer(c, engine.ListOptions{
+			All: true,
+
+			LabelSelector: map[string]string{
+				KindKey: "",
+			},
+		})
+	},
+}
+
 func listCommand(m catalog.Manager) *cli.Command {
 	return &cli.Command{
 		Name:  "list",
 		Usage: "list instances",
 
 		Action: func(c *cli.Context) error {
-			ctx := c.Context
-			client := app.MustClient(c)
-
-			containers, err := client.List(ctx, engine.ListOptions{
+			return listContainer(c, engine.ListOptions{
 				All: true,
 
 				LabelSelector: map[string]string{
 					KindKey: kind(m),
 				},
 			})
-
-			if err != nil {
-				return err
-			}
-
-			for _, container := range containers {
-				cli.Info(container.Name)
-			}
-
-			return nil
 		},
 	}
+}
+
+func listContainer(c *cli.Context, listOptions engine.ListOptions) error {
+	ctx := c.Context
+	client := app.MustClient(c)
+
+	containers, err := client.List(ctx, listOptions)
+
+	if err != nil {
+		return err
+	}
+
+	for _, container := range containers {
+		cli.Info(container.Name)
+	}
+
+	return nil
 }
 
 func createCommand(m catalog.Manager) *cli.Command {
