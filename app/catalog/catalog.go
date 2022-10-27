@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/engine"
@@ -61,6 +62,12 @@ func MustContainer(ctx context.Context, client engine.Client, kind string, all b
 }
 
 func printContainerInfo(container engine.Container, info map[string]string) {
+	title := fmt.Sprintf("%s (%s)", strings.ToUpper(container.Name), strings.ToLower(container.ID[0:12]))
+
+	cli.Info(title)
+	cli.Info(strings.Repeat("=", len(title)))
+	cli.Info()
+
 	rowsPorts := [][]string{}
 
 	for _, p := range container.Ports {
@@ -72,12 +79,10 @@ func printContainerInfo(container engine.Container, info map[string]string) {
 	}
 
 	if len(rowsPorts) > 0 {
-		cli.Table([]string{"Mapping", "Target"}, rowsPorts)
+		cli.Table([]string{"Endpoint", "Target"}, rowsPorts)
 	}
 
 	rowsInfo := [][]string{}
-
-	rowsInfo = append(rowsInfo, []string{"Name", container.Name})
 
 	for k, v := range info {
 		rowsInfo = append(rowsInfo, []string{k, v})
