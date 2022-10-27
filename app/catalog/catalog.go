@@ -77,6 +77,8 @@ func printContainerInfo(container engine.Container, info map[string]string) {
 
 	rowsInfo := [][]string{}
 
+	rowsInfo = append(rowsInfo, []string{"Name", container.Name})
+
 	for k, v := range info {
 		rowsInfo = append(rowsInfo, []string{k, v})
 	}
