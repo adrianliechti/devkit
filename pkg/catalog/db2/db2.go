@@ -37,7 +37,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "ibmcom/db2:11.5.7.0a"
+	image := "ibmcom/db2:11.5.8.0"
 
 	database := "db"
 	password := password.MustGenerate(10, 4, 0, false, false)

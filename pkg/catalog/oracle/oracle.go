@@ -37,7 +37,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "gvenzl/oracle-xe:21"
+	image := "gvenzl/oracle-xe:21-faststart"
 
 	password := password.MustGenerate(10, 4, 0, false, false)
 

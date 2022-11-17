@@ -36,7 +36,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "docker.elastic.co/elasticsearch/elasticsearch:8.3.3"
+	image := "elasticsearch:8.5.1"
 
 	password := password.MustGenerate(10, 4, 0, false, false)
 

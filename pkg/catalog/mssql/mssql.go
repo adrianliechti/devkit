@@ -39,7 +39,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "mcr.microsoft.com/azure-sql-edge:1.0.6"
+	image := "mcr.microsoft.com/azure-sql-edge:latest"
 
 	password := password.MustGenerate(10, 4, 0, false, false)
 
