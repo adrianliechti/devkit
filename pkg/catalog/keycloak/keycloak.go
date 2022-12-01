@@ -3,6 +3,7 @@ package keycloak
 import (
 	"github.com/adrianliechti/devkit/pkg/catalog"
 	"github.com/adrianliechti/devkit/pkg/engine"
+	"github.com/sethvargo/go-password/password"
 )
 
 var (
@@ -37,12 +38,15 @@ const (
 func (m *Manager) New() (engine.Container, error) {
 	image := "quay.io/keycloak/keycloak:20.0.1"
 
+	user := "admin"
+	password := password.MustGenerate(10, 4, 0, false, false)
+
 	return engine.Container{
 		Image: image,
 
 		Env: map[string]string{
-			"KEYCLOAK_ADMIN":          "admin",
-			"KEYCLOAK_ADMIN_PASSWORD": "admin",
+			"KEYCLOAK_ADMIN":          user,
+			"KEYCLOAK_ADMIN_PASSWORD": password,
 		},
 
 		Args: []string{
@@ -60,7 +64,13 @@ func (m *Manager) New() (engine.Container, error) {
 }
 
 func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
-	return map[string]string{}, nil
+	user := instance.Env["KEYCLOAK_ADMIN"]
+	password := instance.Env["KEYCLOAK_ADMIN_PASSWORD"]
+
+	return map[string]string{
+		"Username": user,
+		"Password": password,
+	}, nil
 }
 
 func (m *Manager) Shell(instance engine.Container) (string, error) {
