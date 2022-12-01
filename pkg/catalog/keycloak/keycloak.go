@@ -1,6 +1,9 @@
 package keycloak
 
 import (
+	"fmt"
+	"strconv"
+
 	"github.com/adrianliechti/devkit/pkg/catalog"
 	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/sethvargo/go-password/password"
@@ -32,7 +35,8 @@ func (m *Manager) Description() string {
 }
 
 const (
-	DefaultShell = "/bin/bash"
+	DefaultShell     = "/bin/bash"
+	DefaultPort  int = 8443
 )
 
 func (m *Manager) New() (engine.Container, error) {
@@ -51,12 +55,12 @@ func (m *Manager) New() (engine.Container, error) {
 
 		Args: []string{
 			"start-dev",
-			"--http-port", "8443",
+			"--http-port", strconv.Itoa(DefaultPort),
 		},
 
 		Ports: []*engine.ContainerPort{
 			{
-				Port:  8443,
+				Port:  DefaultPort,
 				Proto: engine.ProtocolTCP,
 			},
 		},
@@ -67,9 +71,12 @@ func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 	user := instance.Env["KEYCLOAK_ADMIN"]
 	password := instance.Env["KEYCLOAK_ADMIN_PASSWORD"]
 
+	uri := fmt.Sprintf("localhost:%d/admin", DefaultPort)
+
 	return map[string]string{
-		"Username": user,
-		"Password": password,
+		"Username":      user,
+		"Password":      password,
+		"Admin Console": uri,
 	}, nil
 }
 
