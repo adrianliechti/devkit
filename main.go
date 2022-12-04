@@ -30,6 +30,7 @@ import (
 	"github.com/adrianliechti/devkit/pkg/catalog/jenkins"
 	"github.com/adrianliechti/devkit/pkg/catalog/jupyter"
 	"github.com/adrianliechti/devkit/pkg/catalog/kafka"
+	"github.com/adrianliechti/devkit/pkg/catalog/keycloak"
 	"github.com/adrianliechti/devkit/pkg/catalog/mailtrap"
 	"github.com/adrianliechti/devkit/pkg/catalog/mariadb"
 	"github.com/adrianliechti/devkit/pkg/catalog/minio"
@@ -90,6 +91,7 @@ func initApp() cli.App {
 			catalog.Command(&jaeger.Manager{}),
 			catalog.Command(&jenkins.Manager{}),
 			catalog.Command(&jupyter.Manager{}),
+			catalog.Command(&keycloak.Manager{}),
 			catalog.Command(&kafka.Manager{}),
 			catalog.Command(&mailtrap.Manager{}),
 			catalog.Command(&mariadb.Manager{}),
