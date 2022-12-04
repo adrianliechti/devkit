@@ -2,7 +2,6 @@ package keycloak
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/adrianliechti/devkit/pkg/catalog"
 	"github.com/adrianliechti/devkit/pkg/engine"
@@ -10,9 +9,10 @@ import (
 )
 
 var (
-	_ catalog.Manager       = &Manager{}
-	_ catalog.Decorator     = &Manager{}
-	_ catalog.ShellProvider = &Manager{}
+	_ catalog.Manager         = &Manager{}
+	_ catalog.Decorator       = &Manager{}
+	_ catalog.ShellProvider   = &Manager{}
+	_ catalog.ConsoleProvider = &Manager{}
 )
 
 type Manager struct {
@@ -35,8 +35,7 @@ func (m *Manager) Description() string {
 }
 
 const (
-	DefaultShell     = "/bin/bash"
-	DefaultPort  int = 8443
+	DefaultShell = "/bin/bash"
 )
 
 func (m *Manager) New() (engine.Container, error) {
@@ -55,13 +54,19 @@ func (m *Manager) New() (engine.Container, error) {
 
 		Args: []string{
 			"start-dev",
-			"--http-port", strconv.Itoa(DefaultPort),
+			"--http-port", "8443",
 		},
 
 		Ports: []*engine.ContainerPort{
 			{
-				Port:  DefaultPort,
+				Port:  8443,
 				Proto: engine.ProtocolTCP,
+			},
+		},
+
+		Mounts: []*engine.ContainerMount{
+			{
+				Path: "/opt/keycloak/data",
 			},
 		},
 	}, nil
@@ -71,23 +76,30 @@ func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 	user := instance.Env["KEYCLOAK_ADMIN"]
 	password := instance.Env["KEYCLOAK_ADMIN_PASSWORD"]
 
-	var uri string
+	var url string
 
 	for _, p := range instance.Ports {
-		if p.HostPort == nil || p.Port != DefaultPort {
+		if p.HostPort == nil || p.Port != 8443 {
 			continue
 		}
 
-		uri = fmt.Sprintf("localhost:%d/admin", *p.HostPort)
+		url = fmt.Sprintf("http://localhost:%d", *p.HostPort)
 	}
 
 	return map[string]string{
-		"Username":      user,
-		"Password":      password,
-		"Admin Console": uri,
+		"Username": user,
+		"Password": password,
+		"URL":      url,
 	}, nil
 }
 
 func (m *Manager) Shell(instance engine.Container) (string, error) {
 	return DefaultShell, nil
+}
+
+func (m *Manager) ConsolePort(instance engine.Container) (*engine.ContainerPort, error) {
+	return &engine.ContainerPort{
+		Port:  8443,
+		Proto: engine.ProtocolTCP,
+	}, nil
 }
