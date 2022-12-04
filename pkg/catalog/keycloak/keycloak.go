@@ -71,7 +71,15 @@ func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 	user := instance.Env["KEYCLOAK_ADMIN"]
 	password := instance.Env["KEYCLOAK_ADMIN_PASSWORD"]
 
-	uri := fmt.Sprintf("localhost:%d/admin", DefaultPort)
+	var uri string
+
+	for _, p := range instance.Ports {
+		if p.HostPort == nil || p.Port != DefaultPort {
+			continue
+		}
+
+		uri = fmt.Sprintf("localhost:%d/admin", *p.HostPort)
+	}
 
 	return map[string]string{
 		"Username":      user,
