@@ -52,7 +52,13 @@ func (m *Manager) New() (engine.Container, error) {
 
 		Ports: []*engine.ContainerPort{
 			{
+				Name:  "http",
 				Port:  4200,
+				Proto: engine.ProtocolTCP,
+			},
+			{
+				Name:  "psql",
+				Port:  5432,
 				Proto: engine.ProtocolTCP,
 			},
 		},
