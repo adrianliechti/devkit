@@ -69,7 +69,7 @@ func (m *Manager) New() (engine.Container, error) {
 
 		Mounts: []*engine.ContainerMount{
 			{
-				Path: "/cratedb/data",
+				Path: "/data",
 			},
 		},
 	}, nil
