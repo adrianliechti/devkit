@@ -42,13 +42,14 @@ service:
 
 ingress:
   enabled: ${APP_INGRESS}
+  className: ""
   annotations:
-    # kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
   hosts:
     - host: ${APP_HOSTNAME}
       paths:
         - path: /
+          pathType: ImplementationSpecific
   tls:
     - secretName: ${CHART_NAME}-tls
       hosts:
