@@ -24,7 +24,6 @@ var (
 	TemplateASPNET  template = "aspnet"
 	TemplateGolang  template = "golang"
 	TemplateNginx   template = "nginx"
-	TemplatePack    template = "pack"
 	TemplatePython  template = "python"
 	TemplateReact   template = "react"
 	TemplateSpring  template = "spring"
@@ -46,7 +45,6 @@ var Command = &cli.Command{
 		springCommand,
 		aspnetCommand,
 		nginxCommand,
-		packCommand,
 	},
 }
 
@@ -105,7 +103,7 @@ func runTemplate(ctx context.Context, path string, template template, options te
 		return err
 	}
 
-	image := fmt.Sprintf("adrianliechti/loop-template:%s", template)
+	image := fmt.Sprintf("ghcr.io/adrianliechti/loop-template:%s", template)
 
 	if err := docker.PullInteractive(ctx, image, docker.PullOptions{}); err != nil {
 		return err

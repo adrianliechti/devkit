@@ -44,5 +44,5 @@ func leaks(ctx context.Context) error {
 		//"--config=/config",
 	}
 
-	return docker.RunInteractive(ctx, "zricethezav/gitleaks:v8.13.0", options, args...)
+	return docker.RunInteractive(ctx, "zricethezav/gitleaks:v8.18.4", options, args...)
 }

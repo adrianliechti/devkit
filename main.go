@@ -19,19 +19,14 @@ import (
 	"github.com/adrianliechti/devkit/pkg/catalog/cassandra"
 	"github.com/adrianliechti/devkit/pkg/catalog/cockroachdb"
 	"github.com/adrianliechti/devkit/pkg/catalog/db2"
-	"github.com/adrianliechti/devkit/pkg/catalog/directus"
 	"github.com/adrianliechti/devkit/pkg/catalog/elasticsearch"
 	"github.com/adrianliechti/devkit/pkg/catalog/etcd"
-	"github.com/adrianliechti/devkit/pkg/catalog/ghost"
-	"github.com/adrianliechti/devkit/pkg/catalog/grafana"
 	"github.com/adrianliechti/devkit/pkg/catalog/immudb"
 	"github.com/adrianliechti/devkit/pkg/catalog/influxdb"
-	"github.com/adrianliechti/devkit/pkg/catalog/jaeger"
 	"github.com/adrianliechti/devkit/pkg/catalog/jenkins"
 	"github.com/adrianliechti/devkit/pkg/catalog/jupyter"
 	"github.com/adrianliechti/devkit/pkg/catalog/kafka"
 	"github.com/adrianliechti/devkit/pkg/catalog/keycloak"
-	"github.com/adrianliechti/devkit/pkg/catalog/mailtrap"
 	"github.com/adrianliechti/devkit/pkg/catalog/mariadb"
 	"github.com/adrianliechti/devkit/pkg/catalog/minio"
 	"github.com/adrianliechti/devkit/pkg/catalog/mongodb"
@@ -43,11 +38,8 @@ import (
 	"github.com/adrianliechti/devkit/pkg/catalog/oracle"
 	"github.com/adrianliechti/devkit/pkg/catalog/postgres"
 	"github.com/adrianliechti/devkit/pkg/catalog/rabbitmq"
-	"github.com/adrianliechti/devkit/pkg/catalog/ravendb"
 	"github.com/adrianliechti/devkit/pkg/catalog/redis"
 	"github.com/adrianliechti/devkit/pkg/catalog/sonarqube"
-	"github.com/adrianliechti/devkit/pkg/catalog/tooljet"
-	"github.com/adrianliechti/devkit/pkg/catalog/unleash"
 	"github.com/adrianliechti/devkit/pkg/catalog/vault"
 
 	"github.com/adrianliechti/devkit/pkg/cli"
@@ -81,19 +73,14 @@ func initApp() cli.App {
 			catalog.Command(&cassandra.Manager{}),
 			catalog.Command(&cockroachdb.Manager{}),
 			catalog.Command(&db2.Manager{}),
-			catalog.Command(&directus.Manager{}),
 			catalog.Command(&elasticsearch.Manager{}),
 			catalog.Command(&etcd.Manager{}),
-			catalog.Command(&ghost.Manager{}),
-			catalog.Command(&grafana.Manager{}),
 			catalog.Command(&immudb.Manager{}),
 			catalog.Command(&influxdb.Manager{}),
-			catalog.Command(&jaeger.Manager{}),
 			catalog.Command(&jenkins.Manager{}),
 			catalog.Command(&jupyter.Manager{}),
 			catalog.Command(&keycloak.Manager{}),
 			catalog.Command(&kafka.Manager{}),
-			catalog.Command(&mailtrap.Manager{}),
 			catalog.Command(&mariadb.Manager{}),
 			catalog.Command(&minio.Manager{}),
 			catalog.Command(&mongodb.Manager{}),
@@ -105,11 +92,8 @@ func initApp() cli.App {
 			catalog.Command(&oracle.Manager{}),
 			catalog.Command(&postgres.Manager{}),
 			catalog.Command(&rabbitmq.Manager{}),
-			catalog.Command(&ravendb.Manager{}),
 			catalog.Command(&redis.Manager{}),
 			catalog.Command(&sonarqube.Manager{}),
-			catalog.Command(&tooljet.Manager{}),
-			catalog.Command(&unleash.Manager{}),
 			catalog.Command(&vault.Manager{}),
 
 			template.Command,

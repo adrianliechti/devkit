@@ -39,7 +39,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "redis:7-bullseye"
+	image := "redis:7"
 
 	password := password.MustGenerate(10, 4, 0, false, false)
 

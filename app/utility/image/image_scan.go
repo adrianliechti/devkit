@@ -23,7 +23,7 @@ var scanCommand = &cli.Command{
 }
 
 func runTrivy(ctx context.Context, image string) error {
-	tool := "aquasec/trivy:0.30.4"
+	tool := "aquasec/trivy:0.53.0"
 
 	options := docker.RunOptions{
 		Env: map[string]string{},

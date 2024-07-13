@@ -23,6 +23,8 @@ var browseCommand = &cli.Command{
 }
 
 func runDive(ctx context.Context, image string) error {
+	tool := "wagoodman/dive:v0.12"
+
 	options := docker.RunOptions{
 		Volumes: []engine.ContainerMount{
 			{
@@ -32,5 +34,5 @@ func runDive(ctx context.Context, image string) error {
 		},
 	}
 
-	return docker.RunInteractive(ctx, "wagoodman/dive", options, image)
+	return docker.RunInteractive(ctx, tool, options, image)
 }

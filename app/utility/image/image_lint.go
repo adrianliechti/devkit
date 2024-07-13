@@ -23,7 +23,7 @@ var lintCommand = &cli.Command{
 }
 
 func runDockle(ctx context.Context, image string) error {
-	tool := "goodwithtech/dockle:v0.4.6"
+	tool := "goodwithtech/dockle:v0.4.14"
 
 	args := []string{
 		// "--debug",

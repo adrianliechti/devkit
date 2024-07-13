@@ -38,7 +38,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "gcr.io/etcd-development/etcd:v3.4.20"
+	image := "gcr.io/etcd-development/etcd:v3.5.14"
 
 	token := password.MustGenerate(10, 4, 0, false, false)
 

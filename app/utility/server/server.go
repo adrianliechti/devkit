@@ -21,10 +21,12 @@ var Command = &cli.Command{
 
 	Flags: []cli.Flag{
 		app.PortFlag(""),
+
 		&cli.BoolFlag{
 			Name:  "spa",
 			Usage: "enable SPA redirect",
 		},
+
 		&cli.StringFlag{
 			Name:  "index",
 			Usage: "index file name",

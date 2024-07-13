@@ -23,10 +23,10 @@ var bomCommand = &cli.Command{
 }
 
 func runSyft(ctx context.Context, image string) error {
-	tool := "anchore/syft:v0.53.4"
+	tool := "anchore/syft:v1.9.0"
 
 	args := []string{
-		"-o", "table",
+		"-o", "syft-table",
 	}
 
 	args = append(args, image)

@@ -37,7 +37,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "docker.io/library/mysql:8-oracle"
+	image := "docker.io/library/mysql:9-oracle"
 
 	database := "db"
 	password := password.MustGenerate(10, 4, 0, false, false)

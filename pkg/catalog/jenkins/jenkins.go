@@ -37,7 +37,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "adrianliechti/loop-jenkins:dind"
+	image := "ghcr.io/adrianliechti/loop-jenkins:dind"
 
 	username := "admin"
 	password := password.MustGenerate(10, 4, 0, false, false)

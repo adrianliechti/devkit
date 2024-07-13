@@ -27,6 +27,8 @@ var inspectCommand = &cli.Command{
 }
 
 func runWhaler(ctx context.Context, image string, verbose bool) error {
+	tool := "pegleg/whaler"
+
 	args := []string{}
 
 	if verbose {
@@ -44,5 +46,5 @@ func runWhaler(ctx context.Context, image string, verbose bool) error {
 		},
 	}
 
-	return docker.RunInteractive(ctx, "pegleg/whaler", options, args...)
+	return docker.RunInteractive(ctx, tool, options, args...)
 }

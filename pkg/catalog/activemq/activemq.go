@@ -36,7 +36,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "rmohr/activemq:5.15.9"
+	image := "apache/activemq-classic"
 
 	return engine.Container{
 		Image: image,

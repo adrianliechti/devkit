@@ -20,10 +20,12 @@ var Command = &cli.Command{
 
 	Flags: []cli.Flag{
 		app.PortFlag(""),
+
 		&cli.StringFlag{
 			Name:  "username",
 			Usage: "proxy username",
 		},
+
 		&cli.StringFlag{
 			Name:  "password",
 			Usage: "proxy password",

@@ -48,7 +48,7 @@ var Command = &cli.Command{
 }
 
 func startCode(ctx context.Context, client engine.Client, stack string, port int) error {
-	image := "adrianliechti/loop-code:" + stack + "-dind"
+	image := "ghcr.io/adrianliechti/loop-code:" + stack + "-dind"
 
 	path, err := os.Getwd()
 

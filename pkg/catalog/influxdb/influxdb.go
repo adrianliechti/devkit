@@ -37,7 +37,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "influxdb:2.5"
+	image := "influxdb:2.7"
 
 	org := "default"
 	bucket := "default"

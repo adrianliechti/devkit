@@ -37,7 +37,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "ibmcom/db2:11.5.8.0"
+	image := "icr.io/db2_community/db2"
 
 	database := "db"
 	password := password.MustGenerate(10, 4, 0, false, false)
@@ -45,12 +45,24 @@ func (m *Manager) New() (engine.Container, error) {
 	return engine.Container{
 		Image: image,
 
+		Privileged: true,
+
 		Env: map[string]string{
-			"LICENSE": "accept",
-
-			"DBNAME": database,
-
-			"DB2INST1_PASSWORD": password,
+			"LICENSE":                     "accept",
+			"DB2INSTANCE":                 "db2inst1",
+			"DB2INST1_PASSWORD":           password,
+			"DBNAME":                      database,
+			"BLU":                         "false",
+			"ENABLE_ORACLE_COMPATIBILITY": "false",
+			"UPDATEAVAIL":                 "NO",
+			"TO_CREATE_SAMPLEDB":          "false",
+			"REPODB":                      "false",
+			"IS_OSXFS":                    "false",
+			"PERSISTENT_HOME":             "true",
+			"HADR_ENABLED":                "false",
+			"ETCD_ENDPOINT":               "",
+			"ETCD_USERNAME":               "",
+			"ETCD_PASSWORD":               "",
 		},
 
 		Ports: []*engine.ContainerPort{

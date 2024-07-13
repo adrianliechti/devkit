@@ -36,7 +36,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "cockroachdb/cockroach:latest-v22.1"
+	image := "cockroachdb/cockroach:latest-v24.1"
 
 	return engine.Container{
 		Image: image,

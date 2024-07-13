@@ -1,8 +1,6 @@
 package sonarqube
 
 import (
-	"runtime"
-
 	"github.com/adrianliechti/devkit/pkg/catalog"
 	"github.com/adrianliechti/devkit/pkg/engine"
 )
@@ -38,11 +36,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "sonarqube:9-community"
-
-	if runtime.GOARCH == "arm64" {
-		image = "mwizner/sonarqube:9.4.0-community"
-	}
+	image := "sonarqube:10-community"
 
 	return engine.Container{
 		Image: image,
