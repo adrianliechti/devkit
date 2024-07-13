@@ -9,8 +9,9 @@ import (
 )
 
 var (
-	_ catalog.Manager   = &Manager{}
-	_ catalog.Decorator = &Manager{}
+	_ catalog.Manager       = &Manager{}
+	_ catalog.Decorator     = &Manager{}
+	_ catalog.ShellProvider = &Manager{}
 )
 
 type Manager struct {
@@ -32,8 +33,12 @@ func (m *Manager) Description() string {
 	return "NATS is a connective technology that powers modern distributed systems."
 }
 
+const (
+	DefaultShell = "/bin/ash"
+)
+
 func (m *Manager) New() (engine.Container, error) {
-	image := "nats:2-linux"
+	image := "nats:2-alpine"
 
 	username := "admin"
 	password := password.MustGenerate(10, 4, 0, false, false)
@@ -48,6 +53,7 @@ func (m *Manager) New() (engine.Container, error) {
 
 		Args: []string{
 			"-js",
+			"-sd", "/data",
 			"--name", "default",
 			"--cluster_name", "default",
 			"--user", username,
@@ -63,7 +69,7 @@ func (m *Manager) New() (engine.Container, error) {
 
 		Mounts: []*engine.ContainerMount{
 			{
-				Path: "/var/lib/mysql",
+				Path: "/data",
 			},
 		},
 	}, nil
@@ -88,4 +94,8 @@ func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 		"Password": password,
 		"URI":      uri,
 	}, nil
+}
+
+func (m *Manager) Shell(instance engine.Container) (string, error) {
+	return DefaultShell, nil
 }
