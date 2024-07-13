@@ -1,4 +1,4 @@
-package artifactory_jcr
+package artifactory
 
 import (
 	"github.com/adrianliechti/devkit/pkg/catalog"
@@ -16,7 +16,7 @@ type Manager struct {
 }
 
 func (m *Manager) Name() string {
-	return "artifactory-jcr"
+	return "artifactory"
 }
 
 func (m *Manager) Category() catalog.Category {
@@ -24,11 +24,11 @@ func (m *Manager) Category() catalog.Category {
 }
 
 func (m *Manager) DisplayName() string {
-	return "JFrog Container Registry"
+	return "JFrog Artifactory"
 }
 
 func (m *Manager) Description() string {
-	return "Artifactory is the single solution for managing all the artifacts, binaries, files and containers throughout your software supply chain."
+	return "The world's most advanced, powerful, Docker and Helm registry. Power your world of Docker without limits."
 }
 
 const (
@@ -36,7 +36,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "releases-docker.jfrog.io/jfrog/artifactory-jcr:latest"
+	image := "releases-docker.jfrog.io/jfrog/artifactory-oss:7.77.5"
 
 	return engine.Container{
 		Image: image,
