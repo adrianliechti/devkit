@@ -16,6 +16,7 @@ import (
 	"github.com/adrianliechti/devkit/app/utility/server"
 
 	"github.com/adrianliechti/devkit/pkg/catalog/activemq"
+	"github.com/adrianliechti/devkit/pkg/catalog/artifactory"
 	"github.com/adrianliechti/devkit/pkg/catalog/azurite"
 	"github.com/adrianliechti/devkit/pkg/catalog/cassandra"
 	"github.com/adrianliechti/devkit/pkg/catalog/cockroachdb"
@@ -24,6 +25,7 @@ import (
 	"github.com/adrianliechti/devkit/pkg/catalog/etcd"
 	"github.com/adrianliechti/devkit/pkg/catalog/immudb"
 	"github.com/adrianliechti/devkit/pkg/catalog/influxdb"
+	"github.com/adrianliechti/devkit/pkg/catalog/jcr"
 	"github.com/adrianliechti/devkit/pkg/catalog/jenkins"
 	"github.com/adrianliechti/devkit/pkg/catalog/jupyter"
 	"github.com/adrianliechti/devkit/pkg/catalog/kafka"
@@ -70,6 +72,7 @@ func initApp() cli.Command {
 
 		Commands: []*cli.Command{
 			catalog.Command(&activemq.Manager{}),
+			catalog.Command(&artifactory.Manager{}),
 			catalog.Command(&azurite.Manager{}),
 			catalog.Command(&cassandra.Manager{}),
 			catalog.Command(&cockroachdb.Manager{}),
@@ -78,10 +81,11 @@ func initApp() cli.Command {
 			catalog.Command(&etcd.Manager{}),
 			catalog.Command(&immudb.Manager{}),
 			catalog.Command(&influxdb.Manager{}),
+			catalog.Command(&jcr.Manager{}),
 			catalog.Command(&jenkins.Manager{}),
 			catalog.Command(&jupyter.Manager{}),
-			catalog.Command(&keycloak.Manager{}),
 			catalog.Command(&kafka.Manager{}),
+			catalog.Command(&keycloak.Manager{}),
 			catalog.Command(&mariadb.Manager{}),
 			catalog.Command(&minio.Manager{}),
 			catalog.Command(&mongodb.Manager{}),
@@ -103,10 +107,9 @@ func initApp() cli.Command {
 			image.Command,
 
 			cloc.Command,
-
 			code.Command,
-			server.Command,
 			proxy.Command,
+			server.Command,
 		},
 	}
 }

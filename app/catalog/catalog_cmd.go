@@ -135,6 +135,11 @@ func createCommand(m catalog.Manager) *cli.Command {
 				return err
 			}
 
+			cli.MustRun("Pulling Image...", func() error {
+				client.Pull(ctx, container.Image, engine.PullOptions{})
+				return nil
+			})
+
 			if name := cmd.String("name"); name != "" {
 				container.Name = name
 			}
@@ -159,11 +164,18 @@ func createCommand(m catalog.Manager) *cli.Command {
 				}
 			}
 
-			containerID, err := client.Create(ctx, container, engine.CreateOptions{})
+			var containerID string
 
-			if err != nil {
-				return err
-			}
+			cli.MustRun("Creating Container...", func() error {
+				id, err := client.Create(ctx, container, engine.CreateOptions{})
+
+				if err != nil {
+					return err
+				}
+
+				containerID = id
+				return nil
+			})
 
 			container, err = client.Inspect(ctx, containerID)
 
@@ -194,7 +206,12 @@ func deleteCommand(m catalog.Manager) *cli.Command {
 			client := app.MustClient(ctx, cmd)
 			container := MustContainer(ctx, client, kind, true)
 
-			return client.Delete(ctx, container.ID, engine.DeleteOptions{})
+			cli.MustRun("Deleting Container...", func() error {
+				client.Delete(ctx, container.ID, engine.DeleteOptions{})
+				return nil
+			})
+
+			return nil
 		},
 	}
 }
@@ -265,6 +282,11 @@ func clientCommand(p catalog.ClientProvider) *cli.Command {
 
 				return docker.ExecInteractive(ctx, container.Name, docker.ExecOptions{}, command, arg...)
 			}
+
+			cli.MustRun("Pulling Image...", func() error {
+				docker.Pull(ctx, image, docker.PullOptions{})
+				return nil
+			})
 
 			return docker.RunInteractive(ctx, image, docker.RunOptions{}, args...)
 		},
