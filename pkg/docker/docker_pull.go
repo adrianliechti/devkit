@@ -29,7 +29,6 @@ func Pull(ctx context.Context, image string, options PullOptions) error {
 }
 
 func PullInteractive(ctx context.Context, image string, options PullOptions) error {
-
 	if options.Stdout == nil {
 		options.Stdout = os.Stdout
 	}
