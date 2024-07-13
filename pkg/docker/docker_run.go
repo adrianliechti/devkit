@@ -43,12 +43,8 @@ func Run(ctx context.Context, image string, options RunOptions, args ...string) 
 		return err
 	}
 
-	args = runArgs(image, options, args...)
-
 	if options.Temporary {
-		args[0] = "create"
-
-		create, err := exec.CommandContext(ctx, tool, args...).Output()
+		create, err := exec.CommandContext(ctx, tool, createArgs(image, options, args...)...).Output()
 
 		if err != nil {
 			return err
@@ -58,7 +54,7 @@ func Run(ctx context.Context, image string, options RunOptions, args ...string) 
 
 		defer exec.CommandContext(context.Background(), tool, "rm", "--force", containerID).Run()
 
-		start := exec.CommandContext(context.Background(), tool, "start", "--attach", containerID)
+		start := exec.CommandContext(context.Background(), tool, startArgs(containerID, options)...)
 		start.Stdin = options.Stdin
 		start.Stdout = options.Stdout
 		start.Stderr = options.Stderr
@@ -174,6 +170,32 @@ func runArgs(image string, options RunOptions, arg ...string) []string {
 	}
 
 	args = append(args, image)
+	args = append(args, arg...)
+
+	return args
+}
+
+func createArgs(image string, options RunOptions, arg ...string) []string {
+	args := runArgs(image, options, arg...)
+	args[0] = "create"
+
+	return args
+}
+
+func startArgs(containerID string, options RunOptions, arg ...string) []string {
+	args := []string{
+		"start",
+	}
+
+	if options.Attach {
+		args = append(args, "--attach")
+	}
+
+	if options.Interactive {
+		args = append(args, "--interactive")
+	}
+
+	args = append(args, containerID)
 	args = append(args, arg...)
 
 	return args
