@@ -13,8 +13,8 @@ var leaksCommand = &cli.Command{
 	Name:  "leaks",
 	Usage: "find leaks in repository",
 
-	Action: func(c *cli.Context) error {
-		return leaks(c.Context)
+	Action: func(ctx context.Context, cmd *cli.Command) error {
+		return leaks(ctx)
 	},
 }
 

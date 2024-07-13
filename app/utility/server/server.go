@@ -34,17 +34,17 @@ var Command = &cli.Command{
 		},
 	},
 
-	Action: func(c *cli.Context) error {
-		port := app.MustPortOrRandom(c, "", 3000)
+	Action: func(ctx context.Context, cmd *cli.Command) error {
+		port := app.MustPortOrRandom(ctx, cmd, "", 3000)
 
-		spa := c.Bool("spa")
-		index := c.String("index")
+		spa := cmd.Bool("spa")
+		index := cmd.String("index")
 
 		if index == "" {
 			index = "index.html"
 		}
 
-		return startWebServer(c.Context, port, index, spa)
+		return startWebServer(ctx, port, index, spa)
 	},
 }
 

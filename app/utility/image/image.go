@@ -1,6 +1,7 @@
 package image
 
 import (
+	"context"
 	"errors"
 
 	"github.com/adrianliechti/devkit/app/utility"
@@ -15,7 +16,7 @@ var Command = &cli.Command{
 
 	Category: utility.Category,
 
-	Subcommands: []*cli.Command{
+	Commands: []*cli.Command{
 		lintCommand,
 		scanCommand,
 		inspectCommand,
@@ -30,13 +31,13 @@ var ImageFlag = &cli.StringFlag{
 	Required: true,
 }
 
-func Image(c *cli.Context) string {
-	image := c.String(ImageFlag.Name)
+func Image(ctx context.Context, cmd *cli.Command) string {
+	image := cmd.String(ImageFlag.Name)
 	return image
 }
 
-func MustImage(c *cli.Context) string {
-	image := Image(c)
+func MustImage(ctx context.Context, cmd *cli.Command) string {
+	image := Image(ctx, cmd)
 
 	if len(image) == 0 {
 		cli.Fatal(errors.New("image missing"))

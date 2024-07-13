@@ -1,6 +1,8 @@
 package template
 
 import (
+	"context"
+
 	"github.com/adrianliechti/devkit/pkg/cli"
 )
 
@@ -19,12 +21,12 @@ var springCommand = &cli.Command{
 		},
 	},
 
-	Action: func(c *cli.Context) error {
+	Action: func(ctx context.Context, cmd *cli.Command) error {
 		options := templateOptions{
-			Group: MustGroup(c, "org.example"),
-			Name:  MustName(c, "demo"),
+			Group: MustGroup(ctx, cmd, "org.example"),
+			Name:  MustName(ctx, cmd, "demo"),
 		}
 
-		return runTemplate(c.Context, "", TemplateSpring, options)
+		return runTemplate(ctx, "", TemplateSpring, options)
 	},
 }

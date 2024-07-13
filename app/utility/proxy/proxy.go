@@ -32,13 +32,13 @@ var Command = &cli.Command{
 		},
 	},
 
-	Action: func(c *cli.Context) error {
-		port := app.MustPortOrRandom(c, "", 3128)
+	Action: func(ctx context.Context, cmd *cli.Command) error {
+		port := app.MustPortOrRandom(ctx, cmd, "", 3128)
 
-		username := c.String("username")
-		password := c.String("password")
+		username := cmd.String("username")
+		password := cmd.String("password")
 
-		return runProxy(c.Context, port, username, password)
+		return runProxy(ctx, port, username, password)
 	},
 }
 

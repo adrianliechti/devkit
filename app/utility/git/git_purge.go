@@ -17,9 +17,9 @@ var purgeCommand = &cli.Command{
 	Name:  "purge",
 	Usage: "purge blobs in repository",
 
-	Action: func(c *cli.Context) error {
-		files := c.Args().Slice()
-		return purge(c.Context, files)
+	Action: func(ctx context.Context, cmd *cli.Command) error {
+		files := cmd.Args().Slice()
+		return purge(ctx, files)
 	},
 }
 

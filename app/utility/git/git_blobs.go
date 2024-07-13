@@ -19,8 +19,8 @@ var blobsCommand = &cli.Command{
 	Name:  "blobs",
 	Usage: "list blobs by size",
 
-	Action: func(c *cli.Context) error {
-		return blobs(c.Context)
+	Action: func(ctx context.Context, cmd *cli.Command) error {
+		return blobs(ctx)
 	},
 }
 

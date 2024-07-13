@@ -1,6 +1,8 @@
 package template
 
 import (
+	"context"
+
 	"github.com/adrianliechti/devkit/pkg/cli"
 )
 
@@ -15,11 +17,11 @@ var aspnetCommand = &cli.Command{
 		},
 	},
 
-	Action: func(c *cli.Context) error {
+	Action: func(ctx context.Context, cmd *cli.Command) error {
 		options := templateOptions{
-			Name: MustName(c, "demo"),
+			Name: MustName(ctx, cmd, "demo"),
 		}
 
-		return runTemplate(c.Context, "", TemplateASPNET, options)
+		return runTemplate(ctx, "", TemplateASPNET, options)
 	},
 }

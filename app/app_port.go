@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"strings"
 
 	"github.com/adrianliechti/devkit/pkg/cli"
@@ -32,12 +33,12 @@ func PortFlag(name string) *cli.IntFlag {
 	}
 }
 
-func Port(c *cli.Context, name string) int {
-	return c.Int(PortFlagName(name))
+func Port(ctx context.Context, cmd *cli.Command, name string) int {
+	return int(cmd.Int(PortFlagName(name)))
 }
 
-func MustPort(c *cli.Context, name string) int {
-	port := Port(c, name)
+func MustPort(ctx context.Context, cmd *cli.Command, name string) int {
+	port := Port(ctx, cmd, name)
 
 	if port <= 0 {
 		cli.Fatal(PortFlagName(name) + " missing")
@@ -46,8 +47,8 @@ func MustPort(c *cli.Context, name string) int {
 	return port
 }
 
-func PortOrRandom(c *cli.Context, name string, preference int) (int, error) {
-	port := Port(c, name)
+func PortOrRandom(ctx context.Context, cmd *cli.Command, name string, preference int) (int, error) {
+	port := Port(ctx, cmd, name)
 
 	if port > 0 {
 		return port, nil
@@ -56,8 +57,8 @@ func PortOrRandom(c *cli.Context, name string, preference int) (int, error) {
 	return system.FreePort(preference)
 }
 
-func MustPortOrRandom(c *cli.Context, name string, preference int) int {
-	port, err := PortOrRandom(c, name, preference)
+func MustPortOrRandom(ctx context.Context, cmd *cli.Command, name string, preference int) int {
+	port, err := PortOrRandom(ctx, cmd, name, preference)
 
 	if err != nil {
 		cli.Fatal(err)
@@ -66,12 +67,12 @@ func MustPortOrRandom(c *cli.Context, name string, preference int) int {
 	return port
 }
 
-func RandomPort(c *cli.Context, preference int) (int, error) {
+func RandomPort(ctx context.Context, cmd *cli.Command, preference int) (int, error) {
 	return system.FreePort(preference)
 }
 
-func MustRandomPort(c *cli.Context, preference int) int {
-	port, err := RandomPort(c, preference)
+func MustRandomPort(ctx context.Context, cmd *cli.Command, preference int) int {
+	port, err := RandomPort(ctx, cmd, preference)
 
 	if err != nil {
 		cli.Fatal(err)

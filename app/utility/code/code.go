@@ -25,13 +25,14 @@ var Command = &cli.Command{
 		app.PortFlag(""),
 	},
 
-	Action: func(c *cli.Context) error {
-		client := app.MustClient(c)
+	Action: func(ctx context.Context, cmd *cli.Command) error {
+		client := app.MustClient(ctx, cmd)
 
 		items := []string{
-			"dotnet",
+			"defaut",
 			"golang",
 			"java",
+			"dotnet",
 		}
 
 		i, _, err := cli.Select("select stack", items)
@@ -41,9 +42,9 @@ var Command = &cli.Command{
 		}
 
 		stack := strings.ToLower(items[i])
-		port := app.MustPortOrRandom(c, "", 3000)
+		port := app.MustPortOrRandom(ctx, cmd, "", 3000)
 
-		return startCode(c.Context, client, stack, port)
+		return startCode(ctx, client, stack, port)
 	},
 }
 

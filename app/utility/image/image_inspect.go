@@ -20,9 +20,9 @@ var inspectCommand = &cli.Command{
 		},
 	},
 
-	Action: func(c *cli.Context) error {
-		image := MustImage(c)
-		return runWhaler(c.Context, image, c.Bool("verbose"))
+	Action: func(ctx context.Context, cmd *cli.Command) error {
+		image := MustImage(ctx, cmd)
+		return runWhaler(ctx, image, cmd.Bool("verbose"))
 	},
 }
 

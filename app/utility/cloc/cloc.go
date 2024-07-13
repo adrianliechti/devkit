@@ -16,8 +16,8 @@ var Command = &cli.Command{
 
 	Category: utility.Category,
 
-	Action: func(c *cli.Context) error {
-		return runCloc(c.Context)
+	Action: func(ctx context.Context, cmd *cli.Command) error {
+		return runCloc(ctx)
 	},
 }
 

@@ -37,7 +37,7 @@ var Command = &cli.Command{
 
 	Category: Category,
 
-	Subcommands: []*cli.Command{
+	Commands: []*cli.Command{
 		reactCommand,
 		angularCommand,
 		golangCommand,
@@ -48,8 +48,8 @@ var Command = &cli.Command{
 	},
 }
 
-func Name(c *cli.Context, placeholder string) string {
-	name := c.String("name")
+func Name(ctx context.Context, cmd *cli.Command, placeholder string) string {
+	name := cmd.String("name")
 
 	if name == "" {
 		name, _ = cli.Prompt("App Name", placeholder)
@@ -58,8 +58,8 @@ func Name(c *cli.Context, placeholder string) string {
 	return name
 }
 
-func MustName(c *cli.Context, placeholder string) string {
-	name := Name(c, placeholder)
+func MustName(ctx context.Context, cmd *cli.Command, placeholder string) string {
+	name := Name(ctx, cmd, placeholder)
 
 	if name == "" {
 		cli.Fatal(errors.New("missing name"))
@@ -68,8 +68,8 @@ func MustName(c *cli.Context, placeholder string) string {
 	return name
 }
 
-func Group(c *cli.Context, placeholder string) string {
-	group := c.String("group")
+func Group(ctx context.Context, cmd *cli.Command, placeholder string) string {
+	group := cmd.String("group")
 
 	if group == "" {
 		group, _ = cli.Prompt("App Group", placeholder)
@@ -78,8 +78,8 @@ func Group(c *cli.Context, placeholder string) string {
 	return group
 }
 
-func MustGroup(c *cli.Context, placeholder string) string {
-	group := Group(c, placeholder)
+func MustGroup(ctx context.Context, cmd *cli.Command, placeholder string) string {
+	group := Group(ctx, cmd, placeholder)
 
 	if group == "" {
 		cli.Fatal(errors.New("missing group"))

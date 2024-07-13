@@ -1,6 +1,8 @@
 package app
 
 import (
+	"context"
+
 	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/adrianliechti/devkit/pkg/engine/moby"
@@ -15,12 +17,12 @@ const (
 	TemplateCategory  = "TEMPLATE"
 )
 
-func Client(c *cli.Context) (engine.Client, error) {
+func Client(ctx context.Context, cmd *cli.Command) (engine.Client, error) {
 	return moby.New()
 }
 
-func MustClient(c *cli.Context) engine.Client {
-	client, err := Client(c)
+func MustClient(ctx context.Context, cmd *cli.Command) engine.Client {
+	client, err := Client(ctx, cmd)
 
 	if err != nil {
 		cli.Fatal(err)

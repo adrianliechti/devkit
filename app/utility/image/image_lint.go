@@ -16,9 +16,9 @@ var lintCommand = &cli.Command{
 		ImageFlag,
 	},
 
-	Action: func(c *cli.Context) error {
-		image := MustImage(c)
-		return runDockle(c.Context, image)
+	Action: func(ctx context.Context, cmd *cli.Command) error {
+		image := MustImage(ctx, cmd)
+		return runDockle(ctx, image)
 	},
 }
 

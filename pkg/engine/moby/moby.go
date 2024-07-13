@@ -13,10 +13,11 @@ import (
 	"github.com/adrianliechti/devkit/pkg/engine"
 
 	"github.com/cpuguy83/dockercfg"
-	"github.com/docker/distribution/reference"
+	"github.com/distribution/reference"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"
+	"github.com/docker/docker/api/types/image"
 	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
@@ -45,9 +46,7 @@ func New() (*Moby, error) {
 }
 
 func (m *Moby) List(ctx context.Context, options engine.ListOptions) ([]engine.Container, error) {
-	opts := types.ContainerListOptions{
-		Quiet: true,
-
+	opts := container.ListOptions{
 		All:     options.All,
 		Filters: filters.NewArgs(),
 	}
@@ -77,7 +76,7 @@ func (m *Moby) List(ctx context.Context, options engine.ListOptions) ([]engine.C
 	return containers, nil
 }
 
-func (m *Moby) Pull(ctx context.Context, image string, options engine.PullOptions) error {
+func (m *Moby) Pull(ctx context.Context, reference string, options engine.PullOptions) error {
 	if options.Stdout == nil {
 		options.Stdout = io.Discard
 	}
@@ -86,9 +85,9 @@ func (m *Moby) Pull(ctx context.Context, image string, options engine.PullOption
 		options.Stderr = io.Discard
 	}
 
-	out, err := m.client.ImagePull(ctx, image, types.ImagePullOptions{
+	out, err := m.client.ImagePull(ctx, reference, image.PullOptions{
 		Platform:     options.Platform,
-		RegistryAuth: registryCredentials(image),
+		RegistryAuth: registryCredentials(reference),
 	})
 
 	if err != nil {
@@ -135,17 +134,17 @@ func (m *Moby) Create(ctx context.Context, spec engine.Container, options engine
 		return "", err
 	}
 
-	if err := m.client.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
+	if err := m.client.ContainerStart(ctx, resp.ID, container.StartOptions{}); err != nil {
 		return "", err
 	}
 
 	return resp.ID, nil
 }
 
-func (m *Moby) Delete(ctx context.Context, container string, options engine.DeleteOptions) error {
-	m.client.ContainerStop(ctx, container, nil)
+func (m *Moby) Delete(ctx context.Context, containerID string, options engine.DeleteOptions) error {
+	m.client.ContainerStop(ctx, containerID, container.StopOptions{})
 
-	return m.client.ContainerRemove(ctx, container, types.ContainerRemoveOptions{
+	return m.client.ContainerRemove(ctx, containerID, container.RemoveOptions{
 		Force: true,
 
 		RemoveVolumes: true,
@@ -162,7 +161,7 @@ func (m *Moby) Inspect(ctx context.Context, container string) (engine.Container,
 	return convertContainer(data), nil
 }
 
-func (m *Moby) Logs(ctx context.Context, container string, options engine.LogsOptions) error {
+func (m *Moby) Logs(ctx context.Context, containerID string, options engine.LogsOptions) error {
 	if options.Stdout == nil {
 		options.Stdout = io.Discard
 	}
@@ -171,7 +170,7 @@ func (m *Moby) Logs(ctx context.Context, container string, options engine.LogsOp
 		options.Stderr = io.Discard
 	}
 
-	out, err := m.client.ContainerLogs(ctx, container, types.ContainerLogsOptions{
+	out, err := m.client.ContainerLogs(ctx, containerID, container.LogsOptions{
 		Follow: options.Follow,
 
 		ShowStdout: true,
@@ -215,7 +214,7 @@ func registryCredentials(image string) string {
 		return ""
 	}
 
-	data, err := json.Marshal(types.AuthConfig{
+	data, err := json.Marshal(AuthConfig{
 		Username: username,
 		Password: password,
 	})
@@ -446,4 +445,9 @@ func convertHostConfig(spec engine.Container) (*container.HostConfig, error) {
 	config.Ulimits = ulimits
 
 	return config, nil
+}
+
+type AuthConfig struct {
+	Username string `json:"username,omitempty"`
+	Password string `json:"password,omitempty"`
 }
