@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 
 	"github.com/adrianliechti/devkit/pkg/engine"
 )
@@ -40,6 +41,29 @@ func Run(ctx context.Context, image string, options RunOptions, args ...string) 
 
 	if err != nil {
 		return err
+	}
+
+	args = runArgs(image, options, args...)
+
+	if options.Temporary {
+		args[0] = "create"
+
+		create, err := exec.CommandContext(ctx, tool, args...).Output()
+
+		if err != nil {
+			return err
+		}
+
+		containerID := strings.TrimSpace(string(create))
+
+		defer exec.CommandContext(context.Background(), tool, "rm", "--force", containerID).Run()
+
+		start := exec.CommandContext(context.Background(), tool, "start", "--attach", containerID)
+		start.Stdin = options.Stdin
+		start.Stdout = options.Stdout
+		start.Stderr = options.Stderr
+
+		return start.Run()
 	}
 
 	run := exec.CommandContext(ctx, tool, runArgs(image, options, args...)...)

@@ -46,7 +46,6 @@ func (m *Manager) New() (engine.Container, error) {
 
 		Env: map[string]string{
 			"SONAR_ES_BOOTSTRAP_CHECKS_DISABLE": "true",
-			"SONAR_SEARCH_JAVAADDITIONALOPTS":   "-Dbootstrap.system_call_filter=false",
 		},
 
 		Ports: []*engine.ContainerPort{

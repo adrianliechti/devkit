@@ -29,7 +29,7 @@ func PortForward(ctx context.Context, container string, source, target int) erro
 	}
 
 	args := []string{
-		"run", "-i", "--rm",
+		"create", "--rm",
 		"-p", fmt.Sprintf("127.0.0.1:%d:%d", source, source),
 
 		"alpine/socat",
@@ -37,9 +37,19 @@ func PortForward(ctx context.Context, container string, source, target int) erro
 		fmt.Sprintf("TCP4:%s:%d", address, target),
 	}
 
-	socat := exec.CommandContext(ctx, tool, args...)
-	socat.Stdout = os.Stdout
-	socat.Stderr = os.Stderr
+	create, err := exec.CommandContext(ctx, tool, args...).Output()
 
-	return socat.Run()
+	if err != nil {
+		return err
+	}
+
+	containerID := strings.TrimSpace(string(create))
+
+	defer exec.CommandContext(context.Background(), tool, "rm", "-f", containerID).Run()
+
+	start := exec.CommandContext(context.Background(), tool, "start", "-a", containerID)
+	start.Stdout = os.Stdout
+	start.Stderr = os.Stderr
+
+	return start.Run()
 }

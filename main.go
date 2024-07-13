@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"os/signal"
+	"syscall"
 
 	"github.com/adrianliechti/devkit/app/catalog"
 	"github.com/adrianliechti/devkit/app/template"
@@ -50,7 +51,7 @@ import (
 var version string
 
 func main() {
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, os.Kill)
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGKILL, syscall.SIGTERM)
 	defer stop()
 
 	app := initApp()
