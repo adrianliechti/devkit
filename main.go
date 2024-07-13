@@ -15,6 +15,8 @@ import (
 	"github.com/adrianliechti/devkit/app/utility/server"
 
 	"github.com/adrianliechti/devkit/pkg/catalog/activemq"
+	"github.com/adrianliechti/devkit/pkg/catalog/artifactory_jcr"
+	"github.com/adrianliechti/devkit/pkg/catalog/artifactory_oss"
 	"github.com/adrianliechti/devkit/pkg/catalog/azurite"
 	"github.com/adrianliechti/devkit/pkg/catalog/cassandra"
 	"github.com/adrianliechti/devkit/pkg/catalog/cockroachdb"
@@ -88,6 +90,8 @@ func initApp() cli.Command {
 			catalog.Command(&mssql.Manager{}),
 			catalog.Command(&mysql.Manager{}),
 			catalog.Command(&nats.Manager{}),
+			catalog.Command(&artifactory_oss.Manager{}),
+			catalog.Command(&artifactory_jcr.Manager{}),
 			catalog.Command(&nexus.Manager{}),
 			catalog.Command(&oracle.Manager{}),
 			catalog.Command(&postgres.Manager{}),
