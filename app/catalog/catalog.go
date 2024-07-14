@@ -64,8 +64,8 @@ func MustContainer(ctx context.Context, client engine.Client, kind string, all b
 func printContainerInfo(container engine.Container, info map[string]string) {
 	title := fmt.Sprintf("%s (%s)", strings.ToUpper(container.Name), strings.ToLower(container.ID[0:12]))
 
-	cli.Info(title)
-	cli.Info(strings.Repeat("=", len(title)))
+	cli.Info()
+	cli.Title(title)
 	cli.Info()
 
 	rowsPorts := [][]string{}
