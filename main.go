@@ -30,6 +30,7 @@ import (
 	"github.com/adrianliechti/devkit/pkg/catalog/jupyter"
 	"github.com/adrianliechti/devkit/pkg/catalog/kafka"
 	"github.com/adrianliechti/devkit/pkg/catalog/keycloak"
+	"github.com/adrianliechti/devkit/pkg/catalog/mailpit"
 	"github.com/adrianliechti/devkit/pkg/catalog/mariadb"
 	"github.com/adrianliechti/devkit/pkg/catalog/minio"
 	"github.com/adrianliechti/devkit/pkg/catalog/mongodb"
@@ -86,6 +87,7 @@ func initApp() cli.Command {
 			catalog.Command(&jupyter.Manager{}),
 			catalog.Command(&kafka.Manager{}),
 			catalog.Command(&keycloak.Manager{}),
+			catalog.Command(&mailpit.Manager{}),
 			catalog.Command(&mariadb.Manager{}),
 			catalog.Command(&minio.Manager{}),
 			catalog.Command(&mongodb.Manager{}),
