@@ -19,7 +19,6 @@ import (
 	"github.com/adrianliechti/devkit/pkg/catalog/artifactory"
 	"github.com/adrianliechti/devkit/pkg/catalog/azurite"
 	"github.com/adrianliechti/devkit/pkg/catalog/cassandra"
-	"github.com/adrianliechti/devkit/pkg/catalog/cockroachdb"
 	"github.com/adrianliechti/devkit/pkg/catalog/db2"
 	"github.com/adrianliechti/devkit/pkg/catalog/elasticsearch"
 	"github.com/adrianliechti/devkit/pkg/catalog/etcd"
@@ -76,7 +75,6 @@ func initApp() cli.Command {
 			catalog.Command(&artifactory.Manager{}),
 			catalog.Command(&azurite.Manager{}),
 			catalog.Command(&cassandra.Manager{}),
-			catalog.Command(&cockroachdb.Manager{}),
 			catalog.Command(&db2.Manager{}),
 			catalog.Command(&elasticsearch.Manager{}),
 			catalog.Command(&etcd.Manager{}),
