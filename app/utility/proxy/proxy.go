@@ -14,7 +14,7 @@ import (
 
 var Command = &cli.Command{
 	Name:  "proxy",
-	Usage: "start temporary Proxy server",
+	Usage: "start Proxy server",
 
 	Category: utility.Category,
 
