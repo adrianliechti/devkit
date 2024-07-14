@@ -64,6 +64,12 @@ func startWebServer(ctx context.Context, port int, index string, spa bool) error
 	e.HidePort = true
 	e.HideBanner = true
 
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "${method} ${uri}\n",
+	}))
+
+	e.Use(middleware.CORS())
+
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Index: index,
 		HTML5: spa,
@@ -78,6 +84,7 @@ func startWebServer(ctx context.Context, port int, index string, spa bool) error
 	}()
 
 	cli.Infof("Server started on http://127.0.0.1:%d", port)
+	cli.Info()
 
 	if err := e.Start(fmt.Sprintf("127.0.0.1:%d", port)); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return err
