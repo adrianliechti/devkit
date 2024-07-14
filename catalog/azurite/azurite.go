@@ -23,7 +23,7 @@ func (m *Manager) Category() catalog.Category {
 }
 
 func (m *Manager) DisplayName() string {
-	return "Azure Storage Azurite"
+	return "Azure Storage Emulator"
 }
 
 func (m *Manager) Description() string {

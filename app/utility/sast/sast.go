@@ -1,4 +1,4 @@
-package cloc
+package sast
 
 import (
 	"context"
@@ -11,32 +11,37 @@ import (
 )
 
 var Command = &cli.Command{
-	Name:  "cloc",
-	Usage: "count lines of code",
+	Name:  "sast",
+	Usage: "static analysis for many languages (using semgrep)",
 
 	Category: utility.Category,
 
 	Action: func(ctx context.Context, cmd *cli.Command) error {
-		return runCloc(ctx)
+		return runSAST(ctx)
 	},
 }
 
-func runCloc(ctx context.Context) error {
+func runSAST(ctx context.Context) error {
 	wd, err := os.Getwd()
 
 	if err != nil {
 		return err
 	}
 
-	image := "aldanial/cloc"
+	image := "semgrep/semgrep:1.79.0"
 
 	args := []string{
+		"semgrep",
+		"scan",
+		"--metrics=on",
+		"--config", "auto",
+		"--oss-only",
 		"--quiet",
-		"--hide-rate",
-		"/src",
 	}
 
 	options := docker.RunOptions{
+		Dir: "/src",
+
 		Volumes: []engine.ContainerMount{
 			{
 				Path:     "/src",

@@ -13,6 +13,7 @@ import (
 	"github.com/adrianliechti/devkit/app/utility/git"
 	"github.com/adrianliechti/devkit/app/utility/image"
 	"github.com/adrianliechti/devkit/app/utility/proxy"
+	"github.com/adrianliechti/devkit/app/utility/sast"
 	"github.com/adrianliechti/devkit/app/utility/server"
 
 	"github.com/adrianliechti/devkit/catalog/activemq"
@@ -106,6 +107,7 @@ func initApp() cli.Command {
 			git.Command,
 			image.Command,
 
+			sast.Command,
 			cloc.Command,
 			code.Command,
 			proxy.Command,

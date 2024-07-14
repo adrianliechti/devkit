@@ -29,7 +29,7 @@ var Command = &cli.Command{
 		client := app.MustClient(ctx, cmd)
 
 		items := []string{
-			"defaut",
+			"default",
 			"golang",
 			"java",
 			"dotnet",
@@ -49,7 +49,13 @@ var Command = &cli.Command{
 }
 
 func startCode(ctx context.Context, client engine.Client, stack string, port int) error {
-	image := "ghcr.io/adrianliechti/loop-code:" + stack + "-dind"
+	image := "ghcr.io/adrianliechti/loop-code"
+
+	if stack == "" || stack == "default" {
+		image = image + ":dind"
+	} else {
+		image = image + strings.ToLower(stack+"-dind")
+	}
 
 	path, err := os.Getwd()
 
