@@ -76,7 +76,7 @@ func (m *Moby) List(ctx context.Context, options engine.ListOptions) ([]engine.C
 	return containers, nil
 }
 
-func (m *Moby) Pull(ctx context.Context, reference string, options engine.PullOptions) error {
+func (m *Moby) Pull(ctx context.Context, reference, platform string, options engine.PullOptions) error {
 	if options.Stdout == nil {
 		options.Stdout = io.Discard
 	}
@@ -86,7 +86,7 @@ func (m *Moby) Pull(ctx context.Context, reference string, options engine.PullOp
 	}
 
 	out, err := m.client.ImagePull(ctx, reference, image.PullOptions{
-		Platform:     options.Platform,
+		Platform:     platform,
 		RegistryAuth: registryCredentials(reference),
 	})
 
@@ -124,7 +124,7 @@ func (m *Moby) Create(ctx context.Context, spec engine.Container, options engine
 		return "", err
 	}
 
-	if err := m.Pull(ctx, spec.Image, engine.PullOptions{Platform: options.Platform}); err != nil {
+	if err := m.Pull(ctx, spec.Image, spec.Platform, engine.PullOptions{}); err != nil {
 		return "", err
 	}
 
@@ -233,7 +233,8 @@ func convertContainer(data types.ContainerJSON) engine.Container {
 
 		Labels: data.Config.Labels,
 
-		Image: data.Config.Image,
+		Image:    data.Config.Image,
+		Platform: data.Platform,
 
 		Privileged: data.HostConfig.Privileged,
 

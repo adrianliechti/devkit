@@ -57,7 +57,9 @@ func startCode(ctx context.Context, client engine.Client, stack string, port int
 		return err
 	}
 
-	client.Pull(ctx, image, engine.PullOptions{})
+	cli.MustRun("Pulling Image...", func() error {
+		return docker.Pull(ctx, image, "", docker.PullOptions{})
+	})
 
 	time.AfterFunc(2*time.Second, func() {
 		cli.OpenURL(fmt.Sprintf("http://localhost:%d", port))

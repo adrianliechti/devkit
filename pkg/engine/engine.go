@@ -9,7 +9,7 @@ import (
 type Client interface {
 	List(ctx context.Context, options ListOptions) ([]Container, error)
 
-	Pull(ctx context.Context, image string, options PullOptions) error
+	Pull(ctx context.Context, image, platform string, options PullOptions) error
 
 	Create(ctx context.Context, spec Container, options CreateOptions) (string, error)
 	Delete(ctx context.Context, container string, options DeleteOptions) error
@@ -26,15 +26,11 @@ type ListOptions struct {
 }
 
 type PullOptions struct {
-	Platform string
-
 	Stdout io.Writer
 	Stderr io.Writer
 }
 
 type CreateOptions struct {
-	Platform string
-
 	Stdout io.Writer
 	Stderr io.Writer
 }
@@ -55,7 +51,8 @@ type Container struct {
 
 	Labels map[string]string
 
-	Image string
+	Image    string
+	Platform string
 
 	Privileged bool
 

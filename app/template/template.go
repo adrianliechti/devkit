@@ -105,9 +105,9 @@ func runTemplate(ctx context.Context, path string, template template, options te
 
 	image := fmt.Sprintf("ghcr.io/adrianliechti/loop-template:%s", template)
 
-	if err := docker.PullInteractive(ctx, image, docker.PullOptions{}); err != nil {
-		return err
-	}
+	cli.MustRun("Pulling Image...", func() error {
+		return docker.Pull(ctx, image, "", docker.PullOptions{})
+	})
 
 	runOptions := docker.RunOptions{
 		Env: options.env(),

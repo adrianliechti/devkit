@@ -43,7 +43,8 @@ func (m *Manager) New() (engine.Container, error) {
 	password := password.MustGenerate(10, 4, 0, false, false)
 
 	return engine.Container{
-		Image: image,
+		Image:    image,
+		Platform: "linux/amd64",
 
 		Privileged: true,
 

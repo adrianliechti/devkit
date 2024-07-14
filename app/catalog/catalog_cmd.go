@@ -136,7 +136,7 @@ func createCommand(m catalog.Manager) *cli.Command {
 			}
 
 			cli.MustRun("Pulling Image...", func() error {
-				client.Pull(ctx, container.Image, engine.PullOptions{})
+				client.Pull(ctx, container.Image, container.Platform, engine.PullOptions{})
 				return nil
 			})
 
@@ -284,7 +284,7 @@ func clientCommand(p catalog.ClientProvider) *cli.Command {
 			}
 
 			cli.MustRun("Pulling Image...", func() error {
-				docker.Pull(ctx, image, docker.PullOptions{})
+				docker.Pull(ctx, image, "", docker.PullOptions{})
 				return nil
 			})
 
@@ -344,7 +344,7 @@ func consoleCommand(p catalog.ConsoleProvider) *cli.Command {
 
 			port := app.MustPortOrRandom(ctx, cmd, "", mapping.Port)
 
-			client.Pull(ctx, "alpine/socat", engine.PullOptions{})
+			client.Pull(ctx, "alpine/socat", "", engine.PullOptions{})
 
 			time.AfterFunc(1*time.Second, func() {
 				cli.OpenURL(fmt.Sprintf("http://localhost:%d", port))
