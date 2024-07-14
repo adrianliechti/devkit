@@ -2,15 +2,16 @@ package server
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"net/http"
 	"os"
-	"path"
 
 	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/app/utility"
 	"github.com/adrianliechti/devkit/pkg/cli"
-
-	"github.com/gofiber/fiber/v2"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 var Command = &cli.Command{
@@ -59,28 +60,28 @@ func startWebServer(ctx context.Context, port int, index string, spa bool) error
 		port = 3000
 	}
 
-	app := fiber.New(fiber.Config{
-		DisableStartupMessage: true,
-	})
+	e := echo.New()
+	e.HidePort = true
+	e.HideBanner = true
 
-	app.Static("/", root, fiber.Static{
-		Browse: true,
-		Index:  index,
-	})
+	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+		Index: index,
+		HTML5: spa,
 
-	if spa {
-		app.Get("/*", func(ctx *fiber.Ctx) error {
-			return ctx.SendFile(path.Join(root, index))
-		})
-	}
+		Browse:     true,
+		Filesystem: http.Dir(root),
+	}))
 
 	go func() {
 		<-ctx.Done()
-
-		app.Shutdown()
+		e.Close()
 	}()
 
-	cli.Infof("Starting server at port %d", port)
+	cli.Infof("Server started on http://127.0.0.1:%d", port)
 
-	return app.Listen(fmt.Sprintf("127.0.0.1:%d", port))
+	if err := e.Start(fmt.Sprintf("127.0.0.1:%d", port)); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		return err
+	}
+
+	return nil
 }
