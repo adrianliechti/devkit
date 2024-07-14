@@ -3,6 +3,7 @@ package jenkins
 import (
 	"github.com/adrianliechti/devkit/pkg/catalog"
 	"github.com/adrianliechti/devkit/pkg/engine"
+
 	"github.com/sethvargo/go-password/password"
 )
 
