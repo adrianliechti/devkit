@@ -1,9 +1,8 @@
-package influxdb
+package pocketbase
 
 import (
 	"github.com/adrianliechti/devkit/catalog"
 	"github.com/adrianliechti/devkit/pkg/engine"
-
 	"github.com/sethvargo/go-password/password"
 )
 
@@ -18,81 +17,61 @@ type Manager struct {
 }
 
 func (m *Manager) Name() string {
-	return "influxdb"
+	return "pocketbase"
 }
 
 func (m *Manager) Category() catalog.Category {
-	return catalog.DatabaseCategory
+	return catalog.StorageCategory
 }
 
 func (m *Manager) DisplayName() string {
-	return "InfluxDB"
+	return "PocketBase"
 }
 
 func (m *Manager) Description() string {
-	return "InfluxDB is an open-source time series database."
+	return "Open Source backend for your next SaaS and Mobile app in 1 file."
 }
 
 const (
-	DefaultShell = "/bin/bash"
+	DefaultShell = "/bin/ash"
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "influxdb:2.7"
+	image := "ghcr.io/adrianliechti/loop-pocketbase"
 
-	org := "default"
-	bucket := "default"
-
-	token := password.MustGenerate(10, 4, 0, false, false)
-
-	username := "admin"
+	username := "admin@pocketbase.local"
 	password := password.MustGenerate(10, 4, 0, false, false)
 
 	return engine.Container{
 		Image: image,
 
 		Env: map[string]string{
-			"DOCKER_INFLUXDB_INIT_MODE": "setup",
-
-			"DOCKER_INFLUXDB_INIT_ORG":    org,
-			"DOCKER_INFLUXDB_INIT_BUCKET": bucket,
-
-			"DOCKER_INFLUXDB_INIT_USERNAME": username,
-			"DOCKER_INFLUXDB_INIT_PASSWORD": password,
-
-			"DOCKER_INFLUXDB_INIT_ADMIN_TOKEN": token,
+			"APP_URL":        "http://localhost:8090",
+			"APP_NAME":       "PocketBase",
+			"ADMIN_USERNAME": username,
+			"ADMIN_PASSWORD": password,
 		},
 
 		Ports: []*engine.ContainerPort{
 			{
-				Port:  8086,
+				Port:  8090,
 				Proto: engine.ProtocolTCP,
 			},
 		},
 
 		Mounts: []*engine.ContainerMount{
 			{
-				Path: "/var/lib/influxdb2",
+				Path: "/pb_data",
 			},
 		},
 	}, nil
 }
 
 func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
-	org := instance.Env["DOCKER_INFLUXDB_INIT_ORG"]
-	bucket := instance.Env["DOCKER_INFLUXDB_INIT_BUCKET"]
-
-	token := instance.Env["DOCKER_INFLUXDB_INIT_ADMIN_TOKEN"]
-
-	username := instance.Env["DOCKER_INFLUXDB_INIT_USERNAME"]
-	password := instance.Env["DOCKER_INFLUXDB_INIT_PASSWORD"]
+	username := instance.Env["ADMIN_USERNAME"]
+	password := instance.Env["ADMIN_PASSWORD"]
 
 	return map[string]string{
-		"Org":    org,
-		"Bucket": bucket,
-
-		"Token": token,
-
 		"Username": username,
 		"Password": password,
 	}, nil
@@ -104,7 +83,7 @@ func (m *Manager) Shell(instance engine.Container) (string, error) {
 
 func (m *Manager) ConsolePort(instance engine.Container) (*engine.ContainerPort, error) {
 	return &engine.ContainerPort{
-		Port:  8086,
+		Port:  8090,
 		Proto: engine.ProtocolTCP,
 	}, nil
 }

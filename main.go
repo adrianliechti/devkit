@@ -17,8 +17,6 @@ import (
 	"github.com/adrianliechti/devkit/catalog/db2"
 	"github.com/adrianliechti/devkit/catalog/elasticsearch"
 	"github.com/adrianliechti/devkit/catalog/etcd"
-	"github.com/adrianliechti/devkit/catalog/immudb"
-	"github.com/adrianliechti/devkit/catalog/influxdb"
 	"github.com/adrianliechti/devkit/catalog/jcr"
 	"github.com/adrianliechti/devkit/catalog/jenkins"
 	"github.com/adrianliechti/devkit/catalog/jupyter"
@@ -34,6 +32,7 @@ import (
 	"github.com/adrianliechti/devkit/catalog/nats"
 	"github.com/adrianliechti/devkit/catalog/nexus"
 	"github.com/adrianliechti/devkit/catalog/oracle"
+	"github.com/adrianliechti/devkit/catalog/pocketbase"
 	"github.com/adrianliechti/devkit/catalog/postgres"
 	"github.com/adrianliechti/devkit/catalog/rabbitmq"
 	"github.com/adrianliechti/devkit/catalog/redis"
@@ -80,8 +79,6 @@ func initApp() cli.Command {
 			catalog.Command(&db2.Manager{}),
 			catalog.Command(&elasticsearch.Manager{}),
 			catalog.Command(&etcd.Manager{}),
-			catalog.Command(&immudb.Manager{}),
-			catalog.Command(&influxdb.Manager{}),
 			catalog.Command(&jcr.Manager{}),
 			catalog.Command(&jenkins.Manager{}),
 			catalog.Command(&jupyter.Manager{}),
@@ -97,6 +94,7 @@ func initApp() cli.Command {
 			catalog.Command(&nats.Manager{}),
 			catalog.Command(&nexus.Manager{}),
 			catalog.Command(&oracle.Manager{}),
+			catalog.Command(&pocketbase.Manager{}),
 			catalog.Command(&postgres.Manager{}),
 			catalog.Command(&rabbitmq.Manager{}),
 			catalog.Command(&redis.Manager{}),
