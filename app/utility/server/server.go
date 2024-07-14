@@ -16,7 +16,7 @@ import (
 
 var Command = &cli.Command{
 	Name:  "server",
-	Usage: "start temporary Web server",
+	Usage: "start Web server",
 
 	Category: utility.Category,
 

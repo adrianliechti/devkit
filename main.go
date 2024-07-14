@@ -8,13 +8,7 @@ import (
 
 	"github.com/adrianliechti/devkit/app/catalog"
 	"github.com/adrianliechti/devkit/app/template"
-	"github.com/adrianliechti/devkit/app/utility/cloc"
-	"github.com/adrianliechti/devkit/app/utility/code"
-	"github.com/adrianliechti/devkit/app/utility/git"
-	"github.com/adrianliechti/devkit/app/utility/image"
-	"github.com/adrianliechti/devkit/app/utility/proxy"
-	"github.com/adrianliechti/devkit/app/utility/sast"
-	"github.com/adrianliechti/devkit/app/utility/server"
+	"github.com/adrianliechti/devkit/pkg/cli"
 
 	"github.com/adrianliechti/devkit/catalog/activemq"
 	"github.com/adrianliechti/devkit/catalog/artifactory"
@@ -46,7 +40,14 @@ import (
 	"github.com/adrianliechti/devkit/catalog/sonarqube"
 	"github.com/adrianliechti/devkit/catalog/vault"
 
-	"github.com/adrianliechti/devkit/pkg/cli"
+	"github.com/adrianliechti/devkit/app/utility/cloc"
+	"github.com/adrianliechti/devkit/app/utility/code"
+	"github.com/adrianliechti/devkit/app/utility/git"
+	"github.com/adrianliechti/devkit/app/utility/image"
+	"github.com/adrianliechti/devkit/app/utility/proxy"
+	"github.com/adrianliechti/devkit/app/utility/sast"
+	"github.com/adrianliechti/devkit/app/utility/scan"
+	"github.com/adrianliechti/devkit/app/utility/server"
 )
 
 var version string
@@ -107,7 +108,9 @@ func initApp() cli.Command {
 			git.Command,
 			image.Command,
 
+			scan.Command,
 			sast.Command,
+
 			cloc.Command,
 			code.Command,
 			proxy.Command,

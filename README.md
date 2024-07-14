@@ -111,6 +111,12 @@ $ devkit postgres delete
 $ devkit sast
 ```
 
+### Vulnerability Scanning (using [Trivy](https://github.com/aquasecurity/trivy))
+
+```shell
+$ devkit scan
+```
+
 ### Lines of Code (using [cloc](https://github.com/AlDanial/cloc))
 
 ```shell
@@ -144,13 +150,13 @@ $ devkit git purge /path/to/file1 /path/to/file2
 $ devkit image inspect --image ubuntu
 ```
 
-### Lint (using [Dockle](https://github.com/goodwithtech/dockle))
+### Dockerfile Linting (using [Dockle](https://github.com/goodwithtech/dockle))
 
 ```shell
 $ devkit image lint --image ubuntu
 ```
 
-### Scan (using [Trivy](https://github.com/aquasecurity/trivy))
+### Vulnerability Scanning (using [Trivy](https://github.com/aquasecurity/trivy))
 
 ```shell
 $ devkit image scan --image ubuntu
