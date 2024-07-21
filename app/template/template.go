@@ -88,7 +88,7 @@ func MustGroup(ctx context.Context, cmd *cli.Command, placeholder string) string
 	return group
 }
 
-func runTemplate(ctx context.Context, path string, template template, options templateOptions) error {
+func runTemplate(ctx context.Context, client engine.Client, path string, template template, options templateOptions) error {
 	if options.Name == "" {
 		options.Name = "demo"
 	}
@@ -106,7 +106,7 @@ func runTemplate(ctx context.Context, path string, template template, options te
 	image := fmt.Sprintf("ghcr.io/adrianliechti/loop-template:%s", template)
 
 	cli.MustRun("Pulling Image...", func() error {
-		return docker.Pull(ctx, image, "", docker.PullOptions{})
+		return client.Pull(ctx, image, "", engine.PullOptions{})
 	})
 
 	runOptions := docker.RunOptions{

@@ -285,7 +285,7 @@ func clientCommand(p catalog.ClientProvider) *cli.Command {
 			}
 
 			cli.MustRun("Pulling Image...", func() error {
-				docker.Pull(ctx, image, "", docker.PullOptions{})
+				client.Pull(ctx, image, "", engine.PullOptions{})
 				return nil
 			})
 

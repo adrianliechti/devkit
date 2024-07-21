@@ -64,7 +64,7 @@ func startCode(ctx context.Context, client engine.Client, stack string, port int
 	}
 
 	cli.MustRun("Pulling Image...", func() error {
-		return docker.Pull(ctx, image, "", docker.PullOptions{})
+		return client.Pull(ctx, image, "", engine.PullOptions{})
 	})
 
 	time.AfterFunc(2*time.Second, func() {

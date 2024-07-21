@@ -3,6 +3,7 @@ package template
 import (
 	"context"
 
+	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/pkg/cli"
 )
 
@@ -18,10 +19,12 @@ var aspnetCommand = &cli.Command{
 	},
 
 	Action: func(ctx context.Context, cmd *cli.Command) error {
+		client := app.MustClient(ctx, cmd)
+
 		options := templateOptions{
 			Name: MustName(ctx, cmd, "demo"),
 		}
 
-		return runTemplate(ctx, "", TemplateASPNET, options)
+		return runTemplate(ctx, client, "", TemplateASPNET, options)
 	},
 }

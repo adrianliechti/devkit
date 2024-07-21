@@ -3,6 +3,7 @@ package template
 import (
 	"context"
 
+	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/pkg/cli"
 )
 
@@ -22,11 +23,13 @@ var springCommand = &cli.Command{
 	},
 
 	Action: func(ctx context.Context, cmd *cli.Command) error {
+		client := app.MustClient(ctx, cmd)
+
 		options := templateOptions{
 			Group: MustGroup(ctx, cmd, "org.example"),
 			Name:  MustName(ctx, cmd, "demo"),
 		}
 
-		return runTemplate(ctx, "", TemplateSpring, options)
+		return runTemplate(ctx, client, "", TemplateSpring, options)
 	},
 }
