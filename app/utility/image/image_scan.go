@@ -29,6 +29,7 @@ func runTrivy(ctx context.Context, client engine.Client, image string) error {
 		Image: "aquasec/trivy:0.53.0",
 
 		Args: []string{
+			"--quiet",
 			"image",
 			image,
 		},

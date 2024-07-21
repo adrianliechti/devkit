@@ -36,6 +36,7 @@ func runSAST(ctx context.Context, client engine.Client, path string) error {
 		Dir: "/src",
 
 		Args: []string{
+			"--quiet",
 			"filesystem",
 			"--scanners", "vuln,misconfig,secret",
 			"/src",
