@@ -4,8 +4,7 @@ import (
 	"context"
 	"io"
 	"os"
-	"os/signal"
-	"syscall"
+	"time"
 
 	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/docker/docker/api/types/container"
@@ -87,24 +86,38 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 	}
 
 	if isTTY {
-		if w, h, err := TerminalSize(options.Stdout); err == nil {
-			m.client.ContainerResize(ctx, created.ID, container.ResizeOptions{
-				Width:  uint(w),
-				Height: uint(h),
-			})
+		width, height, err := TerminalSize(options.Stdout)
+
+		if err != nil {
+			return err
 		}
 
-		go func() {
-			sigs := make(chan os.Signal, 1)
-			signal.Notify(sigs, syscall.SIGWINCH)
+		m.client.ContainerResize(ctx, created.ID, container.ResizeOptions{
+			Width:  uint(width),
+			Height: uint(height),
+		})
 
-			for range sigs {
-				if w, h, err := TerminalSize(options.Stdout); err == nil {
-					m.client.ContainerResize(ctx, created.ID, container.ResizeOptions{
-						Width:  uint(w),
-						Height: uint(h),
-					})
+		go func() {
+			for ctx.Err() == nil {
+				time.Sleep(200 * time.Millisecond)
+
+				w, h, err := TerminalSize(options.Stdout)
+
+				if err != nil {
+					continue
 				}
+
+				if w == width && h == height {
+					continue
+				}
+
+				width = w
+				height = h
+
+				m.client.ContainerResize(ctx, created.ID, container.ResizeOptions{
+					Width:  uint(width),
+					Height: uint(height),
+				})
 			}
 		}()
 	}
