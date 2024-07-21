@@ -26,7 +26,7 @@ var bomCommand = &cli.Command{
 
 func runSyft(ctx context.Context, client engine.Client, image string) error {
 	container := engine.Container{
-		Image: "anchore/syft:v1.9.0",
+		Image: "anchore/syft",
 
 		Args: []string{
 			"-o", "syft-table",

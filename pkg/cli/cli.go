@@ -151,6 +151,10 @@ func Prompt(label, placeholder string) (string, error) {
 		return "", err
 	}
 
+	if result == "" {
+		result = placeholder
+	}
+
 	if result != "" {
 		fmt.Println("> " + result)
 	}
@@ -237,12 +241,10 @@ func Run(title string, action func() error) error {
 	return err
 }
 
-func MustRun(title string, action func() error) error {
+func MustRun(title string, action func() error) {
 	err := Run(title, action)
 
 	if err != nil {
 		Fatal(err)
 	}
-
-	return err
 }
