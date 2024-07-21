@@ -12,12 +12,16 @@ import (
 )
 
 func (m *Moby) Exec(ctx context.Context, containerID string, command []string, options engine.ExecOptions) error {
+	if options.Stdin == nil {
+		options.Stdin = os.Stdin
+	}
+
 	if options.Stdout == nil {
-		options.Stdout = io.Discard
+		options.Stdout = os.Stdout
 	}
 
 	if options.Stderr == nil {
-		options.Stderr = io.Discard
+		options.Stderr = os.Stderr
 	}
 
 	id, err := m.client.ContainerExecCreate(ctx, containerID, convertExecOptions(command, options))
@@ -54,9 +58,6 @@ func convertExecOptions(command []string, options engine.ExecOptions) container.
 		Cmd: command,
 
 		Privileged: options.Privileged,
-
-		Tty:    options.TTY,
-		Detach: !options.Interactive,
 
 		AttachStdin:  options.Stdin != nil,
 		AttachStdout: options.Stdout != nil,

@@ -277,14 +277,7 @@ func clientCommand(p catalog.ClientProvider) *cli.Command {
 			}
 
 			if image == "" {
-				return client.Exec(ctx, container.ID, args, engine.ExecOptions{
-					TTY:         true,
-					Interactive: true,
-
-					Stdin:  os.Stdin,
-					Stdout: os.Stdout,
-					Stderr: os.Stderr,
-				})
+				return client.Exec(ctx, container.ID, args, engine.ExecOptions{})
 			}
 
 			cli.MustRun("Pulling Image...", func() error {
@@ -298,14 +291,7 @@ func clientCommand(p catalog.ClientProvider) *cli.Command {
 				Args: args,
 			}
 
-			return client.Run(ctx, spec, engine.RunOptions{
-				TTY:         true,
-				Interactive: true,
-
-				Stdin:  os.Stdin,
-				Stdout: os.Stdout,
-				Stderr: os.Stderr,
-			})
+			return client.Run(ctx, spec, engine.RunOptions{})
 		},
 	}
 }
@@ -327,14 +313,7 @@ func shellCommand(p catalog.ShellProvider) *cli.Command {
 				return err
 			}
 
-			return client.Exec(ctx, container.ID, []string{shell}, engine.ExecOptions{
-				TTY:         true,
-				Interactive: true,
-
-				Stdin:  os.Stdin,
-				Stdout: os.Stdout,
-				Stderr: os.Stderr,
-			})
+			return client.Exec(ctx, container.ID, []string{shell}, engine.ExecOptions{})
 		},
 	}
 }

@@ -2,7 +2,6 @@ package image
 
 import (
 	"context"
-	"os"
 
 	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/pkg/cli"
@@ -41,12 +40,5 @@ func runDive(ctx context.Context, client engine.Client, image string) error {
 		},
 	}
 
-	return client.Run(ctx, container, engine.RunOptions{
-		TTY:         true,
-		Interactive: true,
-
-		Stdin:  os.Stdin,
-		Stdout: os.Stdout,
-		Stderr: os.Stderr,
-	})
+	return client.Run(ctx, container, engine.RunOptions{})
 }

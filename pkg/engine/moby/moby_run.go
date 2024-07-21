@@ -4,7 +4,6 @@ import (
 	"context"
 	"io"
 	"os"
-	"time"
 
 	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/docker/docker/api/types/container"
@@ -12,12 +11,16 @@ import (
 )
 
 func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.RunOptions) error {
+	if options.Stdin == nil {
+		options.Stdin = os.Stdin
+	}
+
 	if options.Stdout == nil {
-		options.Stdout = io.Discard
+		options.Stdout = os.Stdout
 	}
 
 	if options.Stderr == nil {
-		options.Stderr = io.Discard
+		options.Stderr = os.Stderr
 	}
 
 	containerConfig, err := convertContainerConfig(spec)
@@ -26,16 +29,12 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 		return err
 	}
 
-	containerConfig.Tty = options.TTY
+	containerConfig.OpenStdin = true
+	containerConfig.StdinOnce = true
 
 	containerConfig.AttachStdin = options.Stdin != nil
 	containerConfig.AttachStdout = options.Stdout != nil
 	containerConfig.AttachStderr = options.Stderr != nil
-
-	if options.Interactive {
-		containerConfig.OpenStdin = true
-		containerConfig.StdinOnce = true
-	}
 
 	hostConfig, err := convertHostConfig(spec)
 
@@ -47,53 +46,33 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 		return err
 	}
 
-	create, err := m.client.ContainerCreate(ctx, containerConfig, hostConfig, nil, nil, spec.Name)
+	created, err := m.client.ContainerCreate(ctx, containerConfig, hostConfig, nil, nil, spec.Name)
 
 	if err != nil {
 		return err
 	}
 
-	if err := m.client.ContainerStart(ctx, create.ID, container.StartOptions{}); err != nil {
-		return err
-	}
-
-	containerID := create.ID
-
-	// containerID, err := m.Create(ctx, spec, engine.CreateOptions{})
-
-	// if err != nil {
-	// 	return err
-	// }
-
-	// statusCh, errCh := m.client.ContainerWait(ctx, containerID, container.WaitConditionNotRunning)
-
-	// select {
-	// case err := <-errCh:
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// case <-statusCh:
-	// }
-
-	time.Sleep(5 * time.Second)
-
-	resp, err := m.client.ContainerAttach(ctx, containerID, convertAttachOptions(options))
+	attached, err := m.client.ContainerAttach(ctx, created.ID, convertAttachOptions(options))
 
 	if err != nil {
 		return err
 	}
 
-	defer resp.Close()
+	defer attached.Close()
+
+	if err := m.client.ContainerStart(ctx, created.ID, container.StartOptions{}); err != nil {
+		return err
+	}
 
 	result := make(chan error)
 
 	go func() {
-		_, err := io.Copy(resp.Conn, os.Stdin)
+		_, err := io.Copy(attached.Conn, os.Stdin)
 		result <- err
 	}()
 
 	go func() {
-		_, err := stdcopy.StdCopy(options.Stdout, options.Stderr, resp.Reader)
+		_, err := stdcopy.StdCopy(options.Stdout, options.Stderr, attached.Reader)
 		result <- err
 	}()
 

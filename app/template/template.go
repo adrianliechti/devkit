@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 
@@ -122,14 +121,7 @@ func runTemplate(ctx context.Context, client engine.Client, path string, templat
 		},
 	}
 
-	return client.Run(ctx, container, engine.RunOptions{
-		TTY:         true,
-		Interactive: true,
-
-		Stdin:  os.Stdin,
-		Stdout: os.Stdout,
-		Stderr: os.Stderr,
-	})
+	return client.Run(ctx, container, engine.RunOptions{})
 }
 
 type templateOptions struct {

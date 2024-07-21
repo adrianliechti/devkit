@@ -99,12 +99,5 @@ func startCode(ctx context.Context, client engine.Client, stack string, port int
 		},
 	}
 
-	return client.Run(ctx, spec, engine.RunOptions{
-		TTY:         true,
-		Interactive: true,
-
-		Stdin:  os.Stdin,
-		Stdout: os.Stdout,
-		Stderr: os.Stderr,
-	})
+	return client.Run(ctx, spec, engine.RunOptions{})
 }

@@ -42,9 +42,6 @@ type RunOptions struct {
 	Stdin  io.Reader
 	Stdout io.Writer
 	Stderr io.Writer
-
-	TTY         bool
-	Interactive bool
 }
 
 type DeleteOptions struct {
@@ -64,9 +61,6 @@ type ExecOptions struct {
 	Stdout io.Writer
 	Stderr io.Writer
 
-	TTY         bool
-	Interactive bool
-
 	Dir  string
 	User string
 
@@ -83,10 +77,6 @@ type Container struct {
 	Platform string
 
 	Privileged bool
-
-	TTY       bool
-	Stdin     bool
-	StdinOnce bool
 
 	RunAsUser  string
 	RunAsGroup string

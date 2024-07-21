@@ -48,11 +48,6 @@ func convertContainerConfig(spec engine.Container) (*container.Config, error) {
 
 		Image: spec.Image,
 
-		Tty: spec.TTY,
-
-		OpenStdin: spec.Stdin,
-		StdinOnce: spec.StdinOnce,
-
 		Env:        []string{},
 		WorkingDir: spec.Dir,
 
