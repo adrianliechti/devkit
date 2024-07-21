@@ -28,13 +28,13 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 	isTTY := IsTerminal(options.Stdin)
 
 	if isTTY {
-		state, err := MakeRawTerminal(options.Stdout)
+		restore, err := MakeRawTerminal(options.Stdout)
 
 		if err != nil {
 			return err
 		}
 
-		defer RestoreTerminal(options.Stdout, state)
+		defer restore()
 	}
 
 	containerConfig, err := convertContainerConfig(spec)
@@ -108,30 +108,6 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 			}
 		}()
 	}
-
-	// func() {
-	// 	for ctx.Err() == nil {
-	// 		if !tty {
-	// 			break
-	// 		}
-
-	// 		time.Sleep(1 * time.Second)
-
-	// 		var width int
-	// 		var height int
-
-	// 		if w, h, err := TerminalSize(options.Stdin); err == nil {
-	// 			if w == width && h == height {
-	// 				continue
-	// 			}
-
-	// 			m.client.ContainerResize(ctx, created.ID, container.ResizeOptions{
-	// 				Height: uint(h),
-	// 				Width:  uint(w),
-	// 			})
-	// 		}
-	// 	}
-	// }()
 
 	result := make(chan error)
 

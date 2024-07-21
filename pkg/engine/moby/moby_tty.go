@@ -2,13 +2,12 @@ package moby
 
 import (
 	"errors"
-	"io"
 	"os"
 
 	"golang.org/x/term"
 )
 
-func IsTerminal(fd io.Reader) bool {
+func IsTerminal(fd any) bool {
 	if file, ok := fd.(*os.File); ok {
 		return term.IsTerminal(int(file.Fd()))
 	}
@@ -16,20 +15,20 @@ func IsTerminal(fd io.Reader) bool {
 	return false
 }
 
-func MakeRawTerminal(fd any) (*term.State, error) {
+func MakeRawTerminal(fd any) (func(), error) {
 	if file, ok := fd.(*os.File); ok {
-		return term.MakeRaw(int(file.Fd()))
+		state, err := term.MakeRaw(int(file.Fd()))
+
+		if err != nil {
+			return nil, err
+		}
+
+		return func() {
+			term.Restore(int(file.Fd()), state)
+		}, nil
 	}
 
 	return nil, errors.New("not a tty")
-}
-
-func RestoreTerminal(fd any, state *term.State) error {
-	if file, ok := fd.(*os.File); ok {
-		return term.Restore(int(file.Fd()), state)
-	}
-
-	return errors.New("not a tty")
 }
 
 func TerminalSize(fd any) (width, height int, err error) {

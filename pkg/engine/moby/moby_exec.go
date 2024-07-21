@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/docker/docker/api/types/container"
@@ -24,6 +26,18 @@ func (m *Moby) Exec(ctx context.Context, containerID string, command []string, o
 		options.Stderr = os.Stderr
 	}
 
+	isTTY := IsTerminal(options.Stdin)
+
+	if isTTY {
+		restore, err := MakeRawTerminal(options.Stdout)
+
+		if err != nil {
+			return err
+		}
+
+		defer restore()
+	}
+
 	id, err := m.client.ContainerExecCreate(ctx, containerID, convertExecOptions(command, options))
 
 	if err != nil {
@@ -38,6 +52,29 @@ func (m *Moby) Exec(ctx context.Context, containerID string, command []string, o
 
 	defer resp.Close()
 
+	if isTTY {
+		if w, h, err := TerminalSize(options.Stdout); err == nil {
+			m.client.ContainerExecResize(ctx, id.ID, container.ResizeOptions{
+				Width:  uint(w),
+				Height: uint(h),
+			})
+		}
+
+		go func() {
+			sigs := make(chan os.Signal, 1)
+			signal.Notify(sigs, syscall.SIGWINCH)
+
+			for range sigs {
+				if w, h, err := TerminalSize(options.Stdout); err == nil {
+					m.client.ContainerExecResize(ctx, id.ID, container.ResizeOptions{
+						Width:  uint(w),
+						Height: uint(h),
+					})
+				}
+			}
+		}()
+	}
+
 	result := make(chan error)
 
 	go func() {
@@ -46,6 +83,12 @@ func (m *Moby) Exec(ctx context.Context, containerID string, command []string, o
 	}()
 
 	go func() {
+		if isTTY {
+			_, err := io.Copy(options.Stdout, resp.Reader)
+			result <- err
+			return
+		}
+
 		_, err := stdcopy.StdCopy(options.Stdout, options.Stderr, resp.Reader)
 		result <- err
 	}()
@@ -59,10 +102,14 @@ func (m *Moby) Exec(ctx context.Context, containerID string, command []string, o
 }
 
 func convertExecOptions(command []string, options engine.ExecOptions) container.ExecOptions {
+	tty := IsTerminal(options.Stdout)
+
 	result := container.ExecOptions{
 		Cmd: command,
 
 		Privileged: options.Privileged,
+
+		Tty: tty,
 
 		AttachStdin:  options.Stdin != nil,
 		AttachStdout: options.Stdout != nil,
@@ -76,11 +123,25 @@ func convertExecOptions(command []string, options engine.ExecOptions) container.
 		result.Env = append(result.Env, fmt.Sprintf("%s=%s", k, v))
 	}
 
+	if w, h, err := TerminalSize(options.Stdout); err == nil {
+		size := [2]uint{uint(h), uint(w)}
+		result.ConsoleSize = &size
+	}
+
 	return result
 }
 
 func convertExecAttachOptions(options engine.ExecOptions) container.ExecAttachOptions {
-	result := container.ExecAttachOptions{}
+	tty := IsTerminal(options.Stdout)
+
+	result := container.ExecAttachOptions{
+		Tty: tty,
+	}
+
+	if w, h, err := TerminalSize(options.Stdout); err == nil {
+		size := [2]uint{uint(h), uint(w)}
+		result.ConsoleSize = &size
+	}
 
 	return result
 }
