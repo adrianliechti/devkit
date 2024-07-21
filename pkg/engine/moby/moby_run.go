@@ -82,7 +82,12 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 		result <- err
 	}()
 
-	return <-result
+	select {
+	case err := <-result:
+		return err
+	case <-ctx.Done():
+		return nil
+	}
 }
 
 func convertAttachOptions(options engine.RunOptions) container.AttachOptions {

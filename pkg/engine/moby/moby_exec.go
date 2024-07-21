@@ -50,7 +50,12 @@ func (m *Moby) Exec(ctx context.Context, containerID string, command []string, o
 		result <- err
 	}()
 
-	return <-result
+	select {
+	case err := <-result:
+		return err
+	case <-ctx.Done():
+		return nil
+	}
 }
 
 func convertExecOptions(command []string, options engine.ExecOptions) container.ExecOptions {
