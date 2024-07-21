@@ -3,6 +3,7 @@ package code
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 	"time"
@@ -99,5 +100,8 @@ func startCode(ctx context.Context, client engine.Client, stack string, port int
 		},
 	}
 
-	return client.Run(ctx, spec, engine.RunOptions{})
+	return client.Run(ctx, spec, engine.RunOptions{
+		Stdout: io.Discard,
+		Stderr: io.Discard,
+	})
 }

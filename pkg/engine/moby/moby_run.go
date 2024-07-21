@@ -52,6 +52,12 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 		return err
 	}
 
+	defer m.client.ContainerRemove(context.Background(), created.ID, container.RemoveOptions{
+		Force: true,
+
+		RemoveVolumes: true,
+	})
+
 	attached, err := m.client.ContainerAttach(ctx, created.ID, convertAttachOptions(options))
 
 	if err != nil {
