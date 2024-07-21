@@ -2,9 +2,10 @@ package image
 
 import (
 	"context"
+	"os"
 
+	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/pkg/cli"
-	"github.com/adrianliechti/devkit/pkg/docker"
 	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
@@ -17,22 +18,23 @@ var bomCommand = &cli.Command{
 	},
 
 	Action: func(ctx context.Context, cmd *cli.Command) error {
+		client := app.MustClient(ctx, cmd)
 		image := MustImage(ctx, cmd)
-		return runSyft(ctx, image)
+
+		return runSyft(ctx, client, image)
 	},
 }
 
-func runSyft(ctx context.Context, image string) error {
-	tool := "anchore/syft:v1.9.0"
+func runSyft(ctx context.Context, client engine.Client, image string) error {
+	container := engine.Container{
+		Image: "anchore/syft:v1.9.0",
 
-	args := []string{
-		"-o", "syft-table",
-	}
+		Args: []string{
+			"-o", "syft-table",
+			image,
+		},
 
-	args = append(args, image)
-
-	options := docker.RunOptions{
-		Volumes: []engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path:     "/var/run/docker.sock",
 				HostPath: "/var/run/docker.sock",
@@ -40,5 +42,12 @@ func runSyft(ctx context.Context, image string) error {
 		},
 	}
 
-	return docker.RunInteractive(ctx, tool, options, args...)
+	return client.Run(ctx, container, engine.RunOptions{
+		TTY:         true,
+		Interactive: true,
+
+		Stdin:  os.Stdin,
+		Stdout: os.Stdout,
+		Stderr: os.Stderr,
+	})
 }

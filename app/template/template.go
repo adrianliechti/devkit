@@ -4,12 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 
 	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/pkg/cli"
-	"github.com/adrianliechti/devkit/pkg/docker"
 	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
@@ -109,10 +109,12 @@ func runTemplate(ctx context.Context, client engine.Client, path string, templat
 		return client.Pull(ctx, image, "", engine.PullOptions{})
 	})
 
-	runOptions := docker.RunOptions{
+	container := engine.Container{
+		Image: image,
+
 		Env: options.env(),
 
-		Volumes: []engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path:     "/src",
 				HostPath: path,
@@ -120,7 +122,14 @@ func runTemplate(ctx context.Context, client engine.Client, path string, templat
 		},
 	}
 
-	return docker.RunInteractive(ctx, image, runOptions)
+	return client.Run(ctx, container, engine.RunOptions{
+		TTY:         true,
+		Interactive: true,
+
+		Stdin:  os.Stdin,
+		Stdout: os.Stdout,
+		Stderr: os.Stderr,
+	})
 }
 
 type templateOptions struct {

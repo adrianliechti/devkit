@@ -2,9 +2,10 @@ package image
 
 import (
 	"context"
+	"os"
 
+	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/pkg/cli"
-	"github.com/adrianliechti/devkit/pkg/docker"
 	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
@@ -17,18 +18,23 @@ var scanCommand = &cli.Command{
 	},
 
 	Action: func(ctx context.Context, cmd *cli.Command) error {
+		client := app.MustClient(ctx, cmd)
 		image := MustImage(ctx, cmd)
-		return runTrivy(ctx, image)
+
+		return runTrivy(ctx, client, image)
 	},
 }
 
-func runTrivy(ctx context.Context, image string) error {
-	tool := "aquasec/trivy:0.53.0"
+func runTrivy(ctx context.Context, client engine.Client, image string) error {
+	container := engine.Container{
+		Image: "aquasec/trivy:0.53.0",
 
-	options := docker.RunOptions{
-		Env: map[string]string{},
+		Args: []string{
+			"image",
+			image,
+		},
 
-		Volumes: []engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path:   "/root/.cache/",
 				Volume: "trivy-cache",
@@ -36,5 +42,12 @@ func runTrivy(ctx context.Context, image string) error {
 		},
 	}
 
-	return docker.RunInteractive(ctx, tool, options, "image", image)
+	return client.Run(ctx, container, engine.RunOptions{
+		TTY:         true,
+		Interactive: true,
+
+		Stdin:  os.Stdin,
+		Stdout: os.Stdout,
+		Stderr: os.Stderr,
+	})
 }

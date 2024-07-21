@@ -3,7 +3,6 @@ package code
 import (
 	"context"
 	"fmt"
-	"io"
 	"os"
 	"strings"
 	"time"
@@ -11,7 +10,6 @@ import (
 	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/app/utility"
 	"github.com/adrianliechti/devkit/pkg/cli"
-	"github.com/adrianliechti/devkit/pkg/docker"
 	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
@@ -79,7 +77,9 @@ func startCode(ctx context.Context, client engine.Client, stack string, port int
 	cli.Info("Forward " + path + " to " + "/workspace")
 	cli.Info()
 
-	options := docker.RunOptions{
+	spec := engine.Container{
+		Image: image,
+
 		Privileged: true,
 
 		Ports: []engine.ContainerPort{
@@ -91,15 +91,20 @@ func startCode(ctx context.Context, client engine.Client, stack string, port int
 			},
 		},
 
-		Volumes: []engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path:     "/workspace",
 				HostPath: path,
 			},
 		},
-
-		Stdout: io.Discard,
 	}
 
-	return docker.RunInteractive(ctx, image, options)
+	return client.Run(ctx, spec, engine.RunOptions{
+		TTY:         true,
+		Interactive: true,
+
+		Stdin:  os.Stdin,
+		Stdout: os.Stdout,
+		Stderr: os.Stderr,
+	})
 }

@@ -4,9 +4,9 @@ import (
 	"context"
 	"os"
 
+	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/app/utility"
 	"github.com/adrianliechti/devkit/pkg/cli"
-	"github.com/adrianliechti/devkit/pkg/docker"
 	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
@@ -17,33 +17,42 @@ var Command = &cli.Command{
 	Category: utility.Category,
 
 	Action: func(ctx context.Context, cmd *cli.Command) error {
-		return runCloc(ctx)
+		client := app.MustClient(ctx, cmd)
+
+		path, err := os.Getwd()
+
+		if err != nil {
+			return err
+		}
+
+		return runCloc(ctx, client, path)
 	},
 }
 
-func runCloc(ctx context.Context) error {
-	wd, err := os.Getwd()
+func runCloc(ctx context.Context, client engine.Client, path string) error {
+	container := engine.Container{
+		Image: "aldanial/cloc",
 
-	if err != nil {
-		return err
-	}
+		Args: []string{
+			"--quiet",
+			"--hide-rate",
+			"/src",
+		},
 
-	image := "aldanial/cloc"
-
-	args := []string{
-		"--quiet",
-		"--hide-rate",
-		"/src",
-	}
-
-	options := docker.RunOptions{
-		Volumes: []engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path:     "/src",
-				HostPath: wd,
+				HostPath: path,
 			},
 		},
 	}
 
-	return docker.RunInteractive(ctx, image, options, args...)
+	return client.Run(ctx, container, engine.RunOptions{
+		TTY:         true,
+		Interactive: true,
+
+		Stdin:  os.Stdin,
+		Stdout: os.Stdout,
+		Stderr: os.Stderr,
+	})
 }

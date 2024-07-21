@@ -18,6 +18,9 @@ type Client interface {
 
 	Logs(ctx context.Context, container string, options LogsOptions) error
 
+	Run(ctx context.Context, spec Container, options RunOptions) error
+	Exec(ctx context.Context, containerID string, command []string, options ExecOptions) error
+
 	PortForward(ctx context.Context, containerID, address string, ports map[int]int, readyChan chan struct{}) error
 }
 
@@ -33,8 +36,15 @@ type PullOptions struct {
 }
 
 type CreateOptions struct {
+}
+
+type RunOptions struct {
+	Stdin  io.Reader
 	Stdout io.Writer
 	Stderr io.Writer
+
+	TTY         bool
+	Interactive bool
 }
 
 type DeleteOptions struct {
@@ -47,6 +57,22 @@ type LogsOptions struct {
 	Stderr io.Writer
 }
 
+type ExecOptions struct {
+	Privileged bool
+
+	Stdin  io.Reader
+	Stdout io.Writer
+	Stderr io.Writer
+
+	TTY         bool
+	Interactive bool
+
+	Dir  string
+	User string
+
+	Env map[string]string
+}
+
 type Container struct {
 	ID   string
 	Name string
@@ -57,6 +83,10 @@ type Container struct {
 	Platform string
 
 	Privileged bool
+
+	TTY       bool
+	Stdin     bool
+	StdinOnce bool
 
 	RunAsUser  string
 	RunAsGroup string

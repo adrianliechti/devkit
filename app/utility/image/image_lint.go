@@ -2,9 +2,10 @@ package image
 
 import (
 	"context"
+	"os"
 
+	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/pkg/cli"
-	"github.com/adrianliechti/devkit/pkg/docker"
 	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
@@ -17,25 +18,26 @@ var lintCommand = &cli.Command{
 	},
 
 	Action: func(ctx context.Context, cmd *cli.Command) error {
+		client := app.MustClient(ctx, cmd)
 		image := MustImage(ctx, cmd)
-		return runDockle(ctx, image)
+
+		return runDockle(ctx, client, image)
 	},
 }
 
-func runDockle(ctx context.Context, image string) error {
-	tool := "goodwithtech/dockle:v0.4.14"
+func runDockle(ctx context.Context, client engine.Client, image string) error {
+	container := engine.Container{
+		Image: "goodwithtech/dockle:v0.4.14",
 
-	args := []string{
-		// "--debug",
-		image,
-	}
-
-	options := docker.RunOptions{
 		Env: map[string]string{
 			"DOCKER_CONTENT_TRUST": "1",
 		},
 
-		Volumes: []engine.ContainerMount{
+		Args: []string{
+			image,
+		},
+
+		Mounts: []engine.ContainerMount{
 			{
 				Path:     "/var/run/docker.sock",
 				HostPath: "/var/run/docker.sock",
@@ -43,5 +45,12 @@ func runDockle(ctx context.Context, image string) error {
 		},
 	}
 
-	return docker.RunInteractive(ctx, tool, options, args...)
+	return client.Run(ctx, container, engine.RunOptions{
+		TTY:         true,
+		Interactive: true,
+
+		Stdin:  os.Stdin,
+		Stdout: os.Stdout,
+		Stderr: os.Stderr,
+	})
 }

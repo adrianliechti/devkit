@@ -9,7 +9,6 @@ import (
 	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/catalog"
 	"github.com/adrianliechti/devkit/pkg/cli"
-	"github.com/adrianliechti/devkit/pkg/docker"
 	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
@@ -278,10 +277,14 @@ func clientCommand(p catalog.ClientProvider) *cli.Command {
 			}
 
 			if image == "" {
-				command := args[0]
-				arg := args[1:]
+				return client.Exec(ctx, container.ID, args, engine.ExecOptions{
+					TTY:         true,
+					Interactive: true,
 
-				return docker.ExecInteractive(ctx, container.Name, docker.ExecOptions{}, command, arg...)
+					Stdin:  os.Stdin,
+					Stdout: os.Stdout,
+					Stderr: os.Stderr,
+				})
 			}
 
 			cli.MustRun("Pulling Image...", func() error {
@@ -289,7 +292,20 @@ func clientCommand(p catalog.ClientProvider) *cli.Command {
 				return nil
 			})
 
-			return docker.RunInteractive(ctx, image, docker.RunOptions{}, args...)
+			spec := engine.Container{
+				Image: image,
+
+				Args: args,
+			}
+
+			return client.Run(ctx, spec, engine.RunOptions{
+				TTY:         true,
+				Interactive: true,
+
+				Stdin:  os.Stdin,
+				Stdout: os.Stdout,
+				Stderr: os.Stderr,
+			})
 		},
 	}
 }
@@ -311,7 +327,14 @@ func shellCommand(p catalog.ShellProvider) *cli.Command {
 				return err
 			}
 
-			return docker.ExecInteractive(ctx, container.Name, docker.ExecOptions{}, shell)
+			return client.Exec(ctx, container.ID, []string{shell}, engine.ExecOptions{
+				TTY:         true,
+				Interactive: true,
+
+				Stdin:  os.Stdin,
+				Stdout: os.Stdout,
+				Stderr: os.Stderr,
+			})
 		},
 	}
 }
