@@ -41,7 +41,7 @@ func (m *Moby) Exec(ctx context.Context, containerID string, command []string, o
 	result := make(chan error)
 
 	go func() {
-		_, err := io.Copy(resp.Conn, os.Stdin)
+		_, err := io.Copy(resp.Conn, options.Stdin)
 		result <- err
 	}()
 

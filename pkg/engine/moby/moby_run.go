@@ -73,7 +73,7 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 	result := make(chan error)
 
 	go func() {
-		_, err := io.Copy(attached.Conn, os.Stdin)
+		_, err := io.Copy(attached.Conn, options.Stdin)
 		result <- err
 	}()
 

@@ -3,7 +3,6 @@ package catalog
 import (
 	"context"
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/adrianliechti/devkit/app"
@@ -252,8 +251,6 @@ func logsCommand(m catalog.Manager) *cli.Command {
 
 			return client.Logs(ctx, container.ID, engine.LogsOptions{
 				Follow: true,
-				Stdout: os.Stdout,
-				Stderr: os.Stderr,
 			})
 		},
 	}
