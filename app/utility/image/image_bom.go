@@ -20,6 +20,11 @@ var bomCommand = &cli.Command{
 		client := app.MustClient(ctx, cmd)
 		image := MustImage(ctx, cmd)
 
+		cli.MustRun("Pulling Image...", func() error {
+			client.Pull(ctx, image, "", engine.PullOptions{})
+			return nil
+		})
+
 		return runSyft(ctx, client, image)
 	},
 }

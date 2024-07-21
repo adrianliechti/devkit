@@ -20,6 +20,11 @@ var lintCommand = &cli.Command{
 		client := app.MustClient(ctx, cmd)
 		image := MustImage(ctx, cmd)
 
+		cli.MustRun("Pulling Image...", func() error {
+			client.Pull(ctx, image, "", engine.PullOptions{})
+			return nil
+		})
+
 		return runDockle(ctx, client, image)
 	},
 }

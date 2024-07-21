@@ -20,6 +20,11 @@ var browseCommand = &cli.Command{
 		client := app.MustClient(ctx, cmd)
 		image := MustImage(ctx, cmd)
 
+		cli.MustRun("Pulling Image...", func() error {
+			client.Pull(ctx, image, "", engine.PullOptions{})
+			return nil
+		})
+
 		return runDive(ctx, client, image)
 	},
 }
@@ -27,6 +32,8 @@ var browseCommand = &cli.Command{
 func runDive(ctx context.Context, client engine.Client, image string) error {
 	container := engine.Container{
 		Image: "wagoodman/dive:v0.12",
+
+		Platform: "linux/amd64",
 
 		Args: []string{
 			image,
