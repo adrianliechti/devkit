@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/catalog"
@@ -148,7 +147,7 @@ func createCommand(m catalog.Manager) *cli.Command {
 				KindKey: kind,
 			}
 
-			for _, p := range container.Ports {
+			for i, p := range container.Ports {
 				flag := app.PortFlagName(p.Name)
 
 				for _, f := range portFlags {
@@ -160,8 +159,10 @@ func createCommand(m catalog.Manager) *cli.Command {
 					hostPort := app.MustPortOrRandom(ctx, cmd, f.Name, p.Port)
 
 					p.HostIP = hostIP
-					p.HostPort = &hostPort
+					p.HostPort = hostPort
 				}
+
+				container.Ports[i] = p
 			}
 
 			var containerID string
@@ -343,16 +344,20 @@ func consoleCommand(p catalog.ConsoleProvider) *cli.Command {
 			}
 
 			port := app.MustPortOrRandom(ctx, cmd, "", mapping.Port)
+			ready := make(chan struct{})
 
-			client.Pull(ctx, "alpine/socat", "", engine.PullOptions{})
+			go func() {
+				<-ready
+				printContainerInfo(container, info)
 
-			time.AfterFunc(1*time.Second, func() {
 				cli.OpenURL(fmt.Sprintf("http://localhost:%d", port))
-			})
+			}()
 
-			printContainerInfo(container, info)
+			ports := map[int]int{
+				port: mapping.Port,
+			}
 
-			return docker.PortForward(ctx, container.Name, port, mapping.Port)
+			return client.PortForward(ctx, container.Name, "", ports, ready)
 		},
 	}
 }

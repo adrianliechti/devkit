@@ -51,14 +51,14 @@ func (m *Manager) New() (engine.Container, error) {
 			"REDIS_PASSWORD": password,
 		},
 
-		Ports: []*engine.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
 				Port:  6379,
 				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		Mounts: []*engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path: "/data",
 			},
@@ -72,11 +72,11 @@ func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 	var uri string
 
 	for _, p := range instance.Ports {
-		if p.HostPort == nil || p.Port != 6379 {
+		if p.HostPort == 0 || p.Port != 6379 {
 			continue
 		}
 
-		uri = fmt.Sprintf("redis://:%s@localhost:%d", password, *p.HostPort)
+		uri = fmt.Sprintf("redis://:%s@localhost:%d", password, p.HostPort)
 	}
 
 	return map[string]string{

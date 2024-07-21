@@ -49,14 +49,14 @@ func (m *Manager) New() (engine.Container, error) {
 
 		Env: map[string]string{},
 
-		Ports: []*engine.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
 				Port:  8081,
 				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		Mounts: []*engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path: "/nexus-data",
 			},

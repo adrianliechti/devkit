@@ -49,14 +49,14 @@ func (m *Manager) New() (engine.Container, error) {
 			"ORACLE_PASSWORD": password,
 		},
 
-		Ports: []*engine.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
 				Port:  1521,
 				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		Mounts: []*engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path: "/opt/oracle/oradata",
 			},

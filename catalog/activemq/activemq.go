@@ -52,14 +52,14 @@ func (m *Manager) New() (engine.Container, error) {
 			"ARTEMIS_PASSWORD": password,
 		},
 
-		Ports: []*engine.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
 				Port:  61616,
 				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		Mounts: []*engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path: "/var/lib/artemis-instance",
 			},

@@ -51,14 +51,14 @@ func (m *Manager) New() (engine.Container, error) {
 			"MYSQL_ROOT_PASSWORD": password,
 		},
 
-		Ports: []*engine.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
 				Port:  3306,
 				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		Mounts: []*engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path: "/var/lib/mysql",
 			},

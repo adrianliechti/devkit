@@ -57,14 +57,14 @@ func (m *Manager) New() (engine.Container, error) {
 			"ELASTIC_PASSWORD": password,
 		},
 
-		Ports: []*engine.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
 				Port:  9200,
 				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		Mounts: []*engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path: "/usr/share/elasticsearch/data",
 			},

@@ -55,14 +55,14 @@ func (m *Manager) New() (engine.Container, error) {
 			"POSTGRES_PASSWORD": password,
 		},
 
-		Ports: []*engine.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
 				Port:  5432,
 				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		Mounts: []*engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path: "/var/lib/postgresql/data",
 			},
@@ -78,11 +78,11 @@ func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 	var uri string
 
 	for _, p := range instance.Ports {
-		if p.HostPort == nil || p.Port != 5432 {
+		if p.HostPort == 0 || p.Port != 5432 {
 			continue
 		}
 
-		uri = fmt.Sprintf("postgresql://%s:%s@localhost:%d/%s?sslmode=disable", username, password, *p.HostPort, database)
+		uri = fmt.Sprintf("postgresql://%s:%s@localhost:%d/%s?sslmode=disable", username, password, p.HostPort, database)
 	}
 
 	return map[string]string{

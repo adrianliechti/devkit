@@ -247,8 +247,8 @@ func convertContainer(data types.ContainerJSON) engine.Container {
 		Hostname:  data.Config.Hostname,
 		IPAddress: net.ParseIP(data.NetworkSettings.IPAddress),
 
-		Ports:  []*engine.ContainerPort{},
-		Mounts: []*engine.ContainerMount{},
+		Ports:  []engine.ContainerPort{},
+		Mounts: []engine.ContainerMount{},
 	}
 
 	if data.Config.User != "" {
@@ -274,16 +274,14 @@ func convertContainer(data types.ContainerJSON) engine.Container {
 
 	for p, m := range data.NetworkSettings.Ports {
 		for _, b := range m {
-			port := &engine.ContainerPort{
+			port := engine.ContainerPort{
 				Port:  p.Int(),
 				Proto: engine.Protocol(p.Proto()),
 			}
 
-			if b.HostPort != "" {
-				if val, err := strconv.Atoi(b.HostPort); err == nil {
-					port.HostIP = b.HostIP
-					port.HostPort = &val
-				}
+			if val, err := strconv.Atoi(b.HostPort); err == nil {
+				port.HostIP = b.HostIP
+				port.HostPort = val
 			}
 
 			container.Ports = append(container.Ports, port)
@@ -291,7 +289,7 @@ func convertContainer(data types.ContainerJSON) engine.Container {
 	}
 
 	for _, m := range data.Mounts {
-		mount := &engine.ContainerMount{
+		mount := engine.ContainerMount{
 			Path: m.Destination,
 		}
 
@@ -398,8 +396,8 @@ func convertHostConfig(spec engine.Container) (*container.HostConfig, error) {
 			binding.HostIP = "127.0.0.1"
 		}
 
-		if p.HostPort != nil {
-			binding.HostPort = strconv.Itoa(*p.HostPort)
+		if p.HostPort != 0 {
+			binding.HostPort = strconv.Itoa(p.HostPort)
 		}
 
 		config.PortBindings[port] = []nat.PortBinding{

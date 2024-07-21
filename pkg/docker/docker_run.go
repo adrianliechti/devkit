@@ -146,14 +146,14 @@ func runArgs(image string, options RunOptions, arg ...string) []string {
 		}
 
 		hostIP := "127.0.0.1"
-		hostPort := ""
+		hostPort := port
 
 		if p.HostIP != "" {
 			hostIP = p.HostIP
 		}
 
-		if p.HostPort != nil {
-			hostPort = strconv.Itoa(*p.HostPort)
+		if p.HostPort != 0 {
+			hostPort = strconv.Itoa(p.HostPort)
 		}
 
 		args = append(args, "--publish", fmt.Sprintf("%s:%s:%s/%s", hostIP, hostPort, port, proto))

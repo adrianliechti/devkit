@@ -62,14 +62,14 @@ func (m *Manager) New() (engine.Container, error) {
 			"ETCD_ADVERTISE_CLIENT_URLS": "http://127.0.0.1:2379",
 		},
 
-		Ports: []*engine.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
 				Port:  2379,
 				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		Mounts: []*engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path: "/etcd-data",
 			},
@@ -81,11 +81,11 @@ func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 	var uri string
 
 	for _, p := range instance.Ports {
-		if p.HostPort == nil || p.Port != 2379 {
+		if p.HostPort == 0 || p.Port != 2379 {
 			continue
 		}
 
-		uri = fmt.Sprintf("http://localhost:%d", *p.HostPort)
+		uri = fmt.Sprintf("http://localhost:%d", p.HostPort)
 	}
 
 	return map[string]string{

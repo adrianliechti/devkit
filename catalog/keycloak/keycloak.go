@@ -58,14 +58,14 @@ func (m *Manager) New() (engine.Container, error) {
 			"--http-port", "8443",
 		},
 
-		Ports: []*engine.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
 				Port:  8443,
 				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		Mounts: []*engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path: "/opt/keycloak/data",
 			},
@@ -80,11 +80,11 @@ func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 	var url string
 
 	for _, p := range instance.Ports {
-		if p.HostPort == nil || p.Port != 8443 {
+		if p.HostPort == 0 || p.Port != 8443 {
 			continue
 		}
 
-		url = fmt.Sprintf("http://localhost:%d", *p.HostPort)
+		url = fmt.Sprintf("http://localhost:%d", p.HostPort)
 	}
 
 	return map[string]string{

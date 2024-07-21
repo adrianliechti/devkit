@@ -48,14 +48,14 @@ func (m *Manager) New() (engine.Container, error) {
 			"SONAR_ES_BOOTSTRAP_CHECKS_DISABLE": "true",
 		},
 
-		Ports: []*engine.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
 				Port:  9000,
 				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		Mounts: []*engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path: "/opt/sonarqube/data",
 			},

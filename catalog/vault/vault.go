@@ -49,7 +49,7 @@ func (m *Manager) New() (engine.Container, error) {
 			"VAULT_DEV_ROOT_TOKEN_ID": token,
 		},
 
-		Ports: []*engine.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
 				Port:  8200,
 				Proto: engine.ProtocolTCP,

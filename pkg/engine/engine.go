@@ -17,6 +17,8 @@ type Client interface {
 	Inspect(ctx context.Context, container string) (Container, error)
 
 	Logs(ctx context.Context, container string, options LogsOptions) error
+
+	PortForward(ctx context.Context, containerID, address string, ports map[int]int, readyChan chan struct{}) error
 }
 
 type ListOptions struct {
@@ -71,8 +73,8 @@ type Container struct {
 	Hostname  string
 	IPAddress net.IP
 
-	Ports  []*ContainerPort
-	Mounts []*ContainerMount
+	Ports  []ContainerPort
+	Mounts []ContainerMount
 }
 
 type Protocol string
@@ -89,7 +91,7 @@ type ContainerPort struct {
 	Proto Protocol
 
 	HostIP   string
-	HostPort *int
+	HostPort int
 }
 
 type ContainerMount struct {

@@ -71,11 +71,11 @@ func printContainerInfo(container engine.Container, info map[string]string) {
 	rowsPorts := [][]string{}
 
 	for _, p := range container.Ports {
-		if container.IPAddress == nil || p.HostPort == nil {
+		if container.IPAddress == nil || p.HostPort == 0 {
 			continue
 		}
 
-		rowsPorts = append(rowsPorts, []string{fmt.Sprintf("localhost:%d", *p.HostPort), fmt.Sprintf("%s://%s:%d", p.Proto, container.IPAddress, p.Port)})
+		rowsPorts = append(rowsPorts, []string{fmt.Sprintf("localhost:%d", p.HostPort), fmt.Sprintf("%s://%s:%d", p.Proto, container.IPAddress, p.Port)})
 	}
 
 	if len(rowsPorts) > 0 {

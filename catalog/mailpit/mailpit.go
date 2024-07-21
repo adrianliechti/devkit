@@ -57,7 +57,7 @@ func (m *Manager) New() (engine.Container, error) {
 			"MP_SMTP_AUTH_ALLOW_INSECURE": "true",
 		},
 
-		Ports: []*engine.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
 				Name:  "smtp",
 				Port:  1025,
@@ -70,7 +70,7 @@ func (m *Manager) New() (engine.Container, error) {
 			},
 		},
 
-		Mounts: []*engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path: "/data",
 			},

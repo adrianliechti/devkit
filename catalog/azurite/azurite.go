@@ -44,7 +44,7 @@ func (m *Manager) New() (engine.Container, error) {
 			// AZURITE_ACCOUNTS="account1:key1:key2;account2:key1:key2"
 		},
 
-		Ports: []*engine.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
 				Name:  "blob",
 				Port:  10000,
@@ -62,7 +62,7 @@ func (m *Manager) New() (engine.Container, error) {
 			},
 		},
 
-		Mounts: []*engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path: "/data",
 			},

@@ -57,14 +57,14 @@ func (m *Manager) New() (engine.Container, error) {
 			"MSSQL_SA_PASSWORD": password,
 		},
 
-		Ports: []*engine.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
 				Port:  1433,
 				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		Mounts: []*engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path: "/var/opt/mssql",
 			},

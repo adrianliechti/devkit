@@ -43,7 +43,7 @@ func (m *Manager) New() (engine.Container, error) {
 
 		Env: map[string]string{},
 
-		Ports: []*engine.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
 				Name:  "api",
 				Port:  8081,
@@ -55,7 +55,7 @@ func (m *Manager) New() (engine.Container, error) {
 			},
 		},
 
-		Mounts: []*engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path: "/var/opt/jfrog/artifactory",
 			},

@@ -67,14 +67,14 @@ func (m *Manager) New() (engine.Container, error) {
 			"ETCD_PASSWORD":               "",
 		},
 
-		Ports: []*engine.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
 				Port:  50000,
 				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		Mounts: []*engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path: "/database",
 			},

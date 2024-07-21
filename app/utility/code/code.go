@@ -87,7 +87,7 @@ func startCode(ctx context.Context, client engine.Client, stack string, port int
 				Port:  3000,
 				Proto: engine.ProtocolTCP,
 
-				HostPort: &port,
+				HostPort: port,
 			},
 		},
 

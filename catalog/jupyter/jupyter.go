@@ -52,14 +52,14 @@ func (m *Manager) New() (engine.Container, error) {
 			"JUPYTER_ENABLE_LAB": "yes",
 		},
 
-		Ports: []*engine.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
 				Port:  8888,
 				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		Mounts: []*engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path: "/home/jovyan/work",
 			},

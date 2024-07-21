@@ -55,14 +55,14 @@ func (m *Manager) New() (engine.Container, error) {
 			"server", "/data", "--console-address", ":9001",
 		},
 
-		Ports: []*engine.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
 				Port:  9000,
 				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		Mounts: []*engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path: "/data",
 			},

@@ -43,14 +43,14 @@ func (m *Manager) New() (engine.Container, error) {
 
 		Env: map[string]string{},
 
-		Ports: []*engine.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
 				Port:  9042,
 				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		Mounts: []*engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path: "/var/lib/cassandra",
 			},

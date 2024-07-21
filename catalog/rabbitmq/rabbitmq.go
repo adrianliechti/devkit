@@ -51,14 +51,14 @@ func (m *Manager) New() (engine.Container, error) {
 			"RABBITMQ_DEFAULT_PASS": password,
 		},
 
-		Ports: []*engine.ContainerPort{
+		Ports: []engine.ContainerPort{
 			{
 				Port:  5672,
 				Proto: engine.ProtocolTCP,
 			},
 		},
 
-		Mounts: []*engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path: "/var/lib/rabbitmq",
 			},
