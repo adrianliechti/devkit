@@ -4,7 +4,8 @@ import (
 	"context"
 	"io"
 	"os"
-	"time"
+	"os/signal"
+	"syscall"
 
 	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/docker/docker/api/types/container"
@@ -24,7 +25,17 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 		options.Stderr = os.Stderr
 	}
 
-	tty := IsTTY(options.Stdin)
+	isTTY := IsTerminal(options.Stdin)
+
+	if isTTY {
+		state, err := MakeRawTerminal(options.Stdout)
+
+		if err != nil {
+			return err
+		}
+
+		defer RestoreTerminal(options.Stdout, state)
+	}
 
 	containerConfig, err := convertContainerConfig(spec)
 
@@ -32,14 +43,14 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 		return err
 	}
 
-	containerConfig.Tty = tty
+	containerConfig.Tty = isTTY
 
 	containerConfig.OpenStdin = true
 	containerConfig.StdinOnce = true
 
 	containerConfig.AttachStdin = options.Stdin != nil
 	containerConfig.AttachStdout = options.Stdout != nil
-	containerConfig.AttachStderr = options.Stderr != nil && !tty
+	containerConfig.AttachStderr = options.Stderr != nil
 
 	hostConfig, err := convertHostConfig(spec)
 
@@ -75,31 +86,52 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 		return err
 	}
 
-	func() {
-		for ctx.Err() == nil {
-			if !tty {
-				break
-			}
-
-			time.Sleep(1 * time.Second)
-
-			var width int
-			var height int
-
-			if w, h, err := TTYSize(); err == nil {
-				if w == width && h == height {
-					continue
-				}
-
-				if err := m.client.ContainerResize(ctx, created.ID, container.ResizeOptions{
-					Height: uint(h),
-					Width:  uint(w),
-				}); err != nil {
-					println("resize error", err.Error())
-				}
-			}
+	if isTTY {
+		if w, h, err := TerminalSize(options.Stdout); err == nil {
+			m.client.ContainerResize(ctx, created.ID, container.ResizeOptions{
+				Width:  uint(w),
+				Height: uint(h),
+			})
 		}
-	}()
+
+		go func() {
+			sigs := make(chan os.Signal, 1)
+			signal.Notify(sigs, syscall.SIGWINCH)
+
+			for range sigs {
+				if w, h, err := TerminalSize(options.Stdout); err == nil {
+					m.client.ContainerResize(ctx, created.ID, container.ResizeOptions{
+						Width:  uint(w),
+						Height: uint(h),
+					})
+				}
+			}
+		}()
+	}
+
+	// func() {
+	// 	for ctx.Err() == nil {
+	// 		if !tty {
+	// 			break
+	// 		}
+
+	// 		time.Sleep(1 * time.Second)
+
+	// 		var width int
+	// 		var height int
+
+	// 		if w, h, err := TerminalSize(options.Stdin); err == nil {
+	// 			if w == width && h == height {
+	// 				continue
+	// 			}
+
+	// 			m.client.ContainerResize(ctx, created.ID, container.ResizeOptions{
+	// 				Height: uint(h),
+	// 				Width:  uint(w),
+	// 			})
+	// 		}
+	// 	}
+	// }()
 
 	result := make(chan error)
 
@@ -109,7 +141,7 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 	}()
 
 	go func() {
-		if tty {
+		if isTTY {
 			_, err := io.Copy(options.Stdout, attached.Reader)
 			result <- err
 			return

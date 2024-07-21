@@ -21,7 +21,7 @@ var Command = &cli.Command{
 		scanCommand,
 		inspectCommand,
 		bomCommand,
-		//browseCommand,
+		browseCommand,
 	},
 }
 
