@@ -3,13 +3,11 @@ package catalog
 import (
 	"context"
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/catalog"
 	"github.com/adrianliechti/devkit/pkg/cli"
-	"github.com/adrianliechti/devkit/pkg/docker"
 	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
@@ -253,8 +251,6 @@ func logsCommand(m catalog.Manager) *cli.Command {
 
 			return client.Logs(ctx, container.ID, engine.LogsOptions{
 				Follow: true,
-				Stdout: os.Stdout,
-				Stderr: os.Stderr,
 			})
 		},
 	}
@@ -278,10 +274,7 @@ func clientCommand(p catalog.ClientProvider) *cli.Command {
 			}
 
 			if image == "" {
-				command := args[0]
-				arg := args[1:]
-
-				return docker.ExecInteractive(ctx, container.Name, docker.ExecOptions{}, command, arg...)
+				return client.Exec(ctx, container.ID, args, engine.ExecOptions{})
 			}
 
 			cli.MustRun("Pulling Image...", func() error {
@@ -289,7 +282,13 @@ func clientCommand(p catalog.ClientProvider) *cli.Command {
 				return nil
 			})
 
-			return docker.RunInteractive(ctx, image, docker.RunOptions{}, args...)
+			spec := engine.Container{
+				Image: image,
+
+				Args: args,
+			}
+
+			return client.Run(ctx, spec, engine.RunOptions{})
 		},
 	}
 }
@@ -311,7 +310,7 @@ func shellCommand(p catalog.ShellProvider) *cli.Command {
 				return err
 			}
 
-			return docker.ExecInteractive(ctx, container.Name, docker.ExecOptions{}, shell)
+			return client.Exec(ctx, container.ID, []string{shell}, engine.ExecOptions{})
 		},
 	}
 }

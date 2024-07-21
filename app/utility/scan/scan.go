@@ -4,9 +4,9 @@ import (
 	"context"
 	"os"
 
+	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/app/utility"
 	"github.com/adrianliechti/devkit/pkg/cli"
-	"github.com/adrianliechti/devkit/pkg/docker"
 	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
@@ -17,32 +17,35 @@ var Command = &cli.Command{
 	Category: utility.Category,
 
 	Action: func(ctx context.Context, cmd *cli.Command) error {
-		return runSAST(ctx)
+		client := app.MustClient(ctx, cmd)
+
+		path, err := os.Getwd()
+
+		if err != nil {
+			return err
+		}
+
+		return runSAST(ctx, client, path)
 	},
 }
 
-func runSAST(ctx context.Context) error {
-	wd, err := os.Getwd()
+func runSAST(ctx context.Context, client engine.Client, path string) error {
+	container := engine.Container{
+		Image: "aquasec/trivy:0.53.0",
 
-	if err != nil {
-		return err
-	}
-
-	image := "aquasec/trivy:0.53.0"
-
-	args := []string{
-		"filesystem",
-		"--scanners", "vuln,misconfig,secret",
-		"/src",
-	}
-
-	options := docker.RunOptions{
 		Dir: "/src",
 
-		Volumes: []engine.ContainerMount{
+		Args: []string{
+			"--quiet",
+			"filesystem",
+			"--scanners", "vuln,misconfig,secret",
+			"/src",
+		},
+
+		Mounts: []engine.ContainerMount{
 			{
 				Path:     "/src",
-				HostPath: wd,
+				HostPath: path,
 			},
 			{
 				Path:   "/root/.cache/",
@@ -51,5 +54,5 @@ func runSAST(ctx context.Context) error {
 		},
 	}
 
-	return docker.RunInteractive(ctx, image, options, args...)
+	return client.Run(ctx, container, engine.RunOptions{})
 }

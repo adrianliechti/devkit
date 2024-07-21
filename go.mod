@@ -5,7 +5,7 @@ go 1.22
 require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/charmbracelet/huh v0.5.1
-	github.com/charmbracelet/huh/spinner v0.0.0-20240712195021-ccca06d54254
+	github.com/charmbracelet/huh/spinner v0.0.0-20240716200945-b98d891ceab3
 	github.com/charmbracelet/lipgloss v0.12.1
 	github.com/cpuguy83/dockercfg v0.3.1
 	github.com/distribution/reference v0.6.0
@@ -17,6 +17,7 @@ require (
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	github.com/sethvargo/go-password v0.3.1
 	github.com/urfave/cli/v3 v3.0.0-alpha9
+	golang.org/x/term v0.21.0
 )
 
 require (

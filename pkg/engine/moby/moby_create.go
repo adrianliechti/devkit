@@ -3,7 +3,6 @@ package moby
 import (
 	"context"
 	"fmt"
-	"io"
 	"strconv"
 
 	"github.com/adrianliechti/devkit/pkg/engine"
@@ -14,14 +13,6 @@ import (
 )
 
 func (m *Moby) Create(ctx context.Context, spec engine.Container, options engine.CreateOptions) (string, error) {
-	if options.Stdout == nil {
-		options.Stdout = io.Discard
-	}
-
-	if options.Stderr == nil {
-		options.Stderr = io.Discard
-	}
-
 	containerConfig, err := convertContainerConfig(spec)
 
 	if err != nil {

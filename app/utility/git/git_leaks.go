@@ -4,8 +4,8 @@ import (
 	"context"
 	"os"
 
+	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/pkg/cli"
-	"github.com/adrianliechti/devkit/pkg/docker"
 	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
@@ -14,21 +14,33 @@ var leaksCommand = &cli.Command{
 	Usage: "find leaks in repository",
 
 	Action: func(ctx context.Context, cmd *cli.Command) error {
-		return leaks(ctx)
+		client := app.MustClient(ctx, cmd)
+
+		wd, err := os.Getwd()
+
+		if err != nil {
+			return err
+		}
+
+		return leaks(ctx, client, wd)
 	},
 }
 
-func leaks(ctx context.Context) error {
-	path, err := os.Getwd()
+func leaks(ctx context.Context, client engine.Client, path string) error {
+	container := engine.Container{
+		Image: "zricethezav/gitleaks:v8.18.4",
 
-	if err != nil {
-		return err
-	}
+		RunAsUser: "root",
 
-	options := docker.RunOptions{
-		User: "root",
+		Args: []string{
+			"detect",
+			"--source=/src",
+			"--no-banner",
+			"-v",
+			//"--config=/config",
+		},
 
-		Volumes: []engine.ContainerMount{
+		Mounts: []engine.ContainerMount{
 			{
 				Path:     "/src",
 				HostPath: path,
@@ -36,13 +48,5 @@ func leaks(ctx context.Context) error {
 		},
 	}
 
-	args := []string{
-		"detect",
-		"--source=/src",
-		"--no-banner",
-		"-v",
-		//"--config=/config",
-	}
-
-	return docker.RunInteractive(ctx, "zricethezav/gitleaks:v8.18.4", options, args...)
+	return client.Run(ctx, container, engine.RunOptions{})
 }

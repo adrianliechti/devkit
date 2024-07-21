@@ -3,8 +3,8 @@ package image
 import (
 	"context"
 
+	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/pkg/cli"
-	"github.com/adrianliechti/devkit/pkg/docker"
 	"github.com/adrianliechti/devkit/pkg/engine"
 )
 
@@ -17,16 +17,22 @@ var browseCommand = &cli.Command{
 	},
 
 	Action: func(ctx context.Context, cmd *cli.Command) error {
+		client := app.MustClient(ctx, cmd)
 		image := MustImage(ctx, cmd)
-		return runDive(ctx, image)
+
+		return runDive(ctx, client, image)
 	},
 }
 
-func runDive(ctx context.Context, image string) error {
-	tool := "wagoodman/dive:v0.12"
+func runDive(ctx context.Context, client engine.Client, image string) error {
+	container := engine.Container{
+		Image: "wagoodman/dive:v0.12",
 
-	options := docker.RunOptions{
-		Volumes: []engine.ContainerMount{
+		Args: []string{
+			image,
+		},
+
+		Mounts: []engine.ContainerMount{
 			{
 				Path:     "/var/run/docker.sock",
 				HostPath: "/var/run/docker.sock",
@@ -34,5 +40,5 @@ func runDive(ctx context.Context, image string) error {
 		},
 	}
 
-	return docker.RunInteractive(ctx, tool, options, image)
+	return client.Run(ctx, container, engine.RunOptions{})
 }

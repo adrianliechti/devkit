@@ -2,7 +2,7 @@ package moby
 
 import (
 	"context"
-	"io"
+	"os"
 
 	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/docker/docker/api/types/container"
@@ -11,11 +11,11 @@ import (
 
 func (m *Moby) Logs(ctx context.Context, containerID string, options engine.LogsOptions) error {
 	if options.Stdout == nil {
-		options.Stdout = io.Discard
+		options.Stdout = os.Stdout
 	}
 
 	if options.Stderr == nil {
-		options.Stderr = io.Discard
+		options.Stderr = os.Stderr
 	}
 
 	out, err := m.client.ContainerLogs(ctx, containerID, container.LogsOptions{
