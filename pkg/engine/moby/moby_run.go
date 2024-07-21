@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 	"os"
+	"time"
 
 	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/docker/docker/api/types/container"
@@ -23,18 +24,22 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 		options.Stderr = os.Stderr
 	}
 
+	tty := IsTTY(options.Stdin)
+
 	containerConfig, err := convertContainerConfig(spec)
 
 	if err != nil {
 		return err
 	}
 
+	containerConfig.Tty = tty
+
 	containerConfig.OpenStdin = true
 	containerConfig.StdinOnce = true
 
 	containerConfig.AttachStdin = options.Stdin != nil
 	containerConfig.AttachStdout = options.Stdout != nil
-	containerConfig.AttachStderr = options.Stderr != nil
+	containerConfig.AttachStderr = options.Stderr != nil && !tty
 
 	hostConfig, err := convertHostConfig(spec)
 
@@ -70,6 +75,32 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 		return err
 	}
 
+	func() {
+		for ctx.Err() == nil {
+			if !tty {
+				break
+			}
+
+			time.Sleep(1 * time.Second)
+
+			var width int
+			var height int
+
+			if w, h, err := TTYSize(); err == nil {
+				if w == width && h == height {
+					continue
+				}
+
+				if err := m.client.ContainerResize(ctx, created.ID, container.ResizeOptions{
+					Height: uint(h),
+					Width:  uint(w),
+				}); err != nil {
+					println("resize error", err.Error())
+				}
+			}
+		}
+	}()
+
 	result := make(chan error)
 
 	go func() {
@@ -78,6 +109,12 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 	}()
 
 	go func() {
+		if tty {
+			_, err := io.Copy(options.Stdout, attached.Reader)
+			result <- err
+			return
+		}
+
 		_, err := stdcopy.StdCopy(options.Stdout, options.Stderr, attached.Reader)
 		result <- err
 	}()
