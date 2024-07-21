@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/adrianliechti/devkit/pkg/engine"
+	"github.com/adrianliechti/devkit/pkg/system"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/pkg/stdcopy"
 )
@@ -25,10 +26,10 @@ func (m *Moby) Exec(ctx context.Context, containerID string, command []string, o
 		options.Stderr = os.Stderr
 	}
 
-	isTTY := IsTerminal(options.Stdin)
+	isTTY := system.IsTerminal(options.Stdin)
 
 	if isTTY {
-		restore, err := MakeRawTerminal(options.Stdout)
+		restore, err := system.MakeRawTerminal(options.Stdout)
 
 		if err != nil {
 			return err
@@ -52,7 +53,7 @@ func (m *Moby) Exec(ctx context.Context, containerID string, command []string, o
 	defer resp.Close()
 
 	if isTTY {
-		width, height, err := TerminalSize(options.Stdout)
+		width, height, err := system.TerminalSize(options.Stdout)
 
 		if err != nil {
 			return err
@@ -67,7 +68,7 @@ func (m *Moby) Exec(ctx context.Context, containerID string, command []string, o
 			for ctx.Err() == nil {
 				time.Sleep(200 * time.Millisecond)
 
-				w, h, err := TerminalSize(options.Stdout)
+				w, h, err := system.TerminalSize(options.Stdout)
 
 				if err != nil {
 					continue
@@ -115,7 +116,7 @@ func (m *Moby) Exec(ctx context.Context, containerID string, command []string, o
 }
 
 func convertExecOptions(command []string, options engine.ExecOptions) container.ExecOptions {
-	tty := IsTerminal(options.Stdout)
+	tty := system.IsTerminal(options.Stdout)
 
 	result := container.ExecOptions{
 		Cmd: command,
@@ -136,7 +137,7 @@ func convertExecOptions(command []string, options engine.ExecOptions) container.
 		result.Env = append(result.Env, fmt.Sprintf("%s=%s", k, v))
 	}
 
-	if w, h, err := TerminalSize(options.Stdout); err == nil {
+	if w, h, err := system.TerminalSize(options.Stdout); err == nil {
 		size := [2]uint{uint(h), uint(w)}
 		result.ConsoleSize = &size
 	}
@@ -145,13 +146,13 @@ func convertExecOptions(command []string, options engine.ExecOptions) container.
 }
 
 func convertExecAttachOptions(options engine.ExecOptions) container.ExecAttachOptions {
-	tty := IsTerminal(options.Stdout)
+	tty := system.IsTerminal(options.Stdout)
 
 	result := container.ExecAttachOptions{
 		Tty: tty,
 	}
 
-	if w, h, err := TerminalSize(options.Stdout); err == nil {
+	if w, h, err := system.TerminalSize(options.Stdout); err == nil {
 		size := [2]uint{uint(h), uint(w)}
 		result.ConsoleSize = &size
 	}

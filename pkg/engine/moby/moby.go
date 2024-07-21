@@ -15,7 +15,10 @@ type Moby struct {
 }
 
 func New() (*Moby, error) {
-	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	cli, err := client.NewClientWithOpts(
+		client.FromEnv,
+		client.WithAPIVersionNegotiation(),
+	)
 
 	if err != nil {
 		return nil, err

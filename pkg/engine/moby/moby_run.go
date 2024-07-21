@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/adrianliechti/devkit/pkg/engine"
+	"github.com/adrianliechti/devkit/pkg/system"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/pkg/stdcopy"
 )
@@ -24,10 +25,10 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 		options.Stderr = os.Stderr
 	}
 
-	isTTY := IsTerminal(options.Stdin)
+	isTTY := system.IsTerminal(options.Stdin)
 
 	if isTTY {
-		restore, err := MakeRawTerminal(options.Stdout)
+		restore, err := system.MakeRawTerminal(options.Stdout)
 
 		if err != nil {
 			return err
@@ -86,7 +87,7 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 	}
 
 	if isTTY {
-		width, height, err := TerminalSize(options.Stdout)
+		width, height, err := system.TerminalSize(options.Stdout)
 
 		if err != nil {
 			return err
@@ -101,7 +102,7 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 			for ctx.Err() == nil {
 				time.Sleep(200 * time.Millisecond)
 
-				w, h, err := TerminalSize(options.Stdout)
+				w, h, err := system.TerminalSize(options.Stdout)
 
 				if err != nil {
 					continue
