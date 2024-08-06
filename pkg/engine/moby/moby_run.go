@@ -25,7 +25,7 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 		options.Stderr = os.Stderr
 	}
 
-	isTTY := system.IsTerminal(options.Stdin)
+	isTTY := system.IsTerminal(options.Stdout)
 
 	if isTTY {
 		restore, err := system.MakeRawTerminal(options.Stdout)

@@ -172,6 +172,38 @@ func MustPrompt(label, placeholder string) string {
 	return value
 }
 
+func File(label string, types []string) (string, error) {
+	i := huh.NewFilePicker().
+		DirAllowed(false)
+
+	if label != "" {
+		i.Title(label)
+	}
+
+	if len(types) > 0 {
+		i.AllowedTypes(types)
+	}
+
+	var result string
+	i.Value(&result)
+
+	if err := i.Run(); err != nil {
+		return "", err
+	}
+
+	return result, nil
+}
+
+func MustFile(label string, types []string) string {
+	value, err := File(label, types)
+
+	if err != nil {
+		Fatal(err)
+	}
+
+	return value
+}
+
 func Confirm(label string, placeholder bool) (bool, error) {
 	c := huh.NewConfirm()
 

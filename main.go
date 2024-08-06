@@ -43,6 +43,7 @@ import (
 	"github.com/adrianliechti/devkit/app/utility/code"
 	"github.com/adrianliechti/devkit/app/utility/git"
 	"github.com/adrianliechti/devkit/app/utility/image"
+	"github.com/adrianliechti/devkit/app/utility/openapi"
 	"github.com/adrianliechti/devkit/app/utility/proxy"
 	"github.com/adrianliechti/devkit/app/utility/sast"
 	"github.com/adrianliechti/devkit/app/utility/scan"
@@ -105,6 +106,7 @@ func initApp() cli.Command {
 
 			git.Command,
 			image.Command,
+			openapi.Command,
 
 			scan.Command,
 			sast.Command,
