@@ -30,6 +30,7 @@ var Command = &cli.Command{
 		items := []string{
 			"default",
 			"golang",
+			"python",
 			"java",
 			"dotnet",
 		}
