@@ -54,7 +54,7 @@ func startCode(ctx context.Context, client engine.Client, stack string, port int
 	if stack == "" || stack == "default" {
 		image = image + ":dind"
 	} else {
-		image = image + strings.ToLower(stack+"-dind")
+		image = image + ":" + strings.ToLower(stack+"-dind")
 	}
 
 	path, err := os.Getwd()

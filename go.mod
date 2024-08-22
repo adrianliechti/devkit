@@ -5,11 +5,11 @@ go 1.22
 require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/charmbracelet/huh v0.5.2
-	github.com/charmbracelet/huh/spinner v0.0.0-20240806005253-b7436a76999a
+	github.com/charmbracelet/huh/spinner v0.0.0-20240813141447-57c1e0379197
 	github.com/charmbracelet/lipgloss v0.12.1
 	github.com/cpuguy83/dockercfg v0.3.1
 	github.com/distribution/reference v0.6.0
-	github.com/docker/docker v27.1.1+incompatible
+	github.com/docker/docker v27.1.2+incompatible
 	github.com/docker/go-connections v0.5.0
 	github.com/docker/go-units v0.5.0
 	github.com/labstack/echo/v4 v4.12.0
