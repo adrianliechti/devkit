@@ -11,13 +11,11 @@ import (
 	"github.com/adrianliechti/devkit/pkg/cli"
 
 	"github.com/adrianliechti/devkit/catalog/activemq"
-	"github.com/adrianliechti/devkit/catalog/artifactory"
 	"github.com/adrianliechti/devkit/catalog/azurite"
 	"github.com/adrianliechti/devkit/catalog/cassandra"
 	"github.com/adrianliechti/devkit/catalog/db2"
 	"github.com/adrianliechti/devkit/catalog/elasticsearch"
 	"github.com/adrianliechti/devkit/catalog/etcd"
-	"github.com/adrianliechti/devkit/catalog/jcr"
 	"github.com/adrianliechti/devkit/catalog/jenkins"
 	"github.com/adrianliechti/devkit/catalog/jupyter"
 	"github.com/adrianliechti/devkit/catalog/kafka"
@@ -30,13 +28,11 @@ import (
 	"github.com/adrianliechti/devkit/catalog/mssql"
 	"github.com/adrianliechti/devkit/catalog/mysql"
 	"github.com/adrianliechti/devkit/catalog/nats"
-	"github.com/adrianliechti/devkit/catalog/nexus"
 	"github.com/adrianliechti/devkit/catalog/oracle"
 	"github.com/adrianliechti/devkit/catalog/pocketbase"
 	"github.com/adrianliechti/devkit/catalog/postgres"
 	"github.com/adrianliechti/devkit/catalog/rabbitmq"
 	"github.com/adrianliechti/devkit/catalog/redis"
-	"github.com/adrianliechti/devkit/catalog/sonarqube"
 	"github.com/adrianliechti/devkit/catalog/vault"
 
 	"github.com/adrianliechti/devkit/app/utility/cloc"
@@ -74,13 +70,11 @@ func initApp() cli.Command {
 
 		Commands: []*cli.Command{
 			catalog.Command(&activemq.Manager{}),
-			catalog.Command(&artifactory.Manager{}),
 			catalog.Command(&azurite.Manager{}),
 			catalog.Command(&cassandra.Manager{}),
 			catalog.Command(&db2.Manager{}),
 			catalog.Command(&elasticsearch.Manager{}),
 			catalog.Command(&etcd.Manager{}),
-			catalog.Command(&jcr.Manager{}),
 			catalog.Command(&jenkins.Manager{}),
 			catalog.Command(&jupyter.Manager{}),
 			catalog.Command(&kafka.Manager{}),
@@ -93,13 +87,11 @@ func initApp() cli.Command {
 			catalog.Command(&mssql.Manager{}),
 			catalog.Command(&mysql.Manager{}),
 			catalog.Command(&nats.Manager{}),
-			catalog.Command(&nexus.Manager{}),
 			catalog.Command(&oracle.Manager{}),
 			catalog.Command(&pocketbase.Manager{}),
 			catalog.Command(&postgres.Manager{}),
 			catalog.Command(&rabbitmq.Manager{}),
 			catalog.Command(&redis.Manager{}),
-			catalog.Command(&sonarqube.Manager{}),
 			catalog.Command(&vault.Manager{}),
 
 			template.Command,
