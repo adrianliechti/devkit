@@ -6,7 +6,7 @@ require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/charmbracelet/huh v0.6.0
 	github.com/charmbracelet/huh/spinner v0.0.0-20241011224433-983a50776b31
-	github.com/charmbracelet/lipgloss v0.13.0
+	github.com/charmbracelet/lipgloss v0.13.1
 	github.com/cpuguy83/dockercfg v0.3.2
 	github.com/distribution/reference v0.6.0
 	github.com/docker/docker v27.3.1+incompatible
@@ -26,9 +26,9 @@ require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/catppuccin/go v0.2.0 // indirect
 	github.com/charmbracelet/bubbles v0.20.0 // indirect
-	github.com/charmbracelet/bubbletea v1.1.1 // indirect
-	github.com/charmbracelet/x/ansi v0.3.2 // indirect
-	github.com/charmbracelet/x/exp/strings v0.0.0-20241017213443-f2394f742aee // indirect
+	github.com/charmbracelet/bubbletea v1.1.2 // indirect
+	github.com/charmbracelet/x/ansi v0.4.0 // indirect
+	github.com/charmbracelet/x/exp/strings v0.0.0-20241025155609-902b1d1de0be // indirect
 	github.com/charmbracelet/x/term v0.2.0 // indirect
 	github.com/containerd/log v0.1.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
