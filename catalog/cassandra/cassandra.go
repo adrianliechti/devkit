@@ -36,7 +36,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "cassandra:4"
+	image := "cassandra:5"
 
 	return engine.Container{
 		Image: image,

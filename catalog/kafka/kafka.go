@@ -35,7 +35,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "apache/kafka:3.7.1"
+	image := "apache/kafka:3.8.0"
 
 	return engine.Container{
 		Image: image,

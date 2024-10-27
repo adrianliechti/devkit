@@ -38,7 +38,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "rabbitmq:3-management"
+	image := "rabbitmq:4-management"
 
 	username := "admin"
 	password := password.MustGenerate(10, 4, 0, false, false)

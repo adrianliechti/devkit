@@ -40,7 +40,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "postgres:16"
+	image := "postgres:17"
 
 	database := "db"
 	username := "postgres"

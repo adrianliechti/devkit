@@ -31,7 +31,7 @@ var scanCommand = &cli.Command{
 
 func runTrivy(ctx context.Context, client engine.Client, image string) error {
 	container := engine.Container{
-		Image: "aquasec/trivy:0.53.0",
+		Image: "aquasec/trivy:0.56.2",
 
 		Args: []string{
 			"--quiet",

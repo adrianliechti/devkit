@@ -38,7 +38,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "mariadb:11.4-noble"
+	image := "mariadb:11-noble"
 
 	database := "db"
 	password := password.MustGenerate(10, 4, 0, false, false)

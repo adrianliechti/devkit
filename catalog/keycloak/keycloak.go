@@ -40,7 +40,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "quay.io/keycloak/keycloak:25.0.1"
+	image := "quay.io/keycloak/keycloak:26.0.2"
 
 	user := "admin"
 	password := password.MustGenerate(10, 4, 0, false, false)

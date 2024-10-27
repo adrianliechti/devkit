@@ -40,7 +40,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "mongo:7-jammy"
+	image := "mongo:8-noble"
 
 	username := "root"
 	password := password.MustGenerate(10, 4, 0, false, false)
