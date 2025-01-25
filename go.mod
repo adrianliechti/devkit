@@ -5,19 +5,19 @@ go 1.23.2
 require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/charmbracelet/huh v0.6.0
-	github.com/charmbracelet/huh/spinner v0.0.0-20241211235322-ceae3bbcfbb4
+	github.com/charmbracelet/huh/spinner v0.0.0-20250109160224-6c6b31916f8e
 	github.com/charmbracelet/lipgloss v1.0.0
 	github.com/cpuguy83/dockercfg v0.3.2
 	github.com/distribution/reference v0.6.0
-	github.com/docker/docker v27.4.0+incompatible
+	github.com/docker/docker v27.5.1+incompatible
 	github.com/docker/go-connections v0.5.0
 	github.com/docker/go-units v0.5.0
-	github.com/labstack/echo/v4 v4.13.2
+	github.com/labstack/echo/v4 v4.13.3
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	github.com/sethvargo/go-password v0.3.1
 	github.com/urfave/cli/v3 v3.0.0-alpha9.7
-	golang.org/x/term v0.27.0
+	golang.org/x/term v0.28.0
 )
 
 require (
@@ -26,7 +26,7 @@ require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/catppuccin/go v0.2.0 // indirect
 	github.com/charmbracelet/bubbles v0.20.0 // indirect
-	github.com/charmbracelet/bubbletea v1.2.3 // indirect
+	github.com/charmbracelet/bubbletea v1.2.5-0.20241205214244-9306010a31ee // indirect
 	github.com/charmbracelet/x/ansi v0.4.5 // indirect
 	github.com/charmbracelet/x/exp/strings v0.0.0-20241110171603-a30b032a5ae2 // indirect
 	github.com/charmbracelet/x/term v0.2.1 // indirect
@@ -63,9 +63,9 @@ require (
 	go.opentelemetry.io/otel/sdk v1.28.0 // indirect
 	go.opentelemetry.io/otel/trace v1.32.0 // indirect
 	golang.org/x/crypto v0.31.0 // indirect
-	golang.org/x/net v0.32.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect
-	golang.org/x/sys v0.28.0 // indirect
+	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/time v0.8.0 // indirect
 	gotest.tools/v3 v3.5.1 // indirect
