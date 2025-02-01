@@ -1,4 +1,4 @@
-package kafka
+package lgtm
 
 import (
 	"github.com/adrianliechti/devkit/catalog"
@@ -15,19 +15,19 @@ type Manager struct {
 }
 
 func (m *Manager) Name() string {
-	return "kafka"
+	return "lgtm"
 }
 
 func (m *Manager) Category() catalog.Category {
-	return catalog.MessagingCategory
+	return catalog.PlatformCategory
 }
 
 func (m *Manager) DisplayName() string {
-	return "Kafka"
+	return "LGTM Stack"
 }
 
 func (m *Manager) Description() string {
-	return "Apache Kafka is a distributed event store and stream-processing platform."
+	return "A comprehensive set of open-source tools designed for monitoring, observability, and visualization."
 }
 
 const (
@@ -35,31 +35,48 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "apache/kafka:3.9.0"
+	image := "grafana/otel-lgtm"
 
 	return engine.Container{
 		Image: image,
 
+		Env: map[string]string{},
+
 		Ports: []engine.ContainerPort{
 			{
-				Port:  9092,
+				Port:  3000,
+				Proto: engine.ProtocolTCP,
+			},
+			{
+				Name: "otlp-grpc",
+
+				Port:  4317,
+				Proto: engine.ProtocolTCP,
+			},
+			{
+				Name: "otlp-http",
+
+				Port:  4318,
 				Proto: engine.ProtocolTCP,
 			},
 		},
 
 		Mounts: []engine.ContainerMount{
 			{
-				Path: "/tmp/kafka-logs",
-			},
-			{
-				Path: "/tmp/kraft-combined-logs",
+				Path: "/data",
 			},
 		},
 	}, nil
 }
 
 func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
-	return map[string]string{}, nil
+	username := "admin"
+	password := "admin"
+
+	return map[string]string{
+		"Username": username,
+		"Password": password,
+	}, nil
 }
 
 func (m *Manager) Shell(instance engine.Container) (string, error) {

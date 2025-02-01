@@ -19,6 +19,7 @@ import (
 	"github.com/adrianliechti/devkit/catalog/jupyter"
 	"github.com/adrianliechti/devkit/catalog/kafka"
 	"github.com/adrianliechti/devkit/catalog/keycloak"
+	"github.com/adrianliechti/devkit/catalog/lgtm"
 	"github.com/adrianliechti/devkit/catalog/mailpit"
 	"github.com/adrianliechti/devkit/catalog/mariadb"
 	"github.com/adrianliechti/devkit/catalog/minio"
@@ -76,6 +77,7 @@ func initApp() cli.Command {
 			catalog.Command(&jupyter.Manager{}),
 			catalog.Command(&kafka.Manager{}),
 			catalog.Command(&keycloak.Manager{}),
+			catalog.Command(&lgtm.Manager{}),
 			catalog.Command(&mailpit.Manager{}),
 			catalog.Command(&mariadb.Manager{}),
 			catalog.Command(&minio.Manager{}),

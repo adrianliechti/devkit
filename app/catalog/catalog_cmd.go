@@ -345,6 +345,8 @@ func consoleCommand(p catalog.ConsoleProvider) *cli.Command {
 			port := app.MustPortOrRandom(ctx, cmd, "", mapping.Port)
 			ready := make(chan struct{})
 
+			println("mapping", port)
+
 			go func() {
 				<-ready
 				printContainerInfo(container, info)

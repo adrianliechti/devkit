@@ -31,7 +31,7 @@ var Command = &cli.Command{
 
 func runSAST(ctx context.Context, client engine.Client, path string) error {
 	container := engine.Container{
-		Image: "semgrep/semgrep:1.93.0",
+		Image: "semgrep/semgrep:1.106.0",
 
 		Dir: "/src",
 

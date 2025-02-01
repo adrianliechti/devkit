@@ -10,10 +10,9 @@ import (
 )
 
 var (
-	_ catalog.Manager         = &Manager{}
-	_ catalog.Decorator       = &Manager{}
-	_ catalog.ShellProvider   = &Manager{}
-	_ catalog.ConsoleProvider = &Manager{}
+	_ catalog.Manager       = &Manager{}
+	_ catalog.Decorator     = &Manager{}
+	_ catalog.ShellProvider = &Manager{}
 )
 
 type Manager struct {
@@ -40,7 +39,7 @@ const (
 )
 
 func (m *Manager) New() (engine.Container, error) {
-	image := "quay.io/keycloak/keycloak:26.0.2"
+	image := "quay.io/keycloak/keycloak:26.1.0"
 
 	user := "admin"
 	password := password.MustGenerate(10, 4, 0, false, false)
@@ -96,11 +95,4 @@ func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
 
 func (m *Manager) Shell(instance engine.Container) (string, error) {
 	return DefaultShell, nil
-}
-
-func (m *Manager) ConsolePort(instance engine.Container) (*engine.ContainerPort, error) {
-	return &engine.ContainerPort{
-		Port:  8443,
-		Proto: engine.ProtocolTCP,
-	}, nil
 }

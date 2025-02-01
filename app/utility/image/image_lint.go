@@ -31,7 +31,7 @@ var lintCommand = &cli.Command{
 
 func runDockle(ctx context.Context, client engine.Client, image string) error {
 	container := engine.Container{
-		Image: "goodwithtech/dockle:v0.4.14",
+		Image: "goodwithtech/dockle:v0.4.15",
 
 		Env: map[string]string{
 			"DOCKER_CONTENT_TRUST": "1",

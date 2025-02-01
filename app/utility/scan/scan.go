@@ -31,7 +31,7 @@ var Command = &cli.Command{
 
 func runSAST(ctx context.Context, client engine.Client, path string) error {
 	container := engine.Container{
-		Image: "aquasec/trivy:0.56.2",
+		Image: "aquasec/trivy:0.59.0",
 
 		Dir: "/src",
 
