@@ -8,7 +8,7 @@ import (
 
 	"github.com/adrianliechti/devkit/app/catalog"
 	"github.com/adrianliechti/devkit/app/template"
-	"github.com/adrianliechti/devkit/pkg/cli"
+	"github.com/adrianliechti/go-cli"
 
 	"github.com/adrianliechti/devkit/catalog/activemq"
 	"github.com/adrianliechti/devkit/catalog/azurite"

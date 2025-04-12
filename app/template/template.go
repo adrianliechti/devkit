@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"github.com/adrianliechti/devkit/app"
-	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/engine"
+	"github.com/adrianliechti/go-cli"
 )
 
 type template string

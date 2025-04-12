@@ -9,7 +9,7 @@ import (
 
 	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/app/utility"
-	"github.com/adrianliechti/devkit/pkg/cli"
+	"github.com/adrianliechti/go-cli"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"

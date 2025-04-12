@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/adrianliechti/devkit/app"
-	"github.com/adrianliechti/devkit/pkg/cli"
+	"github.com/adrianliechti/go-cli"
 )
 
 var springCommand = &cli.Command{

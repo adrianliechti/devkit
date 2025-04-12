@@ -8,8 +8,8 @@ import (
 
 	"github.com/adrianliechti/devkit/app"
 	"github.com/adrianliechti/devkit/app/utility"
-	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/proxy"
+	"github.com/adrianliechti/go-cli"
 )
 
 var Command = &cli.Command{

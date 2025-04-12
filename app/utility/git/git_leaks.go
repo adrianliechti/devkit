@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"github.com/adrianliechti/devkit/app"
-	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/engine"
+	"github.com/adrianliechti/go-cli"
 )
 
 var leaksCommand = &cli.Command{

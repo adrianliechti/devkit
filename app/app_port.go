@@ -4,8 +4,8 @@ import (
 	"context"
 	"strings"
 
-	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/system"
+	"github.com/adrianliechti/go-cli"
 )
 
 func PortFlagName(name string) string {

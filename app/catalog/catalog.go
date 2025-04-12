@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/engine"
+	"github.com/adrianliechti/go-cli"
 )
 
 const (

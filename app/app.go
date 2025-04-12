@@ -3,9 +3,9 @@ package app
 import (
 	"context"
 
-	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/adrianliechti/devkit/pkg/engine/moby"
+	"github.com/adrianliechti/go-cli"
 )
 
 const (

@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/adrianliechti/devkit/pkg/cli"
 	"github.com/adrianliechti/devkit/pkg/git"
+	"github.com/adrianliechti/go-cli"
 )
 
 var purgeCommand = &cli.Command{
