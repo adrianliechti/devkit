@@ -29,10 +29,11 @@ var Command = &cli.Command{
 
 		items := []string{
 			"default",
-			"golang",
-			"python",
-			"java",
 			"dotnet",
+			"golang",
+			"java",
+			"node",
+			"python",
 		}
 
 		i, _, err := cli.Select("select stack", items)
@@ -51,10 +52,8 @@ var Command = &cli.Command{
 func startCode(ctx context.Context, client engine.Client, stack string, port int) error {
 	image := "ghcr.io/adrianliechti/loop-code"
 
-	if stack == "" || stack == "default" {
-		image = image + ":dind"
-	} else {
-		image = image + ":" + strings.ToLower(stack+"-dind")
+	if stack != "" && stack != "default" {
+		image = image + "-" + strings.ToLower(stack)
 	}
 
 	path, err := os.Getwd()
@@ -81,8 +80,6 @@ func startCode(ctx context.Context, client engine.Client, stack string, port int
 
 	spec := engine.Container{
 		Image: image,
-
-		Privileged: true,
 
 		Ports: []engine.ContainerPort{
 			{

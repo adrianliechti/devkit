@@ -7,7 +7,6 @@ import (
 	"syscall"
 
 	"github.com/adrianliechti/devkit/app/catalog"
-	"github.com/adrianliechti/devkit/app/template"
 	"github.com/adrianliechti/go-cli"
 
 	"github.com/adrianliechti/devkit/catalog/activemq"
@@ -91,8 +90,6 @@ func initApp() cli.Command {
 			catalog.Command(&rabbitmq.Manager{}),
 			catalog.Command(&redis.Manager{}),
 			catalog.Command(&vault.Manager{}),
-
-			template.Command,
 
 			git.Command,
 			image.Command,
