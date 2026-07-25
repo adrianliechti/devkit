@@ -25,11 +25,11 @@ var Command = &cli.Command{
 			return err
 		}
 
-		return runSAST(ctx, client, path)
+		return runTrivy(ctx, client, path)
 	},
 }
 
-func runSAST(ctx context.Context, client engine.Client, path string) error {
+func runTrivy(ctx context.Context, client engine.Client, path string) error {
 	container := engine.Container{
 		Image: "aquasec/trivy:0.59.0",
 

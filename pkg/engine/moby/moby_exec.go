@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"time"
 
 	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/adrianliechti/devkit/pkg/system"
@@ -26,104 +25,99 @@ func (m *Moby) Exec(ctx context.Context, containerID string, command []string, o
 		options.Stderr = os.Stderr
 	}
 
-	isTTY := system.IsTerminal(options.Stdin)
+	// A TTY needs both ends to be a terminal: stdin because it gets put into raw
+	// mode, stdout because a TTY stream is not multiplexed and carries escapes.
+	// This single decision drives the exec config, the attach options and the
+	// raw-mode/demultiplexing below.
+	isTTY := system.IsTerminal(options.Stdin) && system.IsTerminal(options.Stdout)
 
 	if isTTY {
-		restore, err := system.MakeRawTerminal(options.Stdout)
+		restore, err := system.MakeRawTerminal(options.Stdin)
 
 		if err != nil {
-			return err
+			// Some consoles report a terminal but refuse raw mode; run without a TTY.
+			isTTY = false
+		} else {
+			defer restore()
 		}
-
-		defer restore()
 	}
 
-	id, err := m.client.ContainerExecCreate(ctx, containerID, convertExecOptions(command, options))
+	id, err := m.client.ContainerExecCreate(ctx, containerID, convertExecOptions(command, options, isTTY))
 
 	if err != nil {
-		return nil
+		return err
 	}
 
-	resp, err := m.client.ContainerExecAttach(ctx, id.ID, convertExecAttachOptions(options))
+	resp, err := m.client.ContainerExecAttach(ctx, id.ID, container.ExecAttachOptions{Tty: isTTY})
 
 	if err != nil {
-		return nil
+		return err
 	}
 
 	defer resp.Close()
 
 	if isTTY {
-		width, height, err := system.TerminalSize(options.Stdout)
-
-		if err != nil {
-			return err
-		}
-
-		m.client.ContainerResize(ctx, id.ID, container.ResizeOptions{
-			Width:  uint(width),
-			Height: uint(height),
+		syncTerminalSize(ctx, options.Stdout, func(width, height int) error {
+			return m.client.ContainerResize(ctx, id.ID, container.ResizeOptions{
+				Width:  uint(width),
+				Height: uint(height),
+			})
 		})
-
-		go func() {
-			for ctx.Err() == nil {
-				time.Sleep(200 * time.Millisecond)
-
-				w, h, err := system.TerminalSize(options.Stdout)
-
-				if err != nil {
-					continue
-				}
-
-				if w == width && h == height {
-					continue
-				}
-
-				width = w
-				height = h
-
-				m.client.ContainerResize(ctx, id.ID, container.ResizeOptions{
-					Width:  uint(width),
-					Height: uint(height),
-				})
-			}
-		}()
 	}
 
-	result := make(chan error)
-
 	go func() {
-		_, err := io.Copy(resp.Conn, options.Stdin)
-		result <- err
+		io.Copy(resp.Conn, options.Stdin)
+		resp.CloseWrite()
 	}()
+
+	done := make(chan error, 1)
 
 	go func() {
 		if isTTY {
 			_, err := io.Copy(options.Stdout, resp.Reader)
-			result <- err
+			done <- err
 			return
 		}
 
 		_, err := stdcopy.StdCopy(options.Stdout, options.Stderr, resp.Reader)
-		result <- err
+		done <- err
 	}()
 
 	select {
-	case err := <-result:
-		return err
+	case err := <-done:
+		if err != nil {
+			// A cancelled context tears the stream down; that is not a failure.
+			if ctx.Err() != nil {
+				return nil
+			}
+
+			return err
+		}
 	case <-ctx.Done():
 		return nil
 	}
+
+	// Surface the command's exit code instead of reporting success unconditionally.
+	inspect, err := m.client.ContainerExecInspect(context.WithoutCancel(ctx), id.ID)
+
+	if err != nil {
+		return err
+	}
+
+	if inspect.ExitCode != 0 {
+		return fmt.Errorf("command exited with code %d", inspect.ExitCode)
+	}
+
+	return nil
 }
 
-func convertExecOptions(command []string, options engine.ExecOptions) container.ExecOptions {
-	tty := system.IsTerminal(options.Stdout)
-
+func convertExecOptions(command []string, options engine.ExecOptions, isTTY bool) container.ExecOptions {
 	result := container.ExecOptions{
 		Cmd: command,
 
 		Privileged: options.Privileged,
 
-		Tty: tty,
+		Tty: isTTY,
 
 		AttachStdin:  options.Stdin != nil,
 		AttachStdout: options.Stdout != nil,
@@ -135,21 +129,6 @@ func convertExecOptions(command []string, options engine.ExecOptions) container.
 
 	for k, v := range options.Env {
 		result.Env = append(result.Env, fmt.Sprintf("%s=%s", k, v))
-	}
-
-	if w, h, err := system.TerminalSize(options.Stdout); err == nil {
-		size := [2]uint{uint(h), uint(w)}
-		result.ConsoleSize = &size
-	}
-
-	return result
-}
-
-func convertExecAttachOptions(options engine.ExecOptions) container.ExecAttachOptions {
-	tty := system.IsTerminal(options.Stdout)
-
-	result := container.ExecAttachOptions{
-		Tty: tty,
 	}
 
 	if w, h, err := system.TerminalSize(options.Stdout); err == nil {

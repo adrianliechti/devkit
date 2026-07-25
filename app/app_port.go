@@ -33,46 +33,14 @@ func PortFlag(name string) *cli.IntFlag {
 	}
 }
 
-func Port(ctx context.Context, cmd *cli.Command, name string) int {
-	return int(cmd.Int(PortFlagName(name)))
-}
-
-func MustPort(ctx context.Context, cmd *cli.Command, name string) int {
-	port := Port(ctx, cmd, name)
-
-	if port <= 0 {
-		cli.Fatal(PortFlagName(name) + " missing")
-	}
-
-	return port
-}
-
-func PortOrRandom(ctx context.Context, cmd *cli.Command, name string, preference int) (int, error) {
-	port := Port(ctx, cmd, name)
-
-	if port > 0 {
-		return port, nil
-	}
-
-	return system.FreePort(preference)
-}
-
+// MustPortOrRandom returns the port given on the command line, or a free port
+// (preferring the given one) when the flag was not set.
 func MustPortOrRandom(ctx context.Context, cmd *cli.Command, name string, preference int) int {
-	port, err := PortOrRandom(ctx, cmd, name, preference)
-
-	if err != nil {
-		cli.Fatal(err)
+	if port := int(cmd.Int(PortFlagName(name))); port > 0 {
+		return port
 	}
 
-	return port
-}
-
-func RandomPort(ctx context.Context, cmd *cli.Command, preference int) (int, error) {
-	return system.FreePort(preference)
-}
-
-func MustRandomPort(ctx context.Context, cmd *cli.Command, preference int) int {
-	port, err := RandomPort(ctx, cmd, preference)
+	port, err := system.FreePort(preference)
 
 	if err != nil {
 		cli.Fatal(err)

@@ -3,8 +3,6 @@ package git
 import (
 	"context"
 	"errors"
-	"net/url"
-	"os"
 	"os/exec"
 	"regexp"
 	"runtime"
@@ -20,30 +18,31 @@ var (
 	errOutdated = errors.New("git is outdated. see https://git-scm.com/download")
 )
 
+// Info returns the path and version of the local git installation.
 func Info(ctx context.Context) (string, *semver.Version, error) {
-	return path(ctx)
-}
-
-func path(ctx context.Context) (string, *semver.Version, error) {
 	name := "git"
 
 	if runtime.GOOS == "windows" {
 		name = "git.exe"
 	}
 
-	if path, err := exec.LookPath(name); err == nil {
-		if version, err := version(ctx, path); err == nil {
-			if !version.LessThan(minimalVersion) {
-				return path, version, nil
-			}
+	path, err := exec.LookPath(name)
 
-			return path, version, errOutdated
-		}
-
-		return path, nil, errOutdated
+	if err != nil {
+		return "", nil, errNotFound
 	}
 
-	return "", nil, errNotFound
+	v, err := version(ctx, path)
+
+	if err != nil {
+		return path, nil, err
+	}
+
+	if v.LessThan(minimalVersion) {
+		return path, v, errOutdated
+	}
+
+	return path, v, nil
 }
 
 func version(ctx context.Context, path string) (*semver.Version, error) {
@@ -63,28 +62,4 @@ func version(ctx context.Context, path string) (*semver.Version, error) {
 	}
 
 	return semver.NewVersion("0.0.0")
-}
-
-func Clone(ctx context.Context, path, uri, username, password string) error {
-	tool, _, err := Info(ctx)
-
-	if err != nil {
-		return err
-	}
-
-	u, err := url.Parse(uri)
-
-	if err != nil {
-		return err
-	}
-
-	if username != "" && password != "" {
-		u.User = url.UserPassword(username, password)
-	}
-
-	cmd := exec.CommandContext(ctx, tool, "clone", u.String(), path)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	return cmd.Run()
 }

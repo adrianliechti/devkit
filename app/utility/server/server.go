@@ -57,10 +57,6 @@ func startWebServer(ctx context.Context, port int, index string, spa bool) error
 		return err
 	}
 
-	if port == 0 {
-		port = 3000
-	}
-
 	e := echo.New()
 	e.HidePort = true
 	e.HideBanner = true

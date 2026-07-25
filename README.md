@@ -1,26 +1,19 @@
 # DevKit
 
 
-## Application Template
-
-Go, Python, Spring, ASP.NET, Angular, React,  NGINX, ...
-
-```shell
-$ devkit template golang
-> App Name: demo
-
-$ ls demo           
-Dockerfile    chart         go.mod        main.go       public        skaffold.yaml
-
-```
-
-
 ## Local Service Catalog
 
-- Databases: PostgreSQL, MariaDB, Redis, Elasticsearch, ...
-- Messaging: ActiveMQ, RabbitMQ, Kafka, ...
-- Tools: Jenkins, SonarQube, Mailpit, ...
-- Storage: MinIO, Vault, Artifactory, Nexus, ...
+Run a throwaway service in one command. Credentials are generated per instance,
+host ports are allocated automatically, and each service exposes the same
+subcommands (`create`, `list`, `info`, `logs`, `delete`, and where applicable
+`cli`, `shell`, `console`).
+
+- Databases: PostgreSQL, MySQL, MariaDB, MS SQL, Oracle, MongoDB, Cassandra, Redis, Elasticsearch, etcd
+- Messaging: ActiveMQ, RabbitMQ, Kafka, NATS, Mosquitto
+- Platform: Keycloak, Jenkins, Jupyter, Mailpit, LGTM (Grafana/Loki/Tempo/Mimir)
+- Storage: MinIO, Vault, Azurite
+
+Run `devkit --help` for the full list.
 
 ### Create instance
 
@@ -136,6 +129,9 @@ $ devkit git leaks
 ```
 
 ### Delete file in history
+
+Rewrites every commit and force-pushes the result to `origin`. This cannot be
+undone, so the command asks for confirmation first.
 
 ```shell
 $ devkit git purge /path/to/file1 /path/to/file2

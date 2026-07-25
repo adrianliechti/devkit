@@ -3,6 +3,7 @@ package proxy
 import (
 	"context"
 	"crypto/tls"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -43,10 +44,6 @@ var Command = &cli.Command{
 }
 
 func runProxy(ctx context.Context, port int, username, password string) error {
-	if port == 0 {
-		port = 3128
-	}
-
 	config := proxy.Config{
 		Username: username,
 		Password: password,
@@ -69,5 +66,10 @@ func runProxy(ctx context.Context, port int, username, password string) error {
 
 	cli.Infof("Starting proxy at port %d", port)
 
-	return server.ListenAndServe()
+	// A clean Ctrl+C shuts the server down; that is not a failure.
+	if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		return err
+	}
+
+	return nil
 }

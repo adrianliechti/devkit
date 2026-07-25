@@ -1,38 +1,21 @@
 package system
 
 import (
-	"fmt"
 	"net"
-	"time"
+	"strconv"
 )
 
-func OpenPort(port int) bool {
-	host := "localhost"
-
-	target := fmt.Sprintf("%s:%d", host, port)
-	timeout := 5 * time.Second
-
-	conn, err := net.DialTimeout("tcp", target, timeout)
-
-	if err != nil {
-		return false
-	}
-
-	defer conn.Close()
-
-	return true
-}
-
+// FreePort returns a free TCP port, preferring the given one if it is available.
 func FreePort(preference int) (int, error) {
 	if port, err := freePort(preference); err == nil {
-		return port, err
+		return port, nil
 	}
 
 	return freePort(0)
 }
 
 func freePort(port int) (int, error) {
-	addr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("localhost:%d", port))
+	addr, err := net.ResolveTCPAddr("tcp", net.JoinHostPort("localhost", strconv.Itoa(port)))
 
 	if err != nil {
 		return 0, err

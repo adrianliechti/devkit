@@ -23,6 +23,11 @@ var purgeCommand = &cli.Command{
 	},
 }
 
+// shellQuote quotes a path for the sh -c command line git filter-branch builds.
+func shellQuote(s string) string {
+	return "'" + strings.ReplaceAll(s, "'", `'\''`) + "'"
+}
+
 func purge(ctx context.Context, files []string) error {
 	if len(files) == 0 {
 		return nil
@@ -32,6 +37,27 @@ func purge(ctx context.Context, files []string) error {
 
 	if err != nil {
 		return err
+	}
+
+	// This rewrites every commit and force-pushes over origin; there is no undo.
+	cli.Info()
+	cli.Info("This rewrites the history of ALL branches and tags, then force-pushes")
+	cli.Info("to origin, permanently removing:")
+
+	for _, file := range files {
+		cli.Info("  " + strings.TrimPrefix(file, "/"))
+	}
+
+	cli.Info()
+
+	ok, err := cli.Confirm("Rewrite history and force-push to origin?", false)
+
+	if err != nil {
+		return err
+	}
+
+	if !ok {
+		return nil
 	}
 
 	path, err := os.Getwd()
@@ -85,18 +111,17 @@ func purge(ctx context.Context, files []string) error {
 		checkout.Stdout = os.Stdout
 		checkout.Stderr = os.Stderr
 
-		if err := checkout.Run(); err != nil {
-			//return err
-		}
+		// Already-tracked branches fail here; that is expected and harmless.
+		_ = checkout.Run()
 	}
 
-	elems := make([]string, len(files))
+	elems := make([]string, 0, len(files))
 
 	for _, file := range files {
-		elems = append(elems, "'"+strings.TrimPrefix(file, "/")+"'")
+		elems = append(elems, shellQuote(strings.TrimPrefix(file, "/")))
 	}
 
-	filterbranch := exec.CommandContext(ctx, tool, "filter-branch", "--force", "--index-filter", "git rm -rf --cached --ignore-unmatch"+strings.Join(elems, " "), "--prune-empty", "--tag-name-filter", "cat", "--", "--all")
+	filterbranch := exec.CommandContext(ctx, tool, "filter-branch", "--force", "--index-filter", "git rm -rf --cached --ignore-unmatch "+strings.Join(elems, " "), "--prune-empty", "--tag-name-filter", "cat", "--", "--all")
 	filterbranch.Dir = path
 	filterbranch.Stdout = os.Stdout
 	filterbranch.Stderr = os.Stderr

@@ -49,10 +49,6 @@ func blobs(ctx context.Context) error {
 	catfile.Stdout = &output
 	catfile.Dir = path
 
-	if err != nil {
-		return err
-	}
-
 	if err := reflist.Start(); err != nil {
 		return err
 	}
@@ -82,7 +78,13 @@ func blobs(ctx context.Context) error {
 			continue
 		}
 
+		// blob <objectname> <objectsize> <path>
 		parts := strings.SplitN(line, " ", 4)
+
+		if len(parts) < 4 {
+			continue
+		}
+
 		items = append(items, parts[1:])
 	}
 
@@ -96,7 +98,7 @@ func blobs(ctx context.Context) error {
 		return sizeI < sizeJ
 	})
 
-	cli.Table([]string{"Commit", "Size", "Path"}, items)
+	cli.Table([]string{"Blob", "Size", "Path"}, items)
 
 	return nil
 }

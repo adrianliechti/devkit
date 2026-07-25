@@ -13,28 +13,24 @@ func (m *Moby) PortForward(ctx context.Context, containerID, address string, por
 		address = "127.0.0.1"
 	}
 
-	info, err := m.client.ContainerInspect(ctx, containerID)
+	info, err := m.Inspect(ctx, containerID)
 
 	if err != nil {
 		return err
 	}
 
-	var target string
-
-	if info.NetworkSettings != nil {
-		target = info.NetworkSettings.IPAddress
-	}
-
-	if target == "" {
+	if info.IPAddress == nil {
 		return errors.New("invalid container ip")
 	}
+
+	target := info.IPAddress.String()
 
 	for s, t := range ports {
 		container := engine.Container{
 			Image: "alpine/socat",
 
 			Args: []string{
-				fmt.Sprintf("TCP4-LISTEN:%d,fork,reuseaddr", s),
+				fmt.Sprintf("TCP4-LISTEN:%d,fork,reuseaddr", t),
 				fmt.Sprintf("TCP4:%s:%d", target, t),
 			},
 
@@ -43,6 +39,8 @@ func (m *Moby) PortForward(ctx context.Context, containerID, address string, por
 					HostPort: s,
 					HostIP:   address,
 
+					// socat listens on the target port inside the sidecar, so the
+					// published container port must match it, not the host port.
 					Port: t,
 				},
 			},

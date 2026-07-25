@@ -95,27 +95,17 @@ func createCommand(m catalog.Manager) *cli.Command {
 		},
 	}
 
-	portFlags := []*cli.IntFlag{}
-
 	for _, p := range ref.Ports {
-		port := p.Port
-		name := p.Name
-
-		if name == "" {
-			name = "port"
-		}
-
 		proto := string(p.Proto)
 
 		if proto == "" {
 			proto = string(engine.ProtocolTCP)
 		}
 
-		f := app.PortFlag(name)
-		f.DefaultText = fmt.Sprintf("%d (%s) or random", port, proto)
+		f := app.PortFlag(p.Name)
+		f.DefaultText = fmt.Sprintf("%d (%s) or random", p.Port, proto)
 
 		flags = append(flags, f)
-		portFlags = append(portFlags, f)
 	}
 
 	return &cli.Command{
@@ -133,8 +123,7 @@ func createCommand(m catalog.Manager) *cli.Command {
 			}
 
 			cli.MustRun("Pulling Image...", func() error {
-				client.Pull(ctx, container.Image, container.Platform, engine.PullOptions{})
-				return nil
+				return client.Pull(ctx, container.Image, container.Platform, engine.PullOptions{})
 			})
 
 			if name := cmd.String("name"); name != "" {
@@ -146,19 +135,8 @@ func createCommand(m catalog.Manager) *cli.Command {
 			}
 
 			for i, p := range container.Ports {
-				flag := app.PortFlagName(p.Name)
-
-				for _, f := range portFlags {
-					if f.Name != flag {
-						continue
-					}
-
-					hostIP := "127.0.0.1"
-					hostPort := app.MustPortOrRandom(ctx, cmd, f.Name, p.Port)
-
-					p.HostIP = hostIP
-					p.HostPort = hostPort
-				}
+				p.HostIP = "127.0.0.1"
+				p.HostPort = app.MustPortOrRandom(ctx, cmd, p.Name, p.Port)
 
 				container.Ports[i] = p
 			}
@@ -206,8 +184,7 @@ func deleteCommand(m catalog.Manager) *cli.Command {
 			container := MustContainer(ctx, client, kind, true)
 
 			cli.MustRun("Deleting Container...", func() error {
-				client.Delete(ctx, container.ID, engine.DeleteOptions{})
-				return nil
+				return client.Delete(ctx, container.ID, engine.DeleteOptions{})
 			})
 
 			return nil
@@ -344,8 +321,6 @@ func consoleCommand(p catalog.ConsoleProvider) *cli.Command {
 
 			port := app.MustPortOrRandom(ctx, cmd, "", mapping.Port)
 			ready := make(chan struct{})
-
-			println("mapping", port)
 
 			go func() {
 				<-ready
