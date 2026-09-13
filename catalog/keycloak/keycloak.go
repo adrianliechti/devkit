@@ -48,8 +48,9 @@ func (m *Manager) New() (engine.Container, error) {
 		Image: image,
 
 		Env: map[string]string{
-			"KEYCLOAK_ADMIN":          user,
-			"KEYCLOAK_ADMIN_PASSWORD": password,
+			// KEYCLOAK_ADMIN[_PASSWORD] are deprecated as of Keycloak 26.
+			"KC_BOOTSTRAP_ADMIN_USERNAME": user,
+			"KC_BOOTSTRAP_ADMIN_PASSWORD": password,
 		},
 
 		Args: []string{
@@ -73,8 +74,8 @@ func (m *Manager) New() (engine.Container, error) {
 }
 
 func (m *Manager) Info(instance engine.Container) (map[string]string, error) {
-	user := instance.Env["KEYCLOAK_ADMIN"]
-	password := instance.Env["KEYCLOAK_ADMIN_PASSWORD"]
+	user := instance.Env["KC_BOOTSTRAP_ADMIN_USERNAME"]
+	password := instance.Env["KC_BOOTSTRAP_ADMIN_PASSWORD"]
 
 	var url string
 

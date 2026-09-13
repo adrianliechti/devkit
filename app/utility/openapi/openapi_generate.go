@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/adrianliechti/devkit/app"
-	"github.com/adrianliechti/devkit/app/utility"
 	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/adrianliechti/go-cli"
 )
@@ -18,8 +17,6 @@ import (
 var generateCommand = &cli.Command{
 	Name:  "generate",
 	Usage: "generate openapi client/server",
-
-	Category: utility.Category,
 
 	Action: func(ctx context.Context, cmd *cli.Command) error {
 		client := app.MustClient(ctx, cmd)

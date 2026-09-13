@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 
 	"github.com/adrianliechti/devkit/app"
-	"github.com/adrianliechti/devkit/app/utility"
 	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/adrianliechti/go-cli"
 )
@@ -14,8 +13,6 @@ import (
 var mergeCommand = &cli.Command{
 	Name:  "merge",
 	Usage: "merge openapi schema",
-
-	Category: utility.Category,
 
 	Action: func(ctx context.Context, cmd *cli.Command) error {
 		client := app.MustClient(ctx, cmd)
@@ -59,7 +56,7 @@ func runMerge(ctx context.Context, client engine.Client, path string) error {
 		"-o", "/output",
 		"-DoutputFile=openapi_merged.yaml",
 
-		"--flatten-inline-schem",
+		"--flatten-inline-schema",
 	}
 
 	container := engine.Container{

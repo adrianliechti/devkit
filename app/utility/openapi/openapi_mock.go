@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 
 	"github.com/adrianliechti/devkit/app"
-	"github.com/adrianliechti/devkit/app/utility"
 	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/adrianliechti/go-cli"
 )
@@ -15,7 +14,9 @@ var mockCommand = &cli.Command{
 	Name:  "mock",
 	Usage: "mock openapi server",
 
-	Category: utility.Category,
+	Flags: []cli.Flag{
+		app.PortFlag(""),
+	},
 
 	Action: func(ctx context.Context, cmd *cli.Command) error {
 		client := app.MustClient(ctx, cmd)
@@ -23,11 +24,11 @@ var mockCommand = &cli.Command{
 		port := app.MustPortOrRandom(ctx, cmd, "", 4010)
 		path := cli.MustFile("Select Swagger/OpenAPI schema", []string{".json", ".yaml"})
 
-		return runMock(ctx, client, path, port, false)
+		return runMock(ctx, client, path, port)
 	},
 }
 
-func runMock(ctx context.Context, client engine.Client, path string, port int, dynamic bool) error {
+func runMock(ctx context.Context, client engine.Client, path string, port int) error {
 	path, err := filepath.Abs(path)
 
 	if err != nil {
@@ -42,10 +43,6 @@ func runMock(ctx context.Context, client engine.Client, path string, port int, d
 		"--port", fmt.Sprintf("%d", port),
 
 		"/src/" + file,
-	}
-
-	if dynamic {
-		args = append(args, "--dynamic")
 	}
 
 	container := engine.Container{

@@ -2,9 +2,9 @@ package moby
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"os"
-	"time"
 
 	"github.com/adrianliechti/devkit/pkg/engine"
 	"github.com/adrianliechti/devkit/pkg/system"
@@ -25,16 +25,21 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 		options.Stderr = os.Stderr
 	}
 
-	isTTY := system.IsTerminal(options.Stdout)
+	// A TTY needs both ends to be a terminal: stdin because it gets put into raw
+	// mode, stdout because a TTY stream is not multiplexed and carries escapes.
+	// This single decision drives the container config, the attach options and
+	// the raw-mode/demultiplexing below.
+	isTTY := system.IsTerminal(options.Stdin) && system.IsTerminal(options.Stdout)
 
 	if isTTY {
-		restore, err := system.MakeRawTerminal(options.Stdout)
+		restore, err := system.MakeRawTerminal(options.Stdin)
 
 		if err != nil {
-			return err
+			// Some consoles report a terminal but refuse raw mode; run without a TTY.
+			isTTY = false
+		} else {
+			defer restore()
 		}
-
-		defer restore()
 	}
 
 	containerConfig, err := convertContainerConfig(spec)
@@ -68,13 +73,19 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 		return err
 	}
 
-	defer m.client.ContainerRemove(context.Background(), created.ID, container.RemoveOptions{
+	defer m.client.ContainerRemove(context.WithoutCancel(ctx), created.ID, container.RemoveOptions{
 		Force: true,
 
 		RemoveVolumes: true,
 	})
 
-	attached, err := m.client.ContainerAttach(ctx, created.ID, convertAttachOptions(options))
+	attached, err := m.client.ContainerAttach(ctx, created.ID, container.AttachOptions{
+		Stream: true,
+
+		Stdin:  options.Stdin != nil,
+		Stdout: options.Stdout != nil,
+		Stderr: options.Stderr != nil,
+	})
 
 	if err != nil {
 		return err
@@ -82,81 +93,71 @@ func (m *Moby) Run(ctx context.Context, spec engine.Container, options engine.Ru
 
 	defer attached.Close()
 
+	// Start waiting before starting the container, so a short-lived container
+	// cannot exit before the wait is established.
+	waitCh, waitErrCh := m.client.ContainerWait(ctx, created.ID, container.WaitConditionNextExit)
+
 	if err := m.client.ContainerStart(ctx, created.ID, container.StartOptions{}); err != nil {
 		return err
 	}
 
 	if isTTY {
-		width, height, err := system.TerminalSize(options.Stdout)
-
-		if err != nil {
-			return err
-		}
-
-		m.client.ContainerResize(ctx, created.ID, container.ResizeOptions{
-			Width:  uint(width),
-			Height: uint(height),
+		syncTerminalSize(ctx, options.Stdout, func(width, height int) error {
+			return m.client.ContainerResize(ctx, created.ID, container.ResizeOptions{
+				Width:  uint(width),
+				Height: uint(height),
+			})
 		})
-
-		go func() {
-			for ctx.Err() == nil {
-				time.Sleep(200 * time.Millisecond)
-
-				w, h, err := system.TerminalSize(options.Stdout)
-
-				if err != nil {
-					continue
-				}
-
-				if w == width && h == height {
-					continue
-				}
-
-				width = w
-				height = h
-
-				m.client.ContainerResize(ctx, created.ID, container.ResizeOptions{
-					Width:  uint(width),
-					Height: uint(height),
-				})
-			}
-		}()
 	}
 
-	result := make(chan error)
-
 	go func() {
-		_, err := io.Copy(attached.Conn, options.Stdin)
-		result <- err
+		io.Copy(attached.Conn, options.Stdin)
+		attached.CloseWrite()
 	}()
+
+	copied := make(chan error, 1)
 
 	go func() {
 		if isTTY {
 			_, err := io.Copy(options.Stdout, attached.Reader)
-			result <- err
+			copied <- err
 			return
 		}
 
 		_, err := stdcopy.StdCopy(options.Stdout, options.Stderr, attached.Reader)
-		result <- err
+		copied <- err
 	}()
 
-	select {
-	case err := <-result:
+	if err := <-copied; err != nil {
+		// A cancelled context tears the stream down; that is not a failure.
+		if ctx.Err() != nil {
+			return nil
+		}
+
 		return err
+	}
+
+	// Surface the container's exit code instead of reporting success unconditionally.
+	select {
+	case result := <-waitCh:
+		if result.Error != nil && result.Error.Message != "" {
+			return fmt.Errorf("%s", result.Error.Message)
+		}
+
+		if result.StatusCode != 0 {
+			return fmt.Errorf("container exited with code %d", result.StatusCode)
+		}
+
+		return nil
+
+	case err := <-waitErrCh:
+		if ctx.Err() != nil {
+			return nil
+		}
+
+		return err
+
 	case <-ctx.Done():
 		return nil
 	}
-}
-
-func convertAttachOptions(options engine.RunOptions) container.AttachOptions {
-	result := container.AttachOptions{
-		Stream: true,
-
-		Stdin:  options.Stdin != nil,
-		Stdout: options.Stdout != nil,
-		Stderr: options.Stderr != nil,
-	}
-
-	return result
 }

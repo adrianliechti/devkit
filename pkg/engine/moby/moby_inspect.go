@@ -2,7 +2,9 @@ package moby
 
 import (
 	"context"
+	"maps"
 	"net"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -18,6 +20,32 @@ func (m *Moby) Inspect(ctx context.Context, container string) (engine.Container,
 	}
 
 	return convertContainer(data), nil
+}
+
+// containerIP returns the container address. Current engines leave the
+// top-level IPAddress empty and only report it per attached network.
+func containerIP(data types.ContainerJSON) net.IP {
+	if data.NetworkSettings == nil {
+		return nil
+	}
+
+	if ip := net.ParseIP(data.NetworkSettings.IPAddress); ip != nil {
+		return ip
+	}
+
+	for _, name := range slices.Sorted(maps.Keys(data.NetworkSettings.Networks)) {
+		network := data.NetworkSettings.Networks[name]
+
+		if network == nil {
+			continue
+		}
+
+		if ip := net.ParseIP(network.IPAddress); ip != nil {
+			return ip
+		}
+	}
+
+	return nil
 }
 
 func convertContainer(data types.ContainerJSON) engine.Container {
@@ -39,7 +67,7 @@ func convertContainer(data types.ContainerJSON) engine.Container {
 		Args:    data.Config.Cmd,
 
 		Hostname:  data.Config.Hostname,
-		IPAddress: net.ParseIP(data.NetworkSettings.IPAddress),
+		IPAddress: containerIP(data),
 
 		Ports:  []engine.ContainerPort{},
 		Mounts: []engine.ContainerMount{},
@@ -58,11 +86,7 @@ func convertContainer(data types.ContainerJSON) engine.Container {
 	}
 
 	for _, e := range data.Config.Env {
-		s := strings.SplitN(e, "=", 2)
-
-		key := s[0]
-		val := s[1]
-
+		key, val, _ := strings.Cut(e, "=")
 		container.Env[key] = val
 	}
 

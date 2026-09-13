@@ -1,12 +1,12 @@
 package proxy
 
 import (
+	"crypto/subtle"
 	"encoding/base64"
 	"io"
 	"log"
 	"net"
 	"net/http"
-	"net/url"
 	"strings"
 	"time"
 )
@@ -14,37 +14,22 @@ import (
 type Config struct {
 	Username string
 	Password string
-
-	Upstream *url.URL
 }
 
 type Proxy struct {
 	username string
 	password string
 
-	upstream  *url.URL
 	transport *http.Transport
 }
 
 func New(c Config) *Proxy {
-	var upstream *url.URL
-
-	transport := http.DefaultTransport.(*http.Transport)
-
-	if c.Upstream != nil {
-		upstream = c.Upstream
-
-		transport.Proxy = func(r *http.Request) (*url.URL, error) {
-			return upstream, nil
-		}
-	}
-
 	proxy := &Proxy{
 		username: c.Username,
 		password: c.Password,
 
-		upstream:  upstream,
-		transport: transport,
+		// Clone, so configuring this proxy never mutates http.DefaultTransport.
+		transport: http.DefaultTransport.(*http.Transport).Clone(),
 	}
 
 	return proxy
@@ -61,7 +46,7 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if user != p.username && pass != p.password {
+		if !equal(user, p.username) || !equal(pass, p.password) {
 			http.Error(w, "Forbidden", http.StatusForbidden)
 			return
 		}
@@ -123,26 +108,7 @@ func (p *Proxy) handleHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Proxy) handleTunneling(w http.ResponseWriter, r *http.Request) {
-	addr := r.Host
-
-	if p.upstream != nil {
-		addr = p.upstream.Host
-	}
-
-	target, err := net.DialTimeout("tcp", addr, 10*time.Second)
-
 	log.Printf("CONNECT %v", r.Host)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusServiceUnavailable)
-		return
-	}
-
-	if p.upstream == nil {
-		w.WriteHeader(http.StatusOK)
-	} else {
-		target.Write([]byte("CONNECT " + r.Host + " HTTP/1.1\n\n"))
-	}
 
 	hijacker, ok := w.(http.Hijacker)
 
@@ -151,10 +117,22 @@ func (p *Proxy) handleTunneling(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	client, _, err := hijacker.Hijack()
+	target, err := net.DialTimeout("tcp", r.Host, 10*time.Second)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusServiceUnavailable)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+
+	client, _, err := hijacker.Hijack()
+
+	if err != nil {
+		target.Close()
+
+		http.Error(w, err.Error(), http.StatusServiceUnavailable)
+		return
 	}
 
 	transfer := func(dst io.WriteCloser, src io.ReadCloser) {
@@ -196,4 +174,8 @@ func parseBasicAuth(r *http.Request) (username, password string, ok bool) {
 	}
 
 	return cs[:s], cs[s+1:], true
+}
+
+func equal(a, b string) bool {
+	return subtle.ConstantTimeCompare([]byte(a), []byte(b)) == 1
 }

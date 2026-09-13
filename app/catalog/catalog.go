@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"maps"
+	"slices"
 	"strings"
 
 	"github.com/adrianliechti/devkit/pkg/engine"
@@ -14,7 +16,7 @@ const (
 	KindKey = "local.devkit.kind"
 )
 
-func SelectContainer(ctx context.Context, client engine.Client, kind string, all bool) (*engine.Container, error) {
+func selectContainer(ctx context.Context, client engine.Client, kind string, all bool) (*engine.Container, error) {
 	containers, err := client.List(ctx, engine.ListOptions{
 		All: all,
 
@@ -28,10 +30,6 @@ func SelectContainer(ctx context.Context, client engine.Client, kind string, all
 	}
 
 	var items []string
-
-	if err != nil {
-		return nil, err
-	}
 
 	for _, i := range containers {
 		items = append(items, i.Name)
@@ -52,7 +50,7 @@ func SelectContainer(ctx context.Context, client engine.Client, kind string, all
 }
 
 func MustContainer(ctx context.Context, client engine.Client, kind string, all bool) engine.Container {
-	container, err := SelectContainer(ctx, client, kind, all)
+	container, err := selectContainer(ctx, client, kind, all)
 
 	if err != nil {
 		cli.Fatal(err)
@@ -84,8 +82,9 @@ func printContainerInfo(container engine.Container, info map[string]string) {
 
 	rowsInfo := [][]string{}
 
-	for k, v := range info {
-		rowsInfo = append(rowsInfo, []string{k, v})
+	// Sort, so repeated invocations print the same rows in the same order.
+	for _, k := range slices.Sorted(maps.Keys(info)) {
+		rowsInfo = append(rowsInfo, []string{k, info[k]})
 	}
 
 	if len(rowsInfo) > 0 {

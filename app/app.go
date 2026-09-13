@@ -8,21 +8,8 @@ import (
 	"github.com/adrianliechti/go-cli"
 )
 
-const (
-	DatabaseCategory  = "DATABASE"
-	MessagingCategory = "MESSAGING"
-	PlatformCategory  = "PLATFORM"
-	StorageCategory   = "STORAGE"
-	UtilityCategory   = "UTILILITY"
-	TemplateCategory  = "TEMPLATE"
-)
-
-func Client(ctx context.Context, cmd *cli.Command) (engine.Client, error) {
-	return moby.New()
-}
-
 func MustClient(ctx context.Context, cmd *cli.Command) engine.Client {
-	client, err := Client(ctx, cmd)
+	client, err := moby.New()
 
 	if err != nil {
 		cli.Fatal(err)

@@ -131,21 +131,23 @@ func convertHostConfig(spec engine.Container) (*container.HostConfig, error) {
 	}
 
 	for _, m := range spec.Mounts {
-		if m.Volume != "" {
-			config.Mounts = append(config.Mounts, mount.Mount{
-				Type:   mount.TypeVolume,
-				Target: m.Path,
-				Source: m.Volume,
-			})
-		}
-
 		if m.HostPath != "" {
 			config.Mounts = append(config.Mounts, mount.Mount{
 				Type:   mount.TypeBind,
 				Target: m.Path,
 				Source: m.HostPath,
 			})
+
+			continue
 		}
+
+		// An empty Volume means an anonymous volume, which is what a mount
+		// declaring only a Path asks for.
+		config.Mounts = append(config.Mounts, mount.Mount{
+			Type:   mount.TypeVolume,
+			Target: m.Path,
+			Source: m.Volume,
+		})
 	}
 
 	ulimits := []*units.Ulimit{}
