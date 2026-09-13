@@ -21,14 +21,31 @@ checksum:
 changelog:
   sort: asc
 
-brews:
-  - repository:
+# Homebrew casks support both macOS and Linux.
+homebrew_casks:
+  - name: devkit
+    binaries: [devkit]
+    # The publisher adds postflight_steps; GoReleaser's hooks still emit postflight.
+    skip_upload: true
+    homepage: "https://github.com/adrianliechti/devkit"
+    description: "Application templates and local development services"
+    repository:
       owner: adrianliechti
       name: homebrew-tap
 
     commit_author:
       name: Adrian Liechti
       email: adrian@localhost
+
+publishers:
+  - name: homebrew-cask
+    # Publish the extra cask file, excluding release archives.
+    ids: [homebrew-cask]
+    extra_files:
+      - glob: dist/homebrew/Casks/devkit.rb
+    env:
+      - GITHUB_TOKEN={{ .Env.GITHUB_TOKEN }}
+    cmd: ./scripts/publish-cask.sh {{ .Version }}
 
 scoops:
   - repository:

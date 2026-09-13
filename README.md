@@ -216,7 +216,7 @@ $ devkit proxy [--port 3128] [--user username] [--password password]
 [Homebrew](https://brew.sh)
 
 ```
-brew install adrianliechti/tap/devkit
+brew install --cask adrianliechti/tap/devkit
 ```
 
 #### Windows
